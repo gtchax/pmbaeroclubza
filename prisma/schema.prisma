@@ -1,0 +1,664 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// CORE USER & AUTHENTICATION MODELS
+// ================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  isApproved Boolean @default(false)
+  approvalStatus UserApprovalStatus @default(PENDING)
+  paymentStatus UserPaymentStatus @default(UNPAID)
+  approvedAt DateTime?
+  approvedBy String?
+  rejectedAt DateTime?
+  rejectionReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Role relationships
+  roles UserRole[]
+
+  // Student profile
+  studentProfile Student?
+
+  // Instructor profile
+  instructorProfile Instructor?
+
+  // Admin profile
+  adminProfile Admin?
+
+  // Flight logs as pilot
+  flightLogsAsPilot FlightLog[] @relation("PilotFlightLogs")
+
+  // Flight logs as instructor
+  flightLogsAsInstructor FlightLog[] @relation("InstructorFlightLogs")
+
+  // Bookings made
+  bookings Booking[]
+
+
+  // Notifications
+  notifications Notification[]
+
+  // Messages sent
+  messagesSent Message[] @relation("SentMessages")
+
+  // Messages received
+  messagesReceived Message[] @relation("ReceivedMessages")
+
+  @@map("users")
+}
+
+model Role {
+  id          String @id @default(cuid())
+  name        String @unique // SUPER_ADMIN, ADMIN, INSTRUCTOR, STUDENT
+  description String
+  permissions Json   // Store permissions as JSON
+
+  // Users with this role
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+// ================================
+// PROFILE MODELS
+// ================================
+
+model Student {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  studentNumber    String    @unique
+  dateOfBirth      DateTime
+  address          String
+  emergencyContact Json      // Store emergency contact details
+  medicalCert      String?   // Medical certificate number
+  medicalExpiry    DateTime?
+  licenseNumber    String?
+  licenseType      String?   // PPL, CPL, etc.
+  licenseExpiry    DateTime?
+  totalFlightHours Float     @default(0)
+  soloHours        Float     @default(0)
+  crossCountryHours Float    @default(0)
+  instrumentHours  Float     @default(0)
+  nightHours       Float     @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Training enrollments
+  enrollments Enrollment[]
+
+  // Progress tracking
+  progressRecords ProgressRecord[]
+
+  // Evaluations received
+  evaluationsReceived Evaluation[] @relation("StudentEvaluations")
+
+  // Flight logs
+  flightLogs FlightLog[] @relation("StudentFlightLogs")
+
+  @@map("students")
+}
+
+model Instructor {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  instructorNumber  String    @unique
+  licenseNumber     String
+  licenseType       String    // CFI, CFII, MEI, etc.
+  licenseExpiry     DateTime
+  medicalCert       String
+  medicalExpiry     DateTime
+  totalFlightHours  Float     @default(0)
+  instructorHours   Float     @default(0)
+  specializations   String[]  // Array of specializations
+  isActive          Boolean   @default(true)
+  hireDateDate      DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Students assigned
+  enrollments Enrollment[]
+
+  // Evaluations given
+  evaluationsGiven Evaluation[] @relation("InstructorEvaluations")
+
+  // Flight logs as instructor
+  flightLogs FlightLog[] @relation("InstructorFlightLogs")
+
+  // Aircraft certifications
+  aircraftCertifications InstructorAircraftCertification[]
+
+  // Schedule availability
+  scheduleSlots ScheduleSlot[]
+
+  @@map("instructors")
+}
+
+model Admin {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  adminLevel  String   // SUPER_ADMIN, ADMIN, MANAGER
+  permissions Json     // Specific admin permissions
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+// ================================
+// AIRCRAFT MODELS
+// ================================
+
+model Aircraft {
+  id               String   @id @default(cuid())
+  registration     String   @unique // Aircraft registration number
+  make             String
+  model            String
+  year             Int
+  serialNumber     String   @unique
+  category         String   // Airplane, Helicopter, etc.
+  class            String   // Single Engine Land, Multi Engine, etc.
+  engineType       String   // Piston, Turboprop, Jet
+  seats            Int
+  maxWeight        Float
+  fuelCapacity     Float
+  currentHours     Float    @default(0)
+  nextInspection   DateTime
+  insuranceExpiry  DateTime
+  registrationExpiry DateTime
+  isActive         Boolean  @default(true)
+  isAvailable      Boolean  @default(true)
+  hourlyRate       Float
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Maintenance records
+  maintenanceRecords MaintenanceRecord[]
+
+  // Flight logs
+  flightLogs FlightLog[]
+
+  // Bookings
+  bookings Booking[]
+
+  // Instructor certifications
+  instructorCertifications InstructorAircraftCertification[]
+
+  // Fuel records
+  fuelRecords FuelRecord[]
+
+  @@map("aircraft")
+}
+
+model MaintenanceRecord {
+  id          String            @id @default(cuid())
+  aircraftId  String
+  type        MaintenanceType
+  description String
+  hoursAtMaintenance Float
+  cost        Float?
+  vendor      String?
+  startDate   DateTime
+  completedDate DateTime?
+  nextDueHours Float?
+  nextDueDate DateTime?
+  isCompleted Boolean           @default(false)
+  documents   String[]          // Array of document URLs
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  aircraft Aircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+  @@map("maintenance_records")
+}
+
+model FuelRecord {
+  id         String   @id @default(cuid())
+  aircraftId String
+  quantity   Float    // Gallons or Liters
+  cost       Float
+  fuelType   String   // 100LL, Jet A, etc.
+  vendor     String?
+  date       DateTime
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  aircraft Aircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+  @@map("fuel_records")
+}
+
+model InstructorAircraftCertification {
+  id           String   @id @default(cuid())
+  instructorId String
+  aircraftId   String
+  certifiedAt  DateTime @default(now())
+  expiresAt    DateTime?
+  isActive     Boolean  @default(true)
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  aircraft   Aircraft   @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+  @@unique([instructorId, aircraftId])
+  @@map("instructor_aircraft_certifications")
+}
+
+// ================================
+// FLIGHT & LOGBOOK MODELS
+// ================================
+
+model FlightLog {
+  id               String      @id @default(cuid())
+  flightNumber     String?
+  aircraftId       String
+  pilotId          String
+  instructorId     String?
+  studentId        String?
+  date             DateTime
+  departureTime    DateTime
+  arrivalTime      DateTime?
+  departureAirport String
+  arrivalAirport   String?
+  flightType       FlightType
+  flightPurpose    String      // Training, Solo, Cross Country, etc.
+  totalTime        Float       // Flight time in hours
+  pilotInCommand   Float       @default(0)
+  dualReceived     Float       @default(0)
+  soloTime         Float       @default(0)
+  crossCountry     Float       @default(0)
+  nightTime        Float       @default(0)
+  instrumentTime   Float       @default(0)
+  landings         Int         @default(0)
+  nightLandings    Int         @default(0)
+  approaches       Int         @default(0)
+  holds            Int         @default(0)
+  remarks          String?
+  isCompleted      Boolean     @default(false)
+  hobbsStart       Float?
+  hobbsEnd         Float?
+  tachStart        Float?
+  tachEnd          Float?
+  fuelStart        Float?
+  fuelEnd          Float?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  aircraft   Aircraft    @relation(fields: [aircraftId], references: [id])
+  pilot      User        @relation("PilotFlightLogs", fields: [pilotId], references: [id])
+  instructor User?       @relation("InstructorFlightLogs", fields: [instructorId], references: [id])
+  student    Student?    @relation("StudentFlightLogs", fields: [studentId], references: [id])
+
+  @@map("flight_logs")
+  Instructor Instructor[] @relation("InstructorFlightLogs")
+}
+
+// ================================
+// TRAINING & CURRICULUM MODELS
+// ================================
+
+model Course {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  description String
+  category    String   // PPL, CPL, IR, etc.
+  duration    Int      // Duration in hours
+  cost        Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Course modules
+  modules Module[]
+
+  // Student enrollments
+  enrollments Enrollment[]
+
+  @@map("courses")
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  courseId    String
+  name        String
+  description String
+  order       Int
+  duration    Int      // Duration in hours
+  isRequired  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  // Lessons in this module
+  lessons Lesson[]
+
+  // Progress records
+  progressRecords ProgressRecord[]
+
+  @@map("modules")
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  moduleId    String
+  name        String
+  description String
+  order       Int
+  duration    Int        // Duration in hours
+  lessonType  LessonType // GROUND, FLIGHT, SIMULATOR
+  objectives  String[]   // Learning objectives
+  content     Json?      // Lesson content/materials
+  isRequired  Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  // Progress records
+  progressRecords ProgressRecord[]
+
+  @@map("lessons")
+}
+
+model Enrollment {
+  id           String           @id @default(cuid())
+  studentId    String
+  courseId     String
+  instructorId String
+  startDate    DateTime
+  expectedEndDate DateTime?
+  actualEndDate DateTime?
+  status       EnrollmentStatus @default(ACTIVE)
+  totalCost    Float
+  paidAmount   Float            @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course     Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  // Progress tracking
+  progressRecords ProgressRecord[]
+
+  @@map("enrollments")
+}
+
+model ProgressRecord {
+  id           String         @id @default(cuid())
+  enrollmentId String
+  studentId    String
+  moduleId     String?
+  lessonId     String?
+  status       ProgressStatus @default(NOT_STARTED)
+  score        Float?         // Score out of 100
+  completedAt  DateTime?
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  module     Module?    @relation(fields: [moduleId], references: [id])
+  lesson     Lesson?    @relation(fields: [lessonId], references: [id])
+
+  @@map("progress_records")
+}
+
+// ================================
+// EVALUATION & ASSESSMENT MODELS
+// ================================
+
+model Evaluation {
+  id           String         @id @default(cuid())
+  studentId    String
+  instructorId String
+  type         EvaluationType
+  title        String
+  description  String?
+  date         DateTime
+  score        Float?         // Overall score
+  maxScore     Float?         // Maximum possible score
+  passed       Boolean?
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  student    Student    @relation("StudentEvaluations", fields: [studentId], references: [id], onDelete: Cascade)
+  instructor Instructor @relation("InstructorEvaluations", fields: [instructorId], references: [id], onDelete: Cascade)
+
+  // Individual skill assessments
+  skillAssessments SkillAssessment[]
+
+  @@map("evaluations")
+}
+
+model SkillAssessment {
+  id           String  @id @default(cuid())
+  evaluationId String
+  skillName    String
+  skillArea    String  // Navigation, Communication, Emergency Procedures, etc.
+  score        Float
+  maxScore     Float
+  comments     String?
+
+  evaluation Evaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+
+  @@map("skill_assessments")
+}
+
+// ================================
+// SCHEDULING & BOOKING MODELS
+// ================================
+
+model ScheduleSlot {
+  id           String    @id @default(cuid())
+  instructorId String
+  date         DateTime
+  startTime    DateTime
+  endTime      DateTime
+  isAvailable  Boolean   @default(true)
+  notes        String?
+  createdAt    DateTime  @default(now())
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  // Bookings for this slot
+  bookings Booking[]
+
+  @@map("schedule_slots")
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  studentId      String
+  aircraftId     String
+  instructorId   String?
+  scheduleSlotId String?
+  date           DateTime
+  startTime      DateTime
+  endTime        DateTime
+  type           BookingType
+  purpose        String
+  status         BookingStatus @default(PENDING)
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  student      User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  aircraft     Aircraft      @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+  scheduleSlot ScheduleSlot? @relation(fields: [scheduleSlotId], references: [id])
+
+  @@map("bookings")
+}
+
+// ================================
+// COMMUNICATION MODELS
+// ================================
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  data      Json?            // Additional notification data
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Message {
+  id         String      @id @default(cuid())
+  senderId   String
+  receiverId String
+  subject    String?
+  content    String
+  type       MessageType @default(DIRECT)
+  isRead     Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+// ================================
+// ENUMS
+// ================================
+
+enum MaintenanceType {
+  INSPECTION
+  REPAIR
+  OVERHAUL
+  MODIFICATION
+  AD_COMPLIANCE
+  SERVICE_BULLETIN
+}
+
+enum FlightType {
+  TRAINING
+  SOLO
+  CROSS_COUNTRY
+  CHECKRIDE
+  PROFICIENCY
+  RECREATIONAL
+  COMMERCIAL
+}
+
+enum LessonType {
+  GROUND
+  FLIGHT
+  SIMULATOR
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+  CANCELLED
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum EvaluationType {
+  STAGE_CHECK
+  CHECKRIDE
+  PROGRESS_CHECK
+  PROFICIENCY_CHECK
+  SKILL_ASSESSMENT
+}
+
+enum BookingType {
+  LESSON
+  SOLO
+  CHECKRIDE
+  PROFICIENCY
+  RECREATIONAL
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  MAINTENANCE_DUE
+  LICENSE_EXPIRY
+  MEDICAL_EXPIRY
+  EVALUATION_RESULT
+  GENERAL
+}
+
+enum MessageType {
+  DIRECT
+  ANNOUNCEMENT
+  SYSTEM
+}
+
+enum UserApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  UNDER_REVIEW
+}
+
+enum UserPaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+}

@@ -1,26 +1,287 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 15%;
+
+    /* PMB Aero Club Brand Colors */
+    --pmb-gold: 45 85% 72%;
+    --pmb-charcoal: 0 0% 15%;
+    --pmb-white: 0 0% 100%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+
+    --primary: 45 85% 72%;
+    --primary-foreground: 0 0% 15%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 45 85% 72%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 15%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 45 85% 72%;
+    --primary-foreground: 0 0% 15%;
+
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 45 85% 72%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: rgb(243 244 246);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #f6d57f;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #f4d06a;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #f6d57f, 0 0 0 4px white;
+  }
+
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Aviation-themed gradients */
+  .bg-aviation-gradient {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+  }
+
+  .bg-sky-gradient {
+    background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #7dd3fc 100%);
+  }
+
+  /* Text shadows for better readability on images */
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  }
 }
+
+@layer components {
+  /* Custom button styles */
+  .btn-aviation {
+    background-color: #f6d57f;
+    color: #262626;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    transform: scale(1);
+  }
+
+  .btn-aviation:hover {
+    background-color: #f4d06a;
+    transform: scale(1.05);
+  }
+
+  .btn-aviation-outline {
+    border: 2px solid #f6d57f;
+    color: #f6d57f;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-aviation-outline:hover {
+    background-color: #f6d57f;
+    color: #262626;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
+  }
+
+  /* Section spacing utilities */
+  .section-padding {
+    padding: 5rem 0;
+  }
+
+  .section-padding-sm {
+    padding: 3rem 0;
+  }
+
+  .section-padding-lg {
+    padding: 8rem 0;
+  }
+
+  /* Container utilities */
+  .container-aviation {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Typography utilities */
+  .heading-1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  @media (min-width: 768px) {
+    .heading-1 {
+      font-size: 3.75rem;
+      line-height: 1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .heading-1 {
+      font-size: 4.5rem;
+      line-height: 1;
+    }
+  }
+
+  .heading-2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 768px) {
+    .heading-2 {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .heading-2 {
+      font-size: 3rem;
+      line-height: 1;
+    }
+  }
+
+  .heading-3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+  }
+
+  @media (min-width: 768px) {
+    .heading-3 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+  }
+
+  .body-large {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .body-large {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  .body-medium {
+    font-size: 1rem;
+    line-height: 1.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .body-medium {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+  }
+}
+
