@@ -114,30 +114,29 @@ export default function VisitingAircraftPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-[#262626] text-white py-20">
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-[#262626] text-white py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
               Visiting Aircraft
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
-              Welcome to Pietermaritzburg Aero Club! Essential information for
-              visiting pilots including fuel, tower times, airport details, and
-              local procedures.
+              Essential information for pilots visiting Pietermaritzburg
+              Airport. Everything you need to know about facilities, procedures,
+              and local attractions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="#fuel">Fuel Information</Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                asChild
-                className="border-white text-white hover:bg-white hover:text-[#262626]"
+                className="border-2 border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="#airport">Airport Details</Link>
               </Button>
@@ -257,9 +256,11 @@ export default function VisitingAircraftPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">Monday</h4>
-                    <p className="text-blue-700">{towerTimes.monday}</p>
+                  <div className="p-4 bg-[#f6d57f]/20 rounded-lg border border-[#f6d57f]/30">
+                    <h4 className="font-semibold text-[#262626] mb-2">
+                      Monday
+                    </h4>
+                    <p className="text-gray-700">{towerTimes.monday}</p>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg">
                     <h4 className="font-semibold text-green-800 mb-2">
@@ -292,8 +293,8 @@ export default function VisitingAircraftPage() {
                       <strong>Public Holidays:</strong> {towerTimes.holidays}
                     </p>
                   </div>
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-blue-800">
+                  <div className="bg-[#f6d57f]/20 p-4 rounded-lg border border-[#f6d57f]/30">
+                    <p className="text-[#262626]">
                       <strong>NOTAMs:</strong> {towerTimes.notams}
                     </p>
                   </div>
@@ -372,19 +373,19 @@ export default function VisitingAircraftPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">
+                  <div className="p-3 bg-[#f6d57f]/20 rounded-lg border border-[#f6d57f]/30">
+                    <h4 className="font-semibold text-[#262626] mb-2">
                       Radio Frequencies
                     </h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-blue-700">Tower:</span>
+                        <span className="text-gray-700">Tower:</span>
                         <span className="font-medium">
                           {airportInfo.frequencies.tower}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-blue-700">Approach:</span>
+                        <span className="text-gray-700">Approach:</span>
                         <span className="font-medium">
                           {airportInfo.frequencies.approach}
                         </span>
@@ -496,11 +497,11 @@ export default function VisitingAircraftPage() {
                 </p>
 
                 <div className="space-y-3">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">
+                  <div className="p-3 bg-[#f6d57f]/20 rounded-lg">
+                    <h4 className="font-semibold text-gray-800 mb-2">
                       CTR Boundary
                     </h4>
-                    <p className="text-blue-700">{localAirspace.ctrBoundary}</p>
+                    <p className="text-gray-700">{localAirspace.ctrBoundary}</p>
                   </div>
 
                   <div className="p-3 bg-green-50 rounded-lg">
@@ -551,11 +552,11 @@ export default function VisitingAircraftPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-4">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">
+                  <div className="p-3 bg-[#f6d57f]/20 rounded-lg border border-[#f6d57f]/30">
+                    <h4 className="font-semibold text-[#262626] mb-2">
                       GNSS Approach
                     </h4>
-                    <p className="text-blue-700 text-sm">
+                    <p className="text-gray-700 text-sm">
                       {localAgreements.gnssApproach}
                     </p>
                   </div>

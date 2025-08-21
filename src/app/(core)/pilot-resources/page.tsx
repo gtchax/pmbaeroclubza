@@ -178,7 +178,7 @@ export default function PilotResourcesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-[#262626] text-white py-20">
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-[#262626] text-white py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">Pilot Resources</h1>
@@ -191,15 +191,14 @@ export default function PilotResourcesPage() {
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="#weather">Weather Resources</Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                asChild
-                className="border-white text-white hover:bg-white hover:text-[#262626]"
+                className="border-2 border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="#documents">Documents & Forms</Link>
               </Button>
@@ -381,8 +380,8 @@ export default function PilotResourcesPage() {
           </div>
 
           <div className="mt-12 text-center">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 inline-block">
-              <p className="text-blue-800">
+            <div className="bg-[#f6d57f]/20 border border-[#f6d57f]/30 rounded-lg p-6 inline-block">
+              <p className="text-[#262626]">
                 <strong>Need Help?</strong> Ask our instructors for assistance
                 with exam preparation.
               </p>
@@ -488,8 +487,8 @@ export default function PilotResourcesPage() {
                     </div>
                   )}
                   {resource.note && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-sm text-blue-800">{resource.note}</p>
+                    <div className="bg-[#f6d57f]/20 border border-[#f6d57f]/30 rounded-lg p-3">
+                      <p className="text-sm text-[#262626]">{resource.note}</p>
                     </div>
                   )}
                   <Button asChild size="lg" className="w-full">
@@ -547,7 +546,7 @@ export default function PilotResourcesPage() {
       {/* SEAMS Access */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="bg-gradient-to-r from-[#262626] to-blue-900 rounded-2xl p-8 text-white">
+          <div className="bg-gradient-to-r from-[#262626] to-gray-800 rounded-2xl p-8 text-white">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#f6d57f] text-[#262626] mb-6">
               <Plane className="h-10 w-10" />
             </div>
@@ -560,7 +559,7 @@ export default function PilotResourcesPage() {
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="/seams">Open SEAMS</Link>
               </Button>
@@ -568,7 +567,7 @@ export default function PilotResourcesPage() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="border-white text-white hover:bg-white hover:text-[#262626]"
+                className="border-2 border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link href="/contact">Contact Us</Link>
               </Button>
