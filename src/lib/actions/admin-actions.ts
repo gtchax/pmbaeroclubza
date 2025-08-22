@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { AdminDashboardData, DashboardStats } from '@/lib/types'
+import { Instructor, Student, User } from '@prisma/client'
 
 export async function getAdminProfile(userId: string) {
   try {
@@ -144,6 +145,9 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
     ])
 
     // Get expiring certifications
+    type InstructorWithUser = Instructor & { user: User }
+    type StudentWithUser = Student & { user: User }
+    
     const expiringCertifications = await Promise.all([
       // Instructor certifications
       prisma.instructor.findMany({
@@ -189,7 +193,7 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
 
     const formattedExpiringCertifications = [
       ...expiringCertifications[0]
-        .map(instructor => {
+        .map((instructor: InstructorWithUser) => {
           const expiry = instructor.licenseExpiry || instructor.medicalExpiry
           if (!expiry) return null
           return {
@@ -203,7 +207,7 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
         })
         .filter((cert): cert is NonNullable<typeof cert> => cert !== null),
       ...expiringCertifications[1]
-        .map(student => {
+        .map((student: StudentWithUser) => {
           const expiry = student.licenseExpiry || student.medicalExpiry
           if (!expiry) return null
           return {
