@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { AdminDashboardData, DashboardStats } from '@/lib/types'
-import { Instructor, Student, User } from '@prisma/client'
+import { AdminDashboardData, DashboardStats, Instructor, Student, User } from '@/lib/types'
+// import { Instructor, Student, User } from '@prisma/client'
 
 export async function getAdminProfile(userId: string) {
   try {

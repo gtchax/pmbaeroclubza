@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { StudentDashboardData, StudentWithDetails } from "@/lib/types";
 import { Prisma } from "@prisma/client";
 
+
 export async function getStudentProfile(
   userId: string
 ): Promise<StudentWithDetails | null> {

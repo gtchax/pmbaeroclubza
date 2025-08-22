@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { UpdateFlightLogData } from '@/lib/types'
-import { FlightType } from '@prisma/client'
+import { FlightType, UpdateFlightLogData } from '@/lib/types'
+// import { FlightType } from '@prisma/client'
 
 export async function createFlightLog(data: {
   aircraftId: string

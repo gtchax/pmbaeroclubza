@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { CreateEvaluationData } from '@/lib/types'
+import { CreateEvaluationData } from '../types'
+// import { CreateEvaluationData } from '@/lib/types'
 
 export async function createEvaluation(data: CreateEvaluationData & { instructorId: string }) {
   try {

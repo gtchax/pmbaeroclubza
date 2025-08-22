@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { AircraftWithDetails } from '@/lib/types'
-import { MaintenanceType } from '@prisma/client'
+import { AircraftWithDetails, MaintenanceType } from '@/lib/types'
+// import { MaintenanceType } from '@prisma/client'
 
 export async function getAllAircraftWithDetails(): Promise<AircraftWithDetails[]> {
   try {
