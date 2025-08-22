@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Fuel,
   Clock,
@@ -16,13 +15,8 @@ import {
   Shield,
   Navigation,
   AlertTriangle,
-  Info,
   Phone,
-  Mail,
-  ExternalLink,
   Compass,
-  Mountain,
-  Building,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -650,8 +644,8 @@ export default function VisitingAircraftPage() {
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Contact us in advance to arrange GA gate access and ensure a
-              smooth arrival. We're happy to assist with any questions about
-              visiting procedures.
+              smooth arrival. We&apos;re happy to assist with any questions
+              about visiting procedures.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button

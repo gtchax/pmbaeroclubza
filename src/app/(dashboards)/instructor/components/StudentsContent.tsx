@@ -9,30 +9,18 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  Users,
   Search,
-  Filter,
-  Plus,
-  Eye,
-  Edit,
-  Star,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  Calendar,
-  Award,
-  AlertTriangle,
-  CheckCircle,
   User,
-  Mail,
-  Phone,
-  MapPin,
   Grid3X3,
   List,
   ChevronLeft,
   ChevronRight,
   MessageSquare,
-  FileText
+  Calendar,
+  Mail,
+  Award,
+  FileText,
+  Star
 } from 'lucide-react';
 
 interface Student {
@@ -55,7 +43,7 @@ interface Student {
   strongAreas: string[];
 }
 
-export function StudentsContent({ instructorData }: { instructorData: any }) {
+export function StudentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -191,7 +179,7 @@ export function StudentsContent({ instructorData }: { instructorData: any }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div>
           <h2 className="text-2xl font-bold text-white">Student Management</h2>
-          <p className="text-gray-400">Track and manage your students' progress</p>
+          <p className="text-gray-400">Track and manage your students&apos; progress</p>
         </div>
         <div className="flex space-x-3">
           <div className="flex bg-[#1a1a1a] border border-gray-600 rounded-md">

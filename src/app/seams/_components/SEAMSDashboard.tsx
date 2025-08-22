@@ -138,7 +138,7 @@ export function SEAMSDashboard() {
                     status: "Scheduled",
                     time: "2h 00m",
                   },
-                ].map((flight, index) => (
+                ].map((flight) => (
                   <div
                     key={flight.id}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -199,7 +199,7 @@ export function SEAMSDashboard() {
                     icon: BarChart3,
                     color: "bg-purple-100 text-purple-600",
                   },
-                ].map((action, index) => (
+                ].map((action) => (
                   <button
                     key={action.name}
                     className={`p-4 rounded-lg ${action.color} hover:scale-105 transition-transform duration-200`}

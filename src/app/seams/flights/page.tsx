@@ -22,25 +22,15 @@ import {
   Plane,
   Calendar,
   Clock,
-  MapPin,
   Users,
   Fuel,
   AlertTriangle,
   CheckCircle,
-  XCircle,
   Plus,
-  Search,
-  Filter,
   Download,
-  Upload,
   Eye,
   Edit,
   Trash2,
-  Phone,
-  Mail,
-  FileText,
-  ChevronDown,
-  ChevronUp,
   RefreshCw,
   BarChart3,
   TrendingUp,
@@ -470,26 +460,13 @@ const flightTypes: FlightType[] = [
   { value: "test", label: "Test Flight" },
 ];
 
-const lessonTypes = [
-  "Basic Flight Maneuvers",
-  "Takeoff and Landing",
-  "Navigation",
-  "Emergency Procedures",
-  "IFR Procedures",
-  "Night Flying",
-  "Cross Country Planning",
-  "Advanced Maneuvers",
-  "Solo Flight",
-  "Checkride Preparation",
-];
-
 export default function FlightOperationsPage() {
   const [flights, setFlights] = useState<Flight[]>(mockFlights);
   const [filteredFlights, setFilteredFlights] = useState<Flight[]>(mockFlights);
-  const [aircraft, setAircraft] = useState<Aircraft[]>(mockAircraft);
-  const [pilots, setPilots] = useState<Pilot[]>(mockPilots);
-  const [students, setStudents] = useState<Student[]>(mockStudents);
-  const [bookings, setBookings] = useState<FlightBooking[]>(mockBookings);
+  const [aircraft] = useState<Aircraft[]>(mockAircraft);
+  const [pilots] = useState<Pilot[]>(mockPilots);
+  const [students] = useState<Student[]>(mockStudents);
+  const [bookings] = useState<FlightBooking[]>(mockBookings);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");

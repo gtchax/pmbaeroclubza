@@ -108,7 +108,7 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleUserCreated(data: any) {
+async function handleUserCreated(data: ClerkUserData) {
   try {
     const {
       id,
@@ -122,7 +122,7 @@ async function handleUserCreated(data: any) {
 
     // Get primary email
     const primaryEmail = email_addresses?.find(
-      (email: any) => email.id === data.primary_email_address_id
+      (email: ClerkEmailAddress) => email.id === data.primary_email_address_id
     );
     const email = primaryEmail?.email_address;
 
@@ -132,7 +132,7 @@ async function handleUserCreated(data: any) {
 
     // Get primary phone
     const primaryPhone = phone_numbers?.find(
-      (phone: any) => phone.id === data.primary_phone_number_id
+      (phone: ClerkPhoneNumber) => phone.id === data.primary_phone_number_id
     );
     const phone = primaryPhone?.phone_number;
 
@@ -180,7 +180,7 @@ async function handleUserCreated(data: any) {
   }
 }
 
-async function handleUserUpdated(data: any) {
+async function handleUserUpdated(data: ClerkUserData) {
   try {
     const {
       id,
@@ -194,7 +194,7 @@ async function handleUserUpdated(data: any) {
 
     // Get primary email
     const primaryEmail = email_addresses?.find(
-      (email: any) => email.id === data.primary_email_address_id
+      (email: ClerkEmailAddress) => email.id === data.primary_email_address_id
     );
     const email = primaryEmail?.email_address;
 
@@ -204,7 +204,7 @@ async function handleUserUpdated(data: any) {
 
     // Get primary phone
     const primaryPhone = phone_numbers?.find(
-      (phone: any) => phone.id === data.primary_phone_number_id
+      (phone: ClerkPhoneNumber) => phone.id === data.primary_phone_number_id
     );
     const phone = primaryPhone?.phone_number;
 
@@ -233,7 +233,7 @@ async function handleUserUpdated(data: any) {
   }
 }
 
-async function handleUserDeleted(data: any) {
+async function handleUserDeleted(data: ClerkUserData) {
   try {
     const { id } = data;
 
@@ -248,7 +248,7 @@ async function handleUserDeleted(data: any) {
   }
 }
 
-async function handleEmailCreated(data: any) {
+async function handleEmailCreated(data: ClerkEmailData) {
   try {
     const { user_id, email_address } = data;
 
@@ -264,7 +264,7 @@ async function handleEmailCreated(data: any) {
   }
 }
 
-async function handleEmailUpdated(data: any) {
+async function handleEmailUpdated(data: ClerkEmailData) {
   try {
     const { user_id, email_address } = data;
 
@@ -280,7 +280,7 @@ async function handleEmailUpdated(data: any) {
   }
 }
 
-async function handleEmailDeleted(data: any) {
+async function handleEmailDeleted(data: ClerkEmailData) {
   try {
     const { user_id } = data;
 
@@ -292,7 +292,7 @@ async function handleEmailDeleted(data: any) {
   }
 }
 
-async function handlePhoneCreated(data: any) {
+async function handlePhoneCreated(data: ClerkPhoneData) {
   try {
     const { user_id, phone_number } = data;
 
@@ -308,7 +308,7 @@ async function handlePhoneCreated(data: any) {
   }
 }
 
-async function handlePhoneUpdated(data: any) {
+async function handlePhoneUpdated(data: ClerkPhoneData) {
   try {
     const { user_id, phone_number } = data;
 
@@ -324,7 +324,7 @@ async function handlePhoneUpdated(data: any) {
   }
 }
 
-async function handlePhoneDeleted(data: any) {
+async function handlePhoneDeleted(data: ClerkPhoneData) {
   try {
     const { user_id } = data;
 

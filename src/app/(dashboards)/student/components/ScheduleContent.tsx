@@ -1,45 +1,46 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { motion } from "framer-motion";
 import {
-  Calendar,
-  Plane,
-  Wind,
-  MapPin
-} from 'lucide-react';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Plane, Wind, MapPin } from "lucide-react";
 
-export function ScheduleContent({ dashboardData, isLoading }: { dashboardData?: any; isLoading?: boolean }) {
+export function ScheduleContent() {
   const upcomingLessons = [
     {
       id: 1,
-      date: '2024-02-20',
-      time: '09:00 - 11:00',
-      instructor: 'Captain Sarah Mitchell',
-      aircraft: 'Cessna 172 (ZS-PMB)',
-      lesson: 'Cross Country Navigation',
-      status: 'confirmed'
+      date: "2024-02-20",
+      time: "09:00 - 11:00",
+      instructor: "Captain Sarah Mitchell",
+      aircraft: "Cessna 172 (ZS-PMB)",
+      lesson: "Cross Country Navigation",
+      status: "confirmed",
     },
     {
       id: 2,
-      date: '2024-02-22',
-      time: '14:00 - 16:00',
-      instructor: 'Captain Mike Johnson',
-      aircraft: 'Cessna 152 (ZS-FLY)',
-      lesson: 'Pattern Work & Landings',
-      status: 'pending'
+      date: "2024-02-22",
+      time: "14:00 - 16:00",
+      instructor: "Captain Mike Johnson",
+      aircraft: "Cessna 152 (ZS-FLY)",
+      lesson: "Pattern Work & Landings",
+      status: "pending",
     },
     {
       id: 3,
-      date: '2024-02-25',
-      time: '10:00 - 12:00',
-      instructor: 'Captain Sarah Mitchell',
-      aircraft: 'Piper PA-28 (ZS-AVN)',
-      lesson: 'Emergency Procedures',
-      status: 'confirmed'
-    }
+      date: "2024-02-25",
+      time: "10:00 - 12:00",
+      instructor: "Captain Sarah Mitchell",
+      aircraft: "Piper PA-28 (ZS-AVN)",
+      lesson: "Emergency Procedures",
+      status: "confirmed",
+    },
   ];
 
   return (
@@ -67,23 +68,38 @@ export function ScheduleContent({ dashboardData, isLoading }: { dashboardData?: 
         <CardContent>
           <div className="space-y-4">
             {upcomingLessons.map((lesson) => (
-              <div key={lesson.id} className="p-4 bg-[#1a1a1a] rounded-lg border border-gray-700">
+              <div
+                key={lesson.id}
+                className="p-4 bg-[#1a1a1a] rounded-lg border border-gray-700"
+              >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-[#f6d57f] rounded-lg flex items-center justify-center">
                       <Plane className="w-6 h-6 text-[#262626]" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-white">{lesson.lesson}</h3>
-                      <p className="text-sm text-gray-400">{lesson.date} • {lesson.time}</p>
+                      <h3 className="font-medium text-white">
+                        {lesson.lesson}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {lesson.date} • {lesson.time}
+                      </p>
                     </div>
                   </div>
-                  <Badge variant={lesson.status === 'confirmed' ? 'default' : 'outline'}
-                         className={lesson.status === 'confirmed' ? 'bg-green-600' : 'border-yellow-500 text-yellow-500'}>
-                    {lesson.status === 'confirmed' ? 'Confirmed' : 'Pending'}
+                  <Badge
+                    variant={
+                      lesson.status === "confirmed" ? "default" : "outline"
+                    }
+                    className={
+                      lesson.status === "confirmed"
+                        ? "bg-green-600"
+                        : "border-yellow-500 text-yellow-500"
+                    }
+                  >
+                    {lesson.status === "confirmed" ? "Confirmed" : "Pending"}
                   </Badge>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-400">Instructor:</span>
@@ -96,10 +112,18 @@ export function ScheduleContent({ dashboardData, isLoading }: { dashboardData?: 
                 </div>
 
                 <div className="flex space-x-2 mt-4">
-                  <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                  >
                     Reschedule
                   </Button>
-                  <Button size="sm" variant="outline" className="border-red-600 text-red-400 hover:bg-red-900">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-red-600 text-red-400 hover:bg-red-900"
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -112,26 +136,55 @@ export function ScheduleContent({ dashboardData, isLoading }: { dashboardData?: 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-[#262626] border-[#f6d57f]">
           <CardHeader>
-            <CardTitle className="text-white">Instructor Availability</CardTitle>
+            <CardTitle className="text-white">
+              Instructor Availability
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {[
-                { name: 'Captain Sarah Mitchell', availability: 'Available Today', status: 'available' },
-                { name: 'Captain Mike Johnson', availability: 'Next Available: Tomorrow', status: 'busy' },
-                { name: 'Captain Lisa Brown', availability: 'Available This Week', status: 'available' }
+                {
+                  name: "Captain Sarah Mitchell",
+                  availability: "Available Today",
+                  status: "available",
+                },
+                {
+                  name: "Captain Mike Johnson",
+                  availability: "Next Available: Tomorrow",
+                  status: "busy",
+                },
+                {
+                  name: "Captain Lisa Brown",
+                  availability: "Available This Week",
+                  status: "available",
+                },
               ].map((instructor, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      instructor.status === 'available' ? 'bg-green-500' : 'bg-yellow-500'
-                    }`} />
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        instructor.status === "available"
+                          ? "bg-green-500"
+                          : "bg-yellow-500"
+                      }`}
+                    />
                     <div>
-                      <p className="text-sm font-medium text-white">{instructor.name}</p>
-                      <p className="text-xs text-gray-400">{instructor.availability}</p>
+                      <p className="text-sm font-medium text-white">
+                        {instructor.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {instructor.availability}
+                      </p>
                     </div>
                   </div>
-                  <Button size="sm" variant="outline" className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626]">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626]"
+                  >
                     Book
                   </Button>
                 </div>
@@ -152,7 +205,7 @@ export function ScheduleContent({ dashboardData, isLoading }: { dashboardData?: 
                 Perfect conditions for flight training
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="flex items-center space-x-2">
                 <Wind className="w-4 h-4 text-[#f6d57f]" />

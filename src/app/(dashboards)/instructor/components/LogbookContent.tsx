@@ -19,8 +19,6 @@ import {
   Plus,
   Edit,
   Eye,
-  Filter,
-  TrendingUp,
   Award
 } from 'lucide-react';
 
@@ -54,7 +52,7 @@ interface LogbookEntry {
   status: 'completed' | 'pending' | 'cancelled';
 }
 
-export function LogbookContent({ instructorData }: { instructorData: any }) {
+export function LogbookContent() {
   const [selectedEntry, setSelectedEntry] = useState<LogbookEntry | null>(null);
   const [filterPeriod, setFilterPeriod] = useState('month');
   const [searchTerm, setSearchTerm] = useState('');

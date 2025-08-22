@@ -13,8 +13,6 @@ import {
   Users,
   Award,
   Calendar,
-  Clock,
-  MapPin,
   Phone,
   Mail,
   ExternalLink,

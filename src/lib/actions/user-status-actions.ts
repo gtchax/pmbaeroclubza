@@ -65,7 +65,7 @@ export async function updateUserApprovalStatus(
   rejectionReason?: string
 ) {
   try {
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       approvalStatus: status,
       updatedAt: new Date(),
     }

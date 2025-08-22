@@ -77,7 +77,7 @@ export function useUpdateInstructorProfile() {
       instructorId: string
       data: Parameters<typeof updateInstructorProfile>[1]
     }) => updateInstructorProfile(instructorId, data),
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['instructor-profile'] })
       queryClient.invalidateQueries({ queryKey: ['instructor-dashboard'] })
     },

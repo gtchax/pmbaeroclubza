@@ -1,56 +1,56 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
-  Plane,
-  BookOpen,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
   Calendar,
-  Clock,
-  Trophy,
-  AlertCircle,
   CheckCircle,
-  User,
-  MapPin,
-  Fuel,
-  Wind,
-  TrendingUp,
-  Star,
-  FileText,
   Settings,
   Bell,
-  Target,
-  BarChart3,
   GraduationCap,
-  Loader2
-} from 'lucide-react';
+  AlertCircle,
+  Loader2,
+  Target,
+  User,
+  Clock,
+} from "lucide-react";
 
 // Import component modules
-import { TrainingContent } from './components/TrainingContent';
-import { ScheduleContent } from './components/ScheduleContent';
-import { LogbookContent } from './components/LogbookContent';
-import { AircraftContent } from './components/AircraftContent';
-import { ResourcesContent } from './components/ResourcesContent';
+import { TrainingContent } from "./components/TrainingContent";
+import { ScheduleContent } from "./components/ScheduleContent";
+import { LogbookContent } from "./components/LogbookContent";
+import { AircraftContent } from "./components/AircraftContent";
+import { ResourcesContent } from "./components/ResourcesContent";
 
 // Import hooks
-import { useStudentDashboard } from '@/lib/hooks/use-student-data';
-import { useCurrentUser } from '@/lib/hooks/use-user-data';
+import { useStudentDashboard } from "@/lib/hooks/use-student-data";
+import { useCurrentUser } from "@/lib/hooks/use-user-data";
 
 export default function StudentDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
-  
+  const [activeTab, setActiveTab] = useState("overview");
+
   // For now, using a mock user ID - in real app this would come from auth
-  const mockUserId = 'user_123';
-  
+  const mockUserId = "user_123";
+
   // Fetch real data using React Query hooks
-  const { data: currentUser, isLoading: userLoading } = useCurrentUser(mockUserId);
-  const { data: dashboardData, isLoading: dashboardLoading, error } = useStudentDashboard(mockUserId);
+  const { isLoading: userLoading } = useCurrentUser(mockUserId);
+  const {
+    data: dashboardData,
+    isLoading: dashboardLoading,
+    error,
+  } = useStudentDashboard(mockUserId);
 
   const isLoading = userLoading || dashboardLoading;
 
@@ -69,51 +69,85 @@ export default function StudentDashboard() {
               <GraduationCap className="w-8 h-8 text-[#262626]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Student Dashboard</h1>
+              <h1 className="text-3xl font-bold text-white">
+                Student Dashboard
+              </h1>
               {isLoading ? (
                 <Skeleton className="h-5 w-48 mt-1" />
               ) : (
                 <p className="text-gray-300">
-                  Welcome back, {dashboardData?.profile?.user?.firstName} {dashboardData?.profile?.user?.lastName}
+                  Welcome back, {dashboardData?.profile?.user?.firstName}{" "}
+                  {dashboardData?.profile?.user?.lastName}
                 </p>
               )}
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800"
+            >
               <Bell className="w-4 h-4 mr-2" />
               Notifications
-              {dashboardData?.notifications && dashboardData.notifications.length > 0 && (
-                <Badge className="ml-2 bg-red-500 text-white text-xs">
-                  {dashboardData.notifications.length}
-                </Badge>
-              )}
+              {dashboardData?.notifications &&
+                dashboardData.notifications.length > 0 && (
+                  <Badge className="ml-2 bg-red-500 text-white text-xs">
+                    {dashboardData.notifications.length}
+                  </Badge>
+                )}
             </Button>
-            <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800"
+            >
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
           </div>
         </motion.div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-6 bg-[#262626] border-[#f6d57f]">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="overview"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Overview
             </TabsTrigger>
-            <TabsTrigger value="training" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="training"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Training
             </TabsTrigger>
-            <TabsTrigger value="schedule" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="schedule"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Schedule
             </TabsTrigger>
-            <TabsTrigger value="logbook" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="logbook"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Logbook
             </TabsTrigger>
-            <TabsTrigger value="aircraft" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="aircraft"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Aircraft
             </TabsTrigger>
-            <TabsTrigger value="resources" className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]">
+            <TabsTrigger
+              value="resources"
+              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626]"
+            >
               Resources
             </TabsTrigger>
           </TabsList>
@@ -134,28 +168,39 @@ export default function StudentDashboard() {
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-2 text-red-400">
                     <AlertCircle className="w-5 h-5" />
-                    <span>Failed to load dashboard data. Please try again.</span>
+                    <span>
+                      Failed to load dashboard data. Please try again.
+                    </span>
                   </div>
                 </CardContent>
               </Card>
             ) : (
-              <OverviewContent dashboardData={dashboardData} />
+              <OverviewContent dashboardData={dashboardData ?? {}} />
             )}
           </TabsContent>
 
           {/* Training Progress Tab */}
           <TabsContent value="training" className="space-y-6">
-            <TrainingContent dashboardData={dashboardData} isLoading={isLoading} />
+            <TrainingContent
+              dashboardData={dashboardData}
+              isLoading={isLoading}
+            />
           </TabsContent>
 
           {/* Schedule Tab */}
           <TabsContent value="schedule" className="space-y-6">
-            <ScheduleContent dashboardData={dashboardData} isLoading={isLoading} />
+            <ScheduleContent
+              dashboardData={dashboardData}
+              isLoading={isLoading}
+            />
           </TabsContent>
 
           {/* Logbook Tab */}
           <TabsContent value="logbook" className="space-y-6">
-            <LogbookContent dashboardData={dashboardData} isLoading={isLoading} />
+            <LogbookContent
+              dashboardData={dashboardData}
+              isLoading={isLoading}
+            />
           </TabsContent>
 
           {/* Aircraft Tab */}
@@ -173,7 +218,11 @@ export default function StudentDashboard() {
   );
 }
 
-function OverviewContent({ dashboardData }: { dashboardData: any }) {
+function OverviewContent({
+  dashboardData,
+}: {
+  dashboardData: Record<string, unknown>;
+}) {
   if (!dashboardData?.profile) {
     return (
       <Card className="bg-[#262626] border-gray-600">
@@ -205,7 +254,9 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
               Training Progress
             </CardTitle>
             <CardDescription className="text-gray-300">
-              {studentProfile.enrollments?.[0]?.course?.name || 'Training Program'} - Progress Tracking
+              {studentProfile.enrollments?.[0]?.course?.name ||
+                "Training Program"}{" "}
+              - Progress Tracking
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -216,14 +267,18 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
               </div>
               <Progress value={85} className="h-3" />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 mt-6">
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
-                <div className="text-2xl font-bold text-[#f6d57f]">{studentProfile.totalFlightHours || 0}</div>
+                <div className="text-2xl font-bold text-[#f6d57f]">
+                  {studentProfile.totalFlightHours || 0}
+                </div>
                 <div className="text-sm text-gray-400">Total Hours</div>
               </div>
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
-                <div className="text-2xl font-bold text-[#f6d57f]">{studentProfile.soloHours || 0}</div>
+                <div className="text-2xl font-bold text-[#f6d57f]">
+                  {studentProfile.soloHours || 0}
+                </div>
                 <div className="text-sm text-gray-400">Solo Hours</div>
               </div>
             </div>
@@ -231,7 +286,10 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-300">Next Milestone</span>
-                <Badge variant="outline" className="border-[#f6d57f] text-[#f6d57f]">
+                <Badge
+                  variant="outline"
+                  className="border-[#f6d57f] text-[#f6d57f]"
+                >
                   Next Milestone
                 </Badge>
               </div>
@@ -251,18 +309,27 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
               <div className="w-20 h-20 bg-[#f6d57f] rounded-full flex items-center justify-center mx-auto mb-4">
                 <User className="w-10 h-10 text-[#262626]" />
               </div>
-              <h3 className="font-semibold text-white">{user.firstName} {user.lastName}</h3>
-              <p className="text-sm text-gray-400">{studentProfile.studentNumber}</p>
+              <h3 className="font-semibold text-white">
+                {user.firstName} {user.lastName}
+              </h3>
+              <p className="text-sm text-gray-400">
+                {studentProfile.studentNumber}
+              </p>
             </div>
-            
+
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-400">Instructor:</span>
-                <span className="text-white">{studentProfile.enrollments?.[0]?.instructor?.user?.firstName} {studentProfile.enrollments?.[0]?.instructor?.user?.lastName}</span>
+                <span className="text-white">
+                  {studentProfile.enrollments?.[0]?.instructor?.user?.firstName}{" "}
+                  {studentProfile.enrollments?.[0]?.instructor?.user?.lastName}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Enrolled:</span>
-                <span className="text-white">{new Date(studentProfile.createdAt).toLocaleDateString()}</span>
+                <span className="text-white">
+                  {new Date(studentProfile.createdAt).toLocaleDateString()}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">License Type:</span>
@@ -276,10 +343,25 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: 'Cross Country', value: studentProfile.crossCountryHours || 0, icon: MapPin, color: 'blue' },
-          { label: 'Night Hours', value: studentProfile.nightHours || 0, icon: Clock, color: 'purple' },
-          { label: 'Instrument', value: studentProfile.instrumentHours || 0, icon: Plane, color: 'green' },
-          { label: 'Achievements', value: '12', icon: Trophy, color: 'yellow' }
+          {
+            label: "Cross Country",
+            value: studentProfile.crossCountryHours || 0,
+            icon: MapPin,
+            color: "blue",
+          },
+          {
+            label: "Night Hours",
+            value: studentProfile.nightHours || 0,
+            icon: Clock,
+            color: "purple",
+          },
+          {
+            label: "Instrument",
+            value: studentProfile.instrumentHours || 0,
+            icon: Plane,
+            color: "green",
+          },
+          { label: "Achievements", value: "12", icon: Trophy, color: "yellow" },
         ].map((stat, index) => (
           <Card key={index} className="bg-[#262626] border-gray-600">
             <CardContent className="pt-6">
@@ -309,12 +391,31 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
           <CardContent>
             <div className="space-y-3">
               {[
-                { activity: 'Completed Pattern Work lesson', time: '2 hours ago', icon: CheckCircle },
-                { activity: 'Scheduled next lesson', time: '1 day ago', icon: Calendar },
-                { activity: 'Updated logbook entry', time: '2 days ago', icon: FileText },
-                { activity: 'Achieved 40 flight hours', time: '3 days ago', icon: Trophy }
+                {
+                  activity: "Completed Pattern Work lesson",
+                  time: "2 hours ago",
+                  icon: CheckCircle,
+                },
+                {
+                  activity: "Scheduled next lesson",
+                  time: "1 day ago",
+                  icon: Calendar,
+                },
+                {
+                  activity: "Updated logbook entry",
+                  time: "2 days ago",
+                  icon: FileText,
+                },
+                {
+                  activity: "Achieved 40 flight hours",
+                  time: "3 days ago",
+                  icon: Trophy,
+                },
               ].map((item, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-[#1a1a1a] rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 p-3 bg-[#1a1a1a] rounded-lg"
+                >
                   <item.icon className="w-4 h-4 text-[#f6d57f]" />
                   <div className="flex-1">
                     <p className="text-sm text-white">{item.activity}</p>
@@ -336,18 +437,40 @@ function OverviewContent({ dashboardData }: { dashboardData: any }) {
           <CardContent>
             <div className="space-y-3">
               {[
-                { lesson: 'Cross Country Navigation', date: 'Feb 20', time: '09:00', instructor: 'Capt. Mitchell' },
-                { lesson: 'Pattern Work', date: 'Feb 22', time: '14:00', instructor: 'Capt. Johnson' },
-                { lesson: 'Emergency Procedures', date: 'Feb 25', time: '10:00', instructor: 'Capt. Mitchell' }
+                {
+                  lesson: "Cross Country Navigation",
+                  date: "Feb 20",
+                  time: "09:00",
+                  instructor: "Capt. Mitchell",
+                },
+                {
+                  lesson: "Pattern Work",
+                  date: "Feb 22",
+                  time: "14:00",
+                  instructor: "Capt. Johnson",
+                },
+                {
+                  lesson: "Emergency Procedures",
+                  date: "Feb 25",
+                  time: "10:00",
+                  instructor: "Capt. Mitchell",
+                },
               ].map((lesson, index) => (
                 <div key={index} className="p-3 bg-[#1a1a1a] rounded-lg">
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-sm font-medium text-white">{lesson.lesson}</h4>
-                    <Badge variant="outline" className="border-[#f6d57f] text-[#f6d57f] text-xs">
+                    <h4 className="text-sm font-medium text-white">
+                      {lesson.lesson}
+                    </h4>
+                    <Badge
+                      variant="outline"
+                      className="border-[#f6d57f] text-[#f6d57f] text-xs"
+                    >
                       {lesson.date}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-400">{lesson.time} • {lesson.instructor}</p>
+                  <p className="text-xs text-gray-400">
+                    {lesson.time} • {lesson.instructor}
+                  </p>
                 </div>
               ))}
             </div>

@@ -22,7 +22,6 @@ import {
   Shield,
   Plane,
   Calculator,
-  Award,
   AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";

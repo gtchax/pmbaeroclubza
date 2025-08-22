@@ -1,9 +1,11 @@
-'use server'
+"use server";
 
-import { prisma } from '@/lib/prisma'
-import { StudentDashboardData, StudentWithDetails } from '@/lib/types'
+import { prisma } from "@/lib/prisma";
+import { StudentDashboardData, StudentWithDetails } from "@/lib/types";
 
-export async function getStudentProfile(userId: string): Promise<StudentWithDetails | null> {
+export async function getStudentProfile(
+  userId: string
+): Promise<StudentWithDetails | null> {
   try {
     const student = await prisma.student.findUnique({
       where: { userId },
@@ -41,23 +43,25 @@ export async function getStudentProfile(userId: string): Promise<StudentWithDeta
             instructor: true,
           },
           orderBy: {
-            date: 'desc',
+            date: "desc",
           },
         },
       },
-    })
+    });
 
-    return student
+    return student;
   } catch (error) {
-    console.error('Error fetching student profile:', error)
-    throw new Error('Failed to fetch student profile')
+    console.error("Error fetching student profile:", error);
+    throw new Error("Failed to fetch student profile");
   }
 }
 
-export async function getStudentDashboardData(userId: string): Promise<StudentDashboardData | null> {
+export async function getStudentDashboardData(
+  userId: string
+): Promise<StudentDashboardData | null> {
   try {
-    const student = await getStudentProfile(userId)
-    if (!student) return null
+    const student = await getStudentProfile(userId);
+    if (!student) return null;
 
     const [upcomingBookings, notifications] = await Promise.all([
       prisma.booking.findMany({
@@ -67,7 +71,7 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
             gte: new Date(),
           },
           status: {
-            in: ['PENDING', 'CONFIRMED'],
+            in: ["PENDING", "CONFIRMED"],
           },
         },
         include: {
@@ -76,7 +80,7 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           scheduleSlot: true,
         },
         orderBy: {
-          date: 'asc',
+          date: "asc",
         },
         take: 10,
       }),
@@ -86,16 +90,16 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           isRead: false,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         take: 10,
       }),
-    ])
+    ]);
 
     const currentEnrollments = await prisma.enrollment.findMany({
       where: {
         studentId: student.id,
-        status: 'ACTIVE',
+        status: "ACTIVE",
       },
       include: {
         course: true,
@@ -111,9 +115,9 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           },
         },
       },
-    })
+    });
 
-    const recentFlightLogs = student.flightLogs.slice(0, 10)
+    const recentFlightLogs = student.flightLogs.slice(0, 10);
 
     return {
       profile: student,
@@ -121,10 +125,10 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
       recentFlightLogs,
       currentEnrollments,
       notifications,
-    }
+    };
   } catch (error) {
-    console.error('Error fetching student dashboard data:', error)
-    throw new Error('Failed to fetch student dashboard data')
+    console.error("Error fetching student dashboard data:", error);
+    throw new Error("Failed to fetch student dashboard data");
   }
 }
 
@@ -139,12 +143,12 @@ export async function getStudentFlightHours(studentId: string) {
         instrumentHours: true,
         nightHours: true,
       },
-    })
+    });
 
-    return student
+    return student;
   } catch (error) {
-    console.error('Error fetching student flight hours:', error)
-    throw new Error('Failed to fetch student flight hours')
+    console.error("Error fetching student flight hours:", error);
+    throw new Error("Failed to fetch student flight hours");
   }
 }
 
@@ -166,27 +170,27 @@ export async function getStudentProgress(studentId: string) {
         },
       },
       orderBy: {
-        updatedAt: 'desc',
+        updatedAt: "desc",
       },
-    })
+    });
 
-    return progressRecords
+    return progressRecords;
   } catch (error) {
-    console.error('Error fetching student progress:', error)
-    throw new Error('Failed to fetch student progress')
+    console.error("Error fetching student progress:", error);
+    throw new Error("Failed to fetch student progress");
   }
 }
 
 export async function updateStudentProfile(
   studentId: string,
   data: {
-    address?: string
-    emergencyContact?: any
-    medicalCert?: string
-    medicalExpiry?: Date
-    licenseNumber?: string
-    licenseType?: string
-    licenseExpiry?: Date
+    address?: string;
+    emergencyContact?: Record<string, unknown>;
+    medicalCert?: string;
+    medicalExpiry?: Date;
+    licenseNumber?: string;
+    licenseType?: string;
+    licenseExpiry?: Date;
   }
 ) {
   try {
@@ -196,11 +200,11 @@ export async function updateStudentProfile(
       include: {
         user: true,
       },
-    })
+    });
 
-    return student
+    return student;
   } catch (error) {
-    console.error('Error updating student profile:', error)
-    throw new Error('Failed to update student profile')
+    console.error("Error updating student profile:", error);
+    throw new Error("Failed to update student profile");
   }
 }

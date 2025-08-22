@@ -6,15 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   BookOpen,
   GraduationCap,
   Target,
   CheckCircle,
-  Clock,
   User,
   FileText,
   Plus,
@@ -23,7 +19,7 @@ import {
   Download,
   Upload,
   Star,
-  Award,
+  
   AlertCircle
 } from 'lucide-react';
 
@@ -64,7 +60,6 @@ interface CurriculumModule {
 export function CurriculumContent() {
   const [selectedModule, setSelectedModule] = useState<CurriculumModule | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<LessonPlan | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
 
   // Mock curriculum data
   const curriculumModules: CurriculumModule[] = [

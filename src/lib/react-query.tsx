@@ -1,9 +1,13 @@
-'use client'
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
-export function ReactQueryProvider({ children }: { children: React.ReactNode }) {
+export function ReactQueryProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -11,12 +15,19 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
           queries: {
             staleTime: 5 * 60 * 1000, // 5 minutes
             gcTime: 10 * 60 * 1000, // 10 minutes
-            retry: (failureCount, error: any) => {
+            retry: (failureCount, error: unknown) => {
               // Don't retry on 4xx errors
-              if (error?.status >= 400 && error?.status < 500) {
-                return false
+              if (
+                error &&
+                typeof error === "object" &&
+                "status" in error &&
+                typeof (error as { status: number }).status === "number" &&
+                (error as { status: number }).status >= 400 &&
+                (error as { status: number }).status < 500
+              ) {
+                return false;
               }
-              return failureCount < 3
+              return failureCount < 3;
             },
             refetchOnWindowFocus: false,
           },
@@ -25,11 +36,9 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
           },
         },
       })
-  )
+  );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 }

@@ -165,7 +165,7 @@ export default function ContactPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {quickActions.map((action, index) => (
+            {quickActions.map((action) => (
               <div key={action.title}>
                 <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <CardContent className="pt-6 text-center">

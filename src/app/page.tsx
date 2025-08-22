@@ -2,27 +2,7 @@
 import { useState } from "react";
 import Hero from "@/components/layout/Hero";
 import { TransparentNavigation } from "@/components/layout/TransparentNavigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Plane,
-  Users,
-  Award,
-  MapPin,
-  Phone,
-  Mail,
-  Calendar,
-  Star,
-  Shield,
-  Zap,
-} from "lucide-react";
+
 import { About } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
 import { FlightTraining } from "@/components/sections/flight-training";

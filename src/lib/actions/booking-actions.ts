@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { CreateBookingData, BookingWithDetails } from '@/lib/types'
-import { BookingStatus, BookingType } from '@prisma/client'
+import { CreateBookingData } from '@/lib/types'
+import { BookingStatus } from '@prisma/client'
 
 export async function createBooking(data: CreateBookingData & { studentId: string }) {
   try {

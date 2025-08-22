@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 export default function PendingApprovalPage() {
-  const [userStatus, setUserStatus] = useState({
+  const [userStatus] = useState({
     approvalStatus: "PENDING", // PENDING, APPROVED, REJECTED, UNDER_REVIEW
     paymentStatus: "UNPAID", // UNPAID, PARTIAL, PAID
     documentsSubmitted: true,
@@ -268,8 +268,8 @@ export default function PendingApprovalPage() {
                 <h3 className="text-white font-semibold mb-2">What happens next?</h3>
                 <ul className="text-gray-300 space-y-1 text-sm">
                   <li>• Our admin team will review your application within 2-3 business days</li>
-                  <li>• You'll receive an email notification once your payment is processed</li>
-                  <li>• Upon approval, you'll gain access to your student dashboard</li>
+                  <li>• You&apos;ll receive an email notification once your payment is processed</li>
+                  <li>• Upon approval, you&apos;ll gain access to your student dashboard</li>
                   <li>• You can then book lessons and access all club resources</li>
                 </ul>
               </div>

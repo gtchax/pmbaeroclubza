@@ -48,13 +48,22 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
         }
 
         return true;
-      } catch (err: any) {
-        if (err.errors?.[0]?.code === "form_identifier_exists") {
+      } catch (err: unknown) {
+        if (
+          err &&
+          typeof err === "object" &&
+          "errors" in err &&
+          Array.isArray((err as { errors: Array<{ code: string }> }).errors) &&
+          (err as { errors: Array<{ code: string }> }).errors[0]?.code === "form_identifier_exists"
+        ) {
           setEmailExists(true);
           return false;
         }
         setError(
-          err.message || "An error occurred while checking email availability"
+          (err instanceof Error
+            ? err.message
+            : "An error occurred while checking email availability") ||
+            "An error occurred while checking email availability"
         );
         return false;
       }
@@ -122,12 +131,23 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
         }
 
         return false;
-      } catch (err: any) {
-        if (err.errors?.[0]?.code === "form_identifier_exists") {
+      } catch (err: unknown) {
+        if (
+          err &&
+          typeof err === "object" &&
+          "errors" in err &&
+          Array.isArray((err as { errors: Array<{ code: string }> }).errors) &&
+          (err as { errors: Array<{ code: string }> }).errors[0]?.code === "form_identifier_exists"
+        ) {
           setEmailExists(true);
           setError("An account with this email already exists");
         } else {
-          setError(err.message || "An error occurred during signup");
+          setError(
+            (err instanceof Error
+              ? err.message
+              : "An error occurred during signup") ||
+              "An error occurred during signup"
+          );
         }
         return false;
       } finally {
@@ -143,8 +163,13 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
     try {
       await signUp.verifications.emailAddress.prepareEmailAddressVerification();
       return true;
-    } catch (err: any) {
-      setError(err.message || "Failed to resend verification email");
+    } catch (err: unknown) {
+      setError(
+        (err instanceof Error
+          ? err.message
+          : "Failed to resend verification email") ||
+          "Failed to resend verification email"
+      );
       return false;
     }
   }, [isLoaded, signUp]);
@@ -167,8 +192,11 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
         }
 
         return false;
-      } catch (err: any) {
-        setError(err.message || "Invalid verification code");
+      } catch (err: unknown) {
+        setError(
+          (err instanceof Error ? err.message : "Invalid verification code") ||
+            "Invalid verification code"
+        );
         return false;
       }
     },

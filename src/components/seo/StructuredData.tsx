@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 interface StructuredDataProps {
   type: "organization" | "course" | "service" | "article" | "breadcrumb" | "faq";
-  data: any;
+  data: Record<string, unknown>;
   children?: ReactNode;
 }
 

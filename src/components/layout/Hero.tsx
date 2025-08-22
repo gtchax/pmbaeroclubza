@@ -9,7 +9,6 @@ import {
   Phone, 
   Mail, 
   Award, 
-  Plane,
   ChevronDown 
 } from "lucide-react";
 
@@ -18,7 +17,7 @@ interface HeroProps {
 }
 
 export default function Hero({ onScrollChange }: HeroProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {

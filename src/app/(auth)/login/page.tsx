@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, EyeOff, Plane, User, Shield } from 'lucide-react';
+import { Eye, EyeOff, Plane, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -145,7 +145,11 @@ function LoginForm({
   onBack
 }: {
   userType: 'private' | 'commercial' | null;
-  formData: any;
+  formData: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  };
   showPassword: boolean;
   isLoading: boolean;
   onSubmit: (e: React.FormEvent) => void;
@@ -217,8 +221,8 @@ function LoginForm({
                 checked={formData.rememberMe}
                 onCheckedChange={(checked) => 
                   onInputChange({ 
-                    target: { name: 'rememberMe', type: 'checkbox', checked } 
-                  } as any)
+                    target: { name: 'rememberMe', type: 'checkbox', checked: checked as boolean } 
+                  } as React.ChangeEvent<HTMLInputElement>)
                 }
                 className="border-gray-600 data-[state=checked]:bg-[#f6d57f] data-[state=checked]:border-[#f6d57f]"
               />
@@ -290,7 +294,7 @@ function LoginForm({
           </Button>
           <div className="text-center">
             <p className="text-sm text-gray-400">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link 
                 href="/register" 
                 className="text-[#f6d57f] hover:text-yellow-400 transition-colors font-medium"

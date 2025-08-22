@@ -10,9 +10,7 @@ import {
   Video,
   Download,
   ExternalLink,
-  Star,
-  Clock,
-  CheckCircle
+  Star
 } from 'lucide-react';
 
 export function ResourcesContent() {

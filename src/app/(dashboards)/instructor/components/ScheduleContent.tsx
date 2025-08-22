@@ -24,7 +24,6 @@ interface Lesson {
 }
 
 export function ScheduleContent() {
-  const [selectedWeek, setSelectedWeek] = useState('current');
   const [viewMode, setViewMode] = useState('week');
 
   // Mock lesson data

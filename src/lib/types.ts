@@ -3,9 +3,7 @@ import {
   Course, Module, Lesson, Enrollment, ProgressRecord, 
   Evaluation, SkillAssessment, Booking, ScheduleSlot,
   Notification, Message, MaintenanceRecord, FuelRecord,
-  FlightType, LessonType, EnrollmentStatus, ProgressStatus,
-  EvaluationType, BookingType, BookingStatus, NotificationType,
-  MessageType, MaintenanceType, UserApprovalStatus, UserPaymentStatus
+  FlightType, BookingStatus, MaintenanceType, UserApprovalStatus, UserPaymentStatus
 } from '@prisma/client'
 
 // Extended types with relations
@@ -16,7 +14,7 @@ export type UserWithProfile = User & {
   roles: Array<{
     role: {
       name: string
-      permissions: any
+      permissions: Record<string, unknown>
     }
   }>
 }
@@ -64,35 +62,6 @@ export type AircraftWithDetails = Aircraft & {
   }>
 }
 
-export type CourseWithModules = Course & {
-  modules: Array<Module & {
-    lessons: Lesson[]
-  }>
-  enrollments: Array<Enrollment & {
-    student: Student & { user: User }
-    instructor: Instructor & { user: User }
-  }>
-}
-
-export type EvaluationWithDetails = Evaluation & {
-  student: Student & { user: User }
-  instructor: Instructor & { user: User }
-  skillAssessments: SkillAssessment[]
-}
-
-export type BookingWithDetails = Booking & {
-  student: User
-  aircraft: Aircraft
-  scheduleSlot?: ScheduleSlot | null
-}
-
-export type FlightLogWithDetails = FlightLog & {
-  aircraft: Aircraft
-  pilot: User
-  instructor?: User | null
-  student?: Student & { user: User } | null
-}
-
 // Dashboard specific types
 export interface DashboardStats {
   totalStudents: number
@@ -107,8 +76,17 @@ export interface DashboardStats {
 
 export interface StudentDashboardData {
   profile: StudentWithDetails
-  upcomingBookings: BookingWithDetails[]
-  recentFlightLogs: FlightLogWithDetails[]
+  upcomingBookings: Array<Booking & {
+    student: User
+    aircraft: Aircraft
+    scheduleSlot?: ScheduleSlot | null
+  }>
+  recentFlightLogs: Array<FlightLog & {
+    aircraft: Aircraft
+    pilot: User
+    instructor?: User | null
+    student?: Student & { user: User } | null
+  }>
   currentEnrollments: Array<Enrollment & {
     course: Course
     instructor: Instructor & { user: User }
@@ -119,21 +97,38 @@ export interface StudentDashboardData {
 
 export interface InstructorDashboardData {
   profile: InstructorWithDetails
-  upcomingBookings: BookingWithDetails[]
-  recentFlightLogs: FlightLogWithDetails[]
+  upcomingBookings: Array<Booking & {
+    student: User
+    aircraft: Aircraft
+    scheduleSlot?: ScheduleSlot | null
+  }>
+  recentFlightLogs: Array<FlightLog & {
+    aircraft: Aircraft
+    pilot: User
+    instructor?: User | null
+    student?: Student & { user: User } | null
+  }>
   students: Array<Student & { 
     user: User
     enrollments: Array<Enrollment & { course: Course }>
   }>
   todaySchedule: Array<ScheduleSlot & {
-    bookings: BookingWithDetails[]
+    bookings: Array<Booking & {
+      student: User
+      aircraft: Aircraft
+      scheduleSlot?: ScheduleSlot | null
+    }>
   }>
   notifications: Notification[]
 }
 
 export interface AdminDashboardData {
   stats: DashboardStats
-  recentBookings: BookingWithDetails[]
+  recentBookings: Array<Booking & {
+    student: User
+    aircraft: Aircraft
+    scheduleSlot?: ScheduleSlot | null
+  }>
   maintenanceAlerts: Array<Aircraft & {
     maintenanceRecords: MaintenanceRecord[]
   }>
@@ -146,22 +141,6 @@ export interface AdminDashboardData {
   notifications: Notification[]
 }
 
-// API Response types
-export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-}
-
-export interface PaginatedResponse<T> {
-  data: T[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
-
 // Form types
 export interface CreateBookingData {
   aircraftId: string
@@ -169,7 +148,6 @@ export interface CreateBookingData {
   date: string
   startTime: string
   endTime: string
-  type: BookingType
   purpose: string
   notes?: string
 }
@@ -204,7 +182,6 @@ export interface UpdateFlightLogData {
 
 export interface CreateEvaluationData {
   studentId: string
-  type: EvaluationType
   title: string
   description?: string
   date: string
@@ -227,7 +204,5 @@ export type {
   Course, Module, Lesson, Enrollment, ProgressRecord,
   Evaluation, SkillAssessment, Booking, ScheduleSlot,
   Notification, Message, MaintenanceRecord, FuelRecord,
-  FlightType, LessonType, EnrollmentStatus, ProgressStatus,
-  EvaluationType, BookingType, BookingStatus, NotificationType,
-  MessageType, MaintenanceType, UserApprovalStatus, UserPaymentStatus
+  FlightType, BookingStatus, MaintenanceType, UserApprovalStatus, UserPaymentStatus
 }

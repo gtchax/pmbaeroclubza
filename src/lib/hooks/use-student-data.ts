@@ -77,7 +77,7 @@ export function useUpdateStudentProfile() {
       studentId: string
       data: Parameters<typeof updateStudentProfile>[1]
     }) => updateStudentProfile(studentId, data),
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['student-profile'] })
       queryClient.invalidateQueries({ queryKey: ['student-dashboard'] })
     },

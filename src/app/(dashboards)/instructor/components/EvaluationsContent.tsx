@@ -6,14 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   ClipboardList,
   Star,
-  TrendingUp,
-  TrendingDown,
+
   User,
   Calendar,
   FileText,
@@ -54,7 +52,6 @@ interface Evaluation {
 
 export function EvaluationsContent() {
   const [selectedEvaluation, setSelectedEvaluation] = useState<Evaluation | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState(1);

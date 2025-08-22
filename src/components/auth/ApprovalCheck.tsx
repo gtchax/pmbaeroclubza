@@ -5,7 +5,6 @@ import { useEffect, useState, ReactNode } from "react";
 import {
   Loader2,
   AlertCircle,
-  CheckCircle,
   Clock,
   XCircle,
 } from "lucide-react";
@@ -22,7 +21,6 @@ import {
 interface ApprovalCheckProps {
   children: ReactNode;
   fallback?: ReactNode;
-  redirectTo?: string;
   showPendingMessage?: boolean;
 }
 
@@ -38,7 +36,6 @@ interface UserApprovalStatus {
 export default function ApprovalCheck({
   children,
   fallback,
-  redirectTo,
   showPendingMessage = true,
 }: ApprovalCheckProps) {
   const { user, isLoaded } = useUser();
@@ -161,7 +158,7 @@ export default function ApprovalCheck({
                 Account Pending Approval
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Your account is currently under review. You'll receive an email
+                Your account is currently under review. You&apos;ll receive an email
                 notification once the review is complete.
               </CardDescription>
             </CardHeader>

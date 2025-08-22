@@ -4,8 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { 
   createBooking,
   updateBookingStatus,
-  getBookingsByStudent,
-  getBookingsByInstructor,
   getAvailableAircraft
 } from '@/lib/actions/booking-actions'
 import { CreateBookingData } from '@/lib/types'

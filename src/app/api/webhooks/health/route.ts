@@ -61,23 +61,6 @@ export async function GET() {
 export async function POST() {
   // Test webhook processing
   try {
-    const testData = {
-      id: "test-user-id",
-      email_addresses: [
-        {
-          id: "test-email-id",
-          email_address: "test@example.com",
-          verification: { status: "verified" },
-        },
-      ],
-      first_name: "Test",
-      last_name: "User",
-      phone_numbers: [],
-      image_url: null,
-      public_metadata: { userType: "student" },
-      primary_email_address_id: "test-email-id",
-    };
-
     // This is just a test - don't actually create a user
     return NextResponse.json({
       status: "test-successful",

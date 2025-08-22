@@ -115,7 +115,6 @@ export default function PersonalDetailsForm({
     isLoading,
     error,
     emailExists,
-    clearError,
     clearEmailExists,
   } = useClerkSignup({ userType: userType || "private" });
 
@@ -175,7 +174,7 @@ export default function PersonalDetailsForm({
       } else {
         setEmailCheckStatus("exists");
       }
-    } catch (error: unknown) {
+    } catch {
       setEmailCheckStatus("idle");
     }
   };

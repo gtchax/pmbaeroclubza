@@ -1,20 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Plane,
   Home,
-  Search,
-  ArrowLeft,
-  MapPin,
-  Phone,
-  Mail,
 } from "lucide-react";
 
 export default function NotFound() {
@@ -41,7 +29,7 @@ export default function NotFound() {
             Page Not Found
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Looks like this page has flown off course! Don't worry, we'll help
+            Looks like this page has flown off course! Don&apos;t worry, we&apos;ll help
             you navigate back to familiar skies.
           </p>
         </div>

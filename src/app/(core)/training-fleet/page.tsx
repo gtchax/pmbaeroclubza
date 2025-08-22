@@ -27,7 +27,6 @@ import {
   Zap,
   Settings,
   Phone,
-  Clock,
   Fuel,
   Eye,
   ChevronDown,
@@ -253,7 +252,7 @@ export default function TrainingFleetPage() {
               className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8"
             >
               The Club boasts THREE training aircraft, including two modern
-              Sling 2's, and a proven C172, and specialize in foundation
+              Sling 2&apos;s, and a proven C172, and specialize in foundation
               training.
             </motion.p>
 
@@ -353,7 +352,7 @@ export default function TrainingFleetPage() {
           viewport={{ once: true }}
           className="space-y-12"
         >
-          {filteredFleet.map((aircraft, index) => (
+          {filteredFleet.map((aircraft) => (
             <motion.div key={aircraft.id} variants={itemVariants}>
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden group hover:scale-[1.02]">
                 <div className="grid grid-cols-1 lg:grid-cols-2">

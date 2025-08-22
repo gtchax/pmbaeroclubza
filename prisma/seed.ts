@@ -254,10 +254,8 @@ async function main() {
 
   // Create modules
   const modules = await Promise.all([
-    prisma.module.upsert({
-      where: { courseId_order: { courseId: course.id, order: 1 } },
-      update: {},
-      create: {
+    prisma.module.create({
+      data: {
         courseId: course.id,
         name: 'Pre-Flight Procedures',
         description: 'Learn aircraft inspection and pre-flight procedures',
@@ -266,10 +264,8 @@ async function main() {
         isRequired: true,
       },
     }),
-    prisma.module.upsert({
-      where: { courseId_order: { courseId: course.id, order: 2 } },
-      update: {},
-      create: {
+    prisma.module.create({
+      data: {
         courseId: course.id,
         name: 'Basic Flight Maneuvers',
         description: 'Master basic flight maneuvers and controls',
@@ -278,10 +274,8 @@ async function main() {
         isRequired: true,
       },
     }),
-    prisma.module.upsert({
-      where: { courseId_order: { courseId: course.id, order: 3 } },
-      update: {},
-      create: {
+    prisma.module.create({
+      data: {
         courseId: course.id,
         name: 'Navigation & Cross Country',
         description: 'Learn navigation techniques and cross-country flying',
@@ -323,10 +317,8 @@ async function main() {
   // Create enrollment
   const enrollment = await prisma.enrollment.upsert({
     where: {
-      studentId_courseId: {
-        studentId: student.id,
-        courseId: course.id,
-      },
+      studentId: student.id,
+      courseId: course.id,
     },
     update: {},
     create: {

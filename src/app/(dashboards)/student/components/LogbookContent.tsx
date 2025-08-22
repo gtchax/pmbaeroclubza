@@ -11,7 +11,7 @@ import {
   Plane
 } from 'lucide-react';
 
-export function LogbookContent({ dashboardData, isLoading }: { dashboardData?: any; isLoading?: boolean }) {
+export function LogbookContent({ dashboardData }: { dashboardData?: Record<string, unknown> }) {
   const flightEntries = [
     {
       date: '2024-02-18',

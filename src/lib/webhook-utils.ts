@@ -2,18 +2,22 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export interface ClerkEmailAddress {
+  id: string;
+  email_address: string;
+  verification: { status: string };
+}
+
+export interface ClerkPhoneNumber {
+  id: string;
+  phone_number: string;
+  verification: { status: string };
+}
+
 export interface ClerkUserData {
   id: string;
-  email_addresses: Array<{
-    id: string;
-    email_address: string;
-    verification: { status: string };
-  }>;
-  phone_numbers: Array<{
-    id: string;
-    phone_number: string;
-    verification: { status: string };
-  }>;
+  email_addresses: Array<ClerkEmailAddress>;
+  phone_numbers: Array<ClerkPhoneNumber>;
   first_name: string;
   last_name: string;
   image_url: string | null;
@@ -30,6 +34,16 @@ export interface ClerkUserData {
     registrationSource?: string;
     registrationFlow?: string;
   };
+}
+
+export interface ClerkEmailData {
+  user_id: string;
+  email_address: string;
+}
+
+export interface ClerkPhoneData {
+  user_id: string;
+  phone_number: string;
 }
 
 /**
@@ -108,7 +122,8 @@ export async function getOrCreateRole(roleName: string) {
         name: roleName,
         description: `Default ${roleName.toLowerCase()} role`,
         permissions: {},
-      });
+      },
+    });
   }
 
   return role;
@@ -257,14 +272,15 @@ export async function handleUserTypeChange(userId: string, userType: string, use
 /**
  * Validate webhook signature
  */
-export function validateWebhookSignature(
+export async function validateWebhookSignature(
   body: string,
   headers: Record<string, string>,
   secret: string
-): boolean {
+): Promise<boolean> {
   try {
-    const { Webhook } = require("svix");
-    const wh = new Webhook(secret);
+    // Dynamic import for svix to avoid require() issues
+    const svix = await import("svix");
+    const wh = new svix.Webhook(secret);
 
     wh.verify(body, {
       "svix-id": headers["svix-id"],
@@ -286,7 +302,7 @@ export function logWebhookEvent(
   eventType: string,
   userId: string,
   success: boolean,
-  error?: any
+  error?: unknown
 ) {
   const timestamp = new Date().toISOString();
   const logData = {
@@ -294,7 +310,7 @@ export function logWebhookEvent(
     eventType,
     userId,
     success,
-    error: error?.message || error,
+    error: error instanceof Error ? error.message : error,
   };
 
   if (success) {
