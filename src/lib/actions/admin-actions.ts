@@ -1,7 +1,13 @@
-'use server'
+"use server";
 
-import { prisma } from '@/lib/prisma'
-import { AdminDashboardData, DashboardStats, Instructor, Student, User } from '@/lib/types'
+import { prisma } from "@/lib/prisma";
+import {
+  AdminDashboardData,
+  DashboardStats,
+  Instructor,
+  Student,
+  User,
+} from "@/lib/types";
 // import { Instructor, Student, User } from '@prisma/client'
 
 export async function getAdminProfile(userId: string) {
@@ -11,12 +17,12 @@ export async function getAdminProfile(userId: string) {
       include: {
         user: true,
       },
-    })
+    });
 
-    return admin
+    return admin;
   } catch (error) {
-    console.error('Error fetching admin profile:', error)
-    throw new Error('Failed to fetch admin profile')
+    console.error("Error fetching admin profile:", error);
+    throw new Error("Failed to fetch admin profile");
   }
 }
 
@@ -37,7 +43,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         where: {
           enrollments: {
             some: {
-              status: 'ACTIVE',
+              status: "ACTIVE",
             },
           },
         },
@@ -61,11 +67,11 @@ export async function getDashboardStats(): Promise<DashboardStats> {
             gte: new Date(),
           },
           status: {
-            in: ['PENDING', 'CONFIRMED'],
+            in: ["PENDING", "CONFIRMED"],
           },
         },
       }),
-    ])
+    ]);
 
     return {
       totalStudents,
@@ -76,94 +82,97 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       availableAircraft,
       totalFlightHours: totalFlightHours._sum.totalTime || 0,
       upcomingBookings,
-    }
+    };
   } catch (error) {
-    console.error('Error fetching dashboard stats:', error)
-    throw new Error('Failed to fetch dashboard stats')
+    console.error("Error fetching dashboard stats:", error);
+    throw new Error("Failed to fetch dashboard stats");
   }
 }
 
-export async function getAdminDashboardData(userId: string): Promise<AdminDashboardData | null> {
+export async function getAdminDashboardData(
+  userId: string
+): Promise<AdminDashboardData | null> {
   try {
-    const admin = await getAdminProfile(userId)
-    if (!admin) return null
+    const admin = await getAdminProfile(userId);
+    if (!admin) return null;
 
-    const [stats, recentBookings, maintenanceAlerts, notifications] = await Promise.all([
-      getDashboardStats(),
-      prisma.booking.findMany({
-        include: {
-          student: true,
-          aircraft: true,
-          scheduleSlot: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 10,
-      }),
-      prisma.aircraft.findMany({
-        where: {
-          OR: [
-            {
-              nextInspection: {
-                lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    const [stats, recentBookings, maintenanceAlerts, notifications] =
+      await Promise.all([
+        getDashboardStats(),
+        prisma.booking.findMany({
+          include: {
+            student: true,
+            aircraft: true,
+            scheduleSlot: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 10,
+        }),
+        prisma.aircraft.findMany({
+          where: {
+            OR: [
+              {
+                nextInspection: {
+                  lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+                },
               },
-            },
-            {
-              insuranceExpiry: {
-                lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              {
+                insuranceExpiry: {
+                  lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                },
               },
-            },
-            {
-              registrationExpiry: {
-                lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              {
+                registrationExpiry: {
+                  lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                },
               },
-            },
-          ],
-        },
-        include: {
-          maintenanceRecords: {
-            where: {
-              isCompleted: false,
-            },
-            orderBy: {
-              startDate: 'desc',
+            ],
+          },
+          include: {
+            maintenanceRecords: {
+              where: {
+                isCompleted: false,
+              },
+              orderBy: {
+                startDate: "desc",
+              },
             },
           },
-        },
-      }),
-      prisma.notification.findMany({
-        where: {
-          userId,
-          isRead: false,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 10,
-      }),
-    ])
+        }),
+        prisma.notification.findMany({
+          where: {
+            userId,
+            isRead: false,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 10,
+        }),
+      ]);
 
     // Get expiring certifications
-    type InstructorWithUser = Instructor & { user: User }
-    type StudentWithUser = Student & { user: User }
-    
+    type InstructorWithUser = Instructor & { user: User };
+    type StudentWithUser = Student & { user: User };
+
     type InstructorCertification = {
-      type: 'instructor'
-      user: User
-      expiry: Date
-      certificationType: string
-    }
-    
+      type: "instructor";
+      user: User;
+      expiry: Date;
+      certificationType: string;
+    };
+
     type StudentCertification = {
-      type: 'student'
-      user: User
-      expiry: Date
-      certificationType: string
-    }
-    
-    type CertificationItem = InstructorCertification | StudentCertification
-    
+      type: "student";
+      user: User;
+      expiry: Date;
+      certificationType: string;
+    };
+
+    type CertificationItem = InstructorCertification | StudentCertification;
+
     const expiringCertifications = await Promise.all([
       // Instructor certifications
       prisma.instructor.findMany({
@@ -205,38 +214,44 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
           user: true,
         },
       }),
-    ])
+    ]);
 
     const formattedExpiringCertifications = [
       ...expiringCertifications[0]
         .map((instructor: InstructorWithUser) => {
-          const expiry = instructor.licenseExpiry || instructor.medicalExpiry
-          if (!expiry) return null
+          const expiry = instructor.licenseExpiry || instructor.medicalExpiry;
+          if (!expiry) return null;
           return {
-            type: 'instructor' as const,
+            type: "instructor" as const,
             user: instructor.user,
             expiry,
-            certificationType: instructor.licenseExpiry && instructor.licenseExpiry <= new Date(Date.now() + 60 * 24 * 60 * 60 * 1000) 
-              ? 'License' 
-              : 'Medical',
-          }
+            certificationType:
+              instructor.licenseExpiry &&
+              instructor.licenseExpiry <=
+                new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
+                ? "License"
+                : "Medical",
+          };
         })
         .filter((cert): cert is InstructorCertification => cert !== null),
       ...expiringCertifications[1]
         .map((student: StudentWithUser) => {
-          const expiry = student.licenseExpiry || student.medicalExpiry
-          if (!expiry) return null
+          const expiry = student.licenseExpiry || student.medicalExpiry;
+          if (!expiry) return null;
           return {
-            type: 'student' as const,
+            type: "student" as const,
             user: student.user,
             expiry,
-            certificationType: student.licenseExpiry && student.licenseExpiry <= new Date(Date.now() + 60 * 24 * 60 * 60 * 1000) 
-              ? 'License' 
-              : 'Medical',
-          }
+            certificationType:
+              student.licenseExpiry &&
+              student.licenseExpiry <=
+                new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
+                ? "License"
+                : "Medical",
+          };
         })
         .filter((cert): cert is StudentCertification => cert !== null),
-    ]
+    ];
 
     return {
       stats,
@@ -244,10 +259,10 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
       maintenanceAlerts,
       expiringCertifications: formattedExpiringCertifications,
       notifications,
-    }
+    };
   } catch (error) {
-    console.error('Error fetching admin dashboard data:', error)
-    throw new Error('Failed to fetch admin dashboard data')
+    console.error("Error fetching admin dashboard data:", error);
+    throw new Error("Failed to fetch admin dashboard data");
   }
 }
 
@@ -270,14 +285,14 @@ export async function getAllUsers() {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
-    })
+    });
 
-    return users
+    return users;
   } catch (error) {
-    console.error('Error fetching all users:', error)
-    throw new Error('Failed to fetch users')
+    console.error("Error fetching all users:", error);
+    throw new Error("Failed to fetch users");
   }
 }
 
@@ -287,19 +302,19 @@ export async function getAllAircraft() {
       include: {
         maintenanceRecords: {
           orderBy: {
-            startDate: 'desc',
+            startDate: "desc",
           },
           take: 5,
         },
         fuelRecords: {
           orderBy: {
-            date: 'desc',
+            date: "desc",
           },
           take: 5,
         },
         flightLogs: {
           orderBy: {
-            date: 'desc',
+            date: "desc",
           },
           take: 5,
           include: {
@@ -317,19 +332,19 @@ export async function getAllAircraft() {
             student: true,
           },
           orderBy: {
-            date: 'asc',
+            date: "asc",
           },
         },
       },
       orderBy: {
-        registration: 'asc',
+        registration: "asc",
       },
-    })
+    });
 
-    return aircraft
+    return aircraft;
   } catch (error) {
-    console.error('Error fetching all aircraft:', error)
-    throw new Error('Failed to fetch aircraft')
+    console.error("Error fetching all aircraft:", error);
+    throw new Error("Failed to fetch aircraft");
   }
 }
 
@@ -350,13 +365,13 @@ export async function getAllBookings() {
         },
       },
       orderBy: {
-        date: 'desc',
+        date: "desc",
       },
-    })
+    });
 
-    return bookings
+    return bookings;
   } catch (error) {
-    console.error('Error fetching all bookings:', error)
-    throw new Error('Failed to fetch bookings')
+    console.error("Error fetching all bookings:", error);
+    throw new Error("Failed to fetch bookings");
   }
 }
