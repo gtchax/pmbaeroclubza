@@ -6,24 +6,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
-// Type definitions for Clerk webhook data
-interface ClerkEmailAddress {
-  id: string;
-  email_address: string;
-  verification?: {
-    status: string;
-    strategy: string;
-  };
-}
-
-interface ClerkPhoneNumber {
-  id: string;
-  phone_number: string;
-  verification?: {
-    status: string;
-    strategy: string;
-  };
-}
+// Using official Clerk types for webhook data
 
 export async function POST(req: Request) {
   const headerPayload = await headers();
@@ -128,7 +111,7 @@ async function handleUserCreated(data: any) {
 
     // Get primary email
     const primaryEmail = email_addresses?.find(
-      (email: ClerkEmailAddress) => email.id === data.primary_email_address_id
+      (email: any) => email.id === data.primary_email_address_id
     );
     const email = primaryEmail?.email_address;
 
@@ -138,7 +121,7 @@ async function handleUserCreated(data: any) {
 
     // Get primary phone
     const primaryPhone = phone_numbers?.find(
-      (phone: ClerkPhoneNumber) => phone.id === data.primary_phone_number_id
+      (phone: any) => phone.id === data.primary_phone_number_id
     );
     const phone = primaryPhone?.phone_number;
 
@@ -200,7 +183,7 @@ async function handleUserUpdated(data: any) {
 
     // Get primary email
     const primaryEmail = email_addresses?.find(
-      (email: ClerkEmailAddress) => email.id === data.primary_email_address_id
+      (email: any) => email.id === data.primary_email_address_id
     );
     const email = primaryEmail?.email_address;
 
@@ -210,7 +193,7 @@ async function handleUserUpdated(data: any) {
 
     // Get primary phone
     const primaryPhone = phone_numbers?.find(
-      (phone: ClerkPhoneNumber) => phone.id === data.primary_phone_number_id
+      (phone: any) => phone.id === data.primary_phone_number_id
     );
     const phone = primaryPhone?.phone_number;
 

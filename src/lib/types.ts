@@ -54,7 +54,9 @@ export type StudentWithDetails = Student & {
   flightLogs: Array<
     FlightLog & {
       aircraft: Aircraft;
+      pilot: User;
       instructor?: User | null;
+      student?: (Student & { user: User }) | null;
     }
   >;
 };

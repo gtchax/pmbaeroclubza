@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -130,7 +129,7 @@ export async function getStudentDashboardData(
     return {
       profile: student,
       upcomingBookings,
-      recentFlightLogs: recentFlightLogs as any,
+      recentFlightLogs,
       currentEnrollments,
       notifications,
     };

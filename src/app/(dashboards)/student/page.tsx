@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
+import { StudentDashboardData } from "@/lib/types";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -234,8 +234,10 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
     );
   }
 
-  const studentProfile = dashboardData.profile as unknown;
-  const user = (studentProfile as any)?.user;
+  // Type assertion after runtime checks
+  const typedDashboardData = dashboardData as StudentDashboardData;
+  const studentProfile = typedDashboardData.profile;
+  const user = studentProfile.user;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -252,7 +254,7 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
               Training Progress
             </CardTitle>
             <CardDescription className="text-gray-300">
-              {(studentProfile as any)?.enrollments?.[0]?.course?.name ||
+              {studentProfile.enrollments?.[0]?.course?.name ||
                 "Training Program"}{" "}
               - Progress Tracking
             </CardDescription>
@@ -269,13 +271,13 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
             <div className="grid grid-cols-2 gap-4 mt-6">
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
                 <div className="text-2xl font-bold text-[#f6d57f]">
-                  {(studentProfile as any)?.totalFlightHours || 0}
+                  {studentProfile.totalFlightHours || 0}
                 </div>
                 <div className="text-sm text-gray-400">Total Hours</div>
               </div>
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
                 <div className="text-2xl font-bold text-[#f6d57f]">
-                  {(studentProfile as any)?.soloHours || 0}
+                  {studentProfile.soloHours || 0}
                 </div>
                 <div className="text-sm text-gray-400">Solo Hours</div>
               </div>
@@ -311,7 +313,7 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
                 {user.firstName} {user.lastName}
               </h3>
               <p className="text-sm text-gray-400">
-                {(studentProfile as any)?.studentNumber}
+                {studentProfile.studentNumber}
               </p>
             </div>
 
@@ -319,22 +321,14 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
               <div className="flex justify-between">
                 <span className="text-gray-400">Instructor:</span>
                 <span className="text-white">
-                  {
-                    (studentProfile as any)?.enrollments?.[0]?.instructor?.user
-                      ?.firstName
-                  }{" "}
-                  {
-                    (studentProfile as any)?.enrollments?.[0]?.instructor?.user
-                      ?.lastName
-                  }
+                  {studentProfile.enrollments?.[0]?.instructor?.user?.firstName}{" "}
+                  {studentProfile.enrollments?.[0]?.instructor?.user?.lastName}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Enrolled:</span>
                 <span className="text-white">
-                  {new Date(
-                    (studentProfile as any)?.createdAt
-                  ).toLocaleDateString()}
+                  {new Date(studentProfile.createdAt).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -351,20 +345,19 @@ function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
         {[
           {
             label: "Cross Country",
-            value: (studentProfile as any)?.crossCountryHours || 0,
+            value: studentProfile.crossCountryHours || 0,
             icon: MapPin,
             color: "blue",
           },
           {
             label: "Night Hours",
-            value: (studentProfile as any)?.enrollments?.[0]?.nightHours || 0,
+            value: studentProfile.nightHours || 0,
             icon: Clock,
             color: "purple",
           },
           {
             label: "Instrument",
-            value:
-              (studentProfile as any)?.enrollments?.[0]?.instrumentHours || 0,
+            value: studentProfile.instrumentHours || 0,
             icon: Plane,
             color: "green",
           },
