@@ -156,9 +156,6 @@ model Instructor {
   // Evaluations given
   evaluationsGiven Evaluation[] @relation("InstructorEvaluations")
 
-  // Flight logs as instructor
-  flightLogs FlightLog[] @relation("InstructorFlightLogs")
-
   // Aircraft certifications
   aircraftCertifications InstructorAircraftCertification[]
 
@@ -326,7 +323,6 @@ model FlightLog {
   student    Student?    @relation("StudentFlightLogs", fields: [studentId], references: [id])
 
   @@map("flight_logs")
-  Instructor Instructor[] @relation("InstructorFlightLogs")
 }
 
 // ================================

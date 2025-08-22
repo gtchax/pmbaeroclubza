@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { StudentDashboardData, StudentWithDetails } from "@/lib/types";
+import { Prisma } from "@prisma/client";
 
 export async function getStudentProfile(
   userId: string
@@ -40,7 +42,13 @@ export async function getStudentProfile(
         flightLogs: {
           include: {
             aircraft: true,
+            pilot: true,
             instructor: true,
+            student: {
+              include: {
+                user: true,
+              },
+            },
           },
           orderBy: {
             date: "desc",
@@ -122,7 +130,7 @@ export async function getStudentDashboardData(
     return {
       profile: student,
       upcomingBookings,
-      recentFlightLogs,
+      recentFlightLogs: recentFlightLogs as any,
       currentEnrollments,
       notifications,
     };
@@ -185,7 +193,7 @@ export async function updateStudentProfile(
   studentId: string,
   data: {
     address?: string;
-    emergencyContact?: Record<string, unknown>;
+    emergencyContact?: Prisma.InputJsonValue;
     medicalCert?: string;
     medicalExpiry?: Date;
     licenseNumber?: string;

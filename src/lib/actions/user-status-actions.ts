@@ -27,7 +27,7 @@ export async function getUserApprovalStatus(userId: string) {
 
 export async function getCurrentUserStatus() {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     
     if (!userId) {
       return null

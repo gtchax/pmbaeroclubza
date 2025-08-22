@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface UserApprovalStatus {
   isApproved: boolean;
@@ -21,20 +21,7 @@ export function useApprovalStatus() {
     status: "loading",
   });
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      checkUserApprovalStatus();
-    } else if (isLoaded && !user) {
-      setApprovalStatus({
-        isApproved: false,
-        isPending: false,
-        isRejected: false,
-        status: "loading",
-      });
-    }
-  }, [isLoaded, user]);
-
-  const checkUserApprovalStatus = async () => {
+  const checkUserApprovalStatus = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -67,10 +54,25 @@ export function useApprovalStatus() {
         status: "pending",
       });
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      checkUserApprovalStatus();
+    } else if (isLoaded && !user) {
+      setApprovalStatus({
+        isApproved: false,
+        isPending: false,
+        isRejected: false,
+        status: "loading",
+      });
+    }
+  }, [isLoaded, user, checkUserApprovalStatus]);
 
   const refreshApprovalStatus = () => {
-    checkUserApprovalStatus();
+    if (isLoaded && user) {
+      checkUserApprovalStatus();
+    }
   };
 
   return {

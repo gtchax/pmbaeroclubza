@@ -2,12 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, ReactNode } from "react";
-import {
-  Loader2,
-  AlertCircle,
-  Clock,
-  XCircle,
-} from "lucide-react";
+import { Loader2, AlertCircle, Clock, XCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,40 +42,40 @@ export default function ApprovalCheck({
   });
 
   useEffect(() => {
+    const checkUserApprovalStatus = async () => {
+      try {
+        // Get approval status from Clerk metadata
+        const metadata = user?.publicMetadata;
+        const isApproved = metadata?.isApproved === true;
+        const isPending =
+          metadata?.isApproved === false || metadata?.isApproved === undefined;
+        const isRejected = metadata?.isRejected === true;
+        const approvalDate = metadata?.approvalDate as string;
+        const rejectionReason = metadata?.rejectionReason as string;
+
+        setApprovalStatus({
+          isApproved,
+          isPending,
+          isRejected,
+          approvalDate,
+          rejectionReason,
+          status: isApproved ? "approved" : isRejected ? "rejected" : "pending",
+        });
+      } catch (error) {
+        console.error("Error checking approval status:", error);
+        setApprovalStatus({
+          isApproved: false,
+          isPending: true,
+          isRejected: false,
+          status: "pending",
+        });
+      }
+    };
+
     if (isLoaded && user) {
       checkUserApprovalStatus();
     }
   }, [isLoaded, user]);
-
-  const checkUserApprovalStatus = async () => {
-    try {
-      // Get approval status from Clerk metadata
-      const metadata = user?.publicMetadata;
-      const isApproved = metadata?.isApproved === true;
-      const isPending =
-        metadata?.isApproved === false || metadata?.isApproved === undefined;
-      const isRejected = metadata?.isRejected === true;
-      const approvalDate = metadata?.approvalDate as string;
-      const rejectionReason = metadata?.rejectionReason as string;
-
-      setApprovalStatus({
-        isApproved,
-        isPending,
-        isRejected,
-        approvalDate,
-        rejectionReason,
-        status: isApproved ? "approved" : isRejected ? "rejected" : "pending",
-      });
-    } catch (error) {
-      console.error("Error checking approval status:", error);
-      setApprovalStatus({
-        isApproved: false,
-        isPending: true,
-        isRejected: false,
-        status: "pending",
-      });
-    }
-  };
 
   // Show loading state while checking authentication and approval
   if (!isLoaded || approvalStatus.status === "loading") {
@@ -158,8 +153,8 @@ export default function ApprovalCheck({
                 Account Pending Approval
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Your account is currently under review. You&apos;ll receive an email
-                notification once the review is complete.
+                Your account is currently under review. You&apos;ll receive an
+                email notification once the review is complete.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

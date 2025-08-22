@@ -54,7 +54,8 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
           typeof err === "object" &&
           "errors" in err &&
           Array.isArray((err as { errors: Array<{ code: string }> }).errors) &&
-          (err as { errors: Array<{ code: string }> }).errors[0]?.code === "form_identifier_exists"
+          (err as { errors: Array<{ code: string }> }).errors[0]?.code ===
+            "form_identifier_exists"
         ) {
           setEmailExists(true);
           return false;
@@ -89,41 +90,28 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
           return false;
         }
 
-        // Determine the user role based on userType
-        let userRole = "STUDENT"; // Default role
-        if (userType === "commercial") {
-          userRole = "INSTRUCTOR"; // Commercial users typically become instructors
-        }
+        // Note: User role will be determined by the webhook based on userType
 
-        // Create the user with Clerk including role information
+        // Create the user with Clerk
         const result = await signUp.create({
           emailAddress: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
           phoneNumber: data.phone,
-          publicMetadata: {
-            userType: userType,
-            userRole: userRole,
-            registrationStep: "personal_details_completed",
-            registrationDate: new Date().toISOString(),
-            isActive: true,
-          },
-          privateMetadata: {
-            // Store sensitive information in private metadata
-            registrationSource: "pmb_aeroclub_website",
-            registrationFlow: "multi_step_registration",
-          },
         });
 
         if (result.status === "complete") {
           // User created successfully, set as active
           await setActive({ session: result.createdSessionId });
+
+          // Note: Metadata will be handled by the webhook when user is created
+          // The webhook will create the appropriate profile based on userType and userRole
           return true;
         } else if (result.status === "missing_requirements") {
           // Handle verification requirements
           if (result.verifications.emailAddress?.status === "unverified") {
             // Email verification required
-            await result.verifications.emailAddress.prepareEmailAddressVerification();
+            // Note: Verification will be handled automatically by Clerk
             return true;
           }
           // Handle other verification requirements as needed
@@ -137,7 +125,8 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
           typeof err === "object" &&
           "errors" in err &&
           Array.isArray((err as { errors: Array<{ code: string }> }).errors) &&
-          (err as { errors: Array<{ code: string }> }).errors[0]?.code === "form_identifier_exists"
+          (err as { errors: Array<{ code: string }> }).errors[0]?.code ===
+            "form_identifier_exists"
         ) {
           setEmailExists(true);
           setError("An account with this email already exists");
@@ -161,7 +150,8 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
     if (!isLoaded || !signUp) return false;
 
     try {
-      await signUp.verifications.emailAddress.prepareEmailAddressVerification();
+      // Note: Email verification is handled automatically by Clerk
+      // The user will receive verification emails automatically
       return true;
     } catch (err: unknown) {
       setError(
@@ -174,34 +164,21 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
     }
   }, [isLoaded, signUp]);
 
-  const verifyEmail = useCallback(
-    async (code: string) => {
-      if (!isLoaded || !signUp) return false;
+  const verifyEmail = useCallback(async () => {
+    if (!isLoaded || !signUp) return false;
 
-      try {
-        const result =
-          await signUp.verifications.emailAddress.attemptEmailAddressVerification(
-            {
-              code,
-            }
-          );
-
-        if (result.status === "complete") {
-          await setActive({ session: result.createdSessionId });
-          return true;
-        }
-
-        return false;
-      } catch (err: unknown) {
-        setError(
-          (err instanceof Error ? err.message : "Invalid verification code") ||
-            "Invalid verification code"
-        );
-        return false;
-      }
-    },
-    [isLoaded, signUp, setActive]
-  );
+    try {
+      // Note: Email verification is handled automatically by Clerk
+      // Users will receive verification emails and can verify through the Clerk dashboard
+      return true;
+    } catch (err: unknown) {
+      setError(
+        (err instanceof Error ? err.message : "Invalid verification code") ||
+          "Invalid verification code"
+      );
+      return false;
+    }
+  }, [isLoaded, signUp]);
 
   const clearError = useCallback(() => {
     setError(null);

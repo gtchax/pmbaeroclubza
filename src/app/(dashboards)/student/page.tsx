@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -25,6 +26,10 @@ import {
   Target,
   User,
   Clock,
+  FileText,
+  Trophy,
+  Plane,
+  MapPin,
 } from "lucide-react";
 
 // Import component modules
@@ -181,26 +186,17 @@ export default function StudentDashboard() {
 
           {/* Training Progress Tab */}
           <TabsContent value="training" className="space-y-6">
-            <TrainingContent
-              dashboardData={dashboardData}
-              isLoading={isLoading}
-            />
+            <TrainingContent />
           </TabsContent>
 
           {/* Schedule Tab */}
           <TabsContent value="schedule" className="space-y-6">
-            <ScheduleContent
-              dashboardData={dashboardData}
-              isLoading={isLoading}
-            />
+            <ScheduleContent />
           </TabsContent>
 
           {/* Logbook Tab */}
           <TabsContent value="logbook" className="space-y-6">
-            <LogbookContent
-              dashboardData={dashboardData}
-              isLoading={isLoading}
-            />
+            <LogbookContent />
           </TabsContent>
 
           {/* Aircraft Tab */}
@@ -218,12 +214,14 @@ export default function StudentDashboard() {
   );
 }
 
-function OverviewContent({
-  dashboardData,
-}: {
-  dashboardData: Record<string, unknown>;
-}) {
-  if (!dashboardData?.profile) {
+function OverviewContent({ dashboardData }: { dashboardData: unknown }) {
+  if (
+    !dashboardData ||
+    typeof dashboardData !== "object" ||
+    !dashboardData ||
+    !("profile" in dashboardData) ||
+    !dashboardData.profile
+  ) {
     return (
       <Card className="bg-[#262626] border-gray-600">
         <CardContent className="pt-6">
@@ -236,8 +234,8 @@ function OverviewContent({
     );
   }
 
-  const studentProfile = dashboardData.profile;
-  const user = studentProfile.user;
+  const studentProfile = dashboardData.profile as unknown;
+  const user = (studentProfile as any)?.user;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -254,7 +252,7 @@ function OverviewContent({
               Training Progress
             </CardTitle>
             <CardDescription className="text-gray-300">
-              {studentProfile.enrollments?.[0]?.course?.name ||
+              {(studentProfile as any)?.enrollments?.[0]?.course?.name ||
                 "Training Program"}{" "}
               - Progress Tracking
             </CardDescription>
@@ -271,13 +269,13 @@ function OverviewContent({
             <div className="grid grid-cols-2 gap-4 mt-6">
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
                 <div className="text-2xl font-bold text-[#f6d57f]">
-                  {studentProfile.totalFlightHours || 0}
+                  {(studentProfile as any)?.totalFlightHours || 0}
                 </div>
                 <div className="text-sm text-gray-400">Total Hours</div>
               </div>
               <div className="text-center p-4 bg-[#1a1a1a] rounded-lg">
                 <div className="text-2xl font-bold text-[#f6d57f]">
-                  {studentProfile.soloHours || 0}
+                  {(studentProfile as any)?.soloHours || 0}
                 </div>
                 <div className="text-sm text-gray-400">Solo Hours</div>
               </div>
@@ -313,7 +311,7 @@ function OverviewContent({
                 {user.firstName} {user.lastName}
               </h3>
               <p className="text-sm text-gray-400">
-                {studentProfile.studentNumber}
+                {(studentProfile as any)?.studentNumber}
               </p>
             </div>
 
@@ -321,14 +319,22 @@ function OverviewContent({
               <div className="flex justify-between">
                 <span className="text-gray-400">Instructor:</span>
                 <span className="text-white">
-                  {studentProfile.enrollments?.[0]?.instructor?.user?.firstName}{" "}
-                  {studentProfile.enrollments?.[0]?.instructor?.user?.lastName}
+                  {
+                    (studentProfile as any)?.enrollments?.[0]?.instructor?.user
+                      ?.firstName
+                  }{" "}
+                  {
+                    (studentProfile as any)?.enrollments?.[0]?.instructor?.user
+                      ?.lastName
+                  }
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Enrolled:</span>
                 <span className="text-white">
-                  {new Date(studentProfile.createdAt).toLocaleDateString()}
+                  {new Date(
+                    (studentProfile as any)?.createdAt
+                  ).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -345,19 +351,20 @@ function OverviewContent({
         {[
           {
             label: "Cross Country",
-            value: studentProfile.crossCountryHours || 0,
+            value: (studentProfile as any)?.crossCountryHours || 0,
             icon: MapPin,
             color: "blue",
           },
           {
             label: "Night Hours",
-            value: studentProfile.nightHours || 0,
+            value: (studentProfile as any)?.enrollments?.[0]?.nightHours || 0,
             icon: Clock,
             color: "purple",
           },
           {
             label: "Instrument",
-            value: studentProfile.instrumentHours || 0,
+            value:
+              (studentProfile as any)?.enrollments?.[0]?.instrumentHours || 0,
             icon: Plane,
             color: "green",
           },

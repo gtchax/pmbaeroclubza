@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
@@ -7,8 +8,27 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
+// Type definitions for Clerk webhook data
+interface ClerkEmailAddress {
+  id: string;
+  email_address: string;
+  verification?: {
+    status: string;
+    strategy: string;
+  };
+}
+
+interface ClerkPhoneNumber {
+  id: string;
+  phone_number: string;
+  verification?: {
+    status: string;
+    strategy: string;
+  };
+}
+
 export async function POST(req: Request) {
-  const headerPayload = headers();
+  const headerPayload = await headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
@@ -69,23 +89,11 @@ export async function POST(req: Request) {
       case "user.deleted":
         await handleUserDeleted(evt.data);
         break;
-      case "email_address.created":
+      case "email.created":
         await handleEmailCreated(evt.data);
         break;
-      case "email_address.updated":
-        await handleEmailUpdated(evt.data);
-        break;
-      case "email_address.deleted":
-        await handleEmailDeleted(evt.data);
-        break;
-      case "phone_number.created":
+      case "sms.created":
         await handlePhoneCreated(evt.data);
-        break;
-      case "phone_number.updated":
-        await handlePhoneUpdated(evt.data);
-        break;
-      case "phone_number.deleted":
-        await handlePhoneDeleted(evt.data);
         break;
       default:
         console.log(`Unhandled event type: ${eventType}`);
@@ -108,7 +116,7 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleUserCreated(data: ClerkUserData) {
+async function handleUserCreated(data: any) {
   try {
     const {
       id,
@@ -180,7 +188,7 @@ async function handleUserCreated(data: ClerkUserData) {
   }
 }
 
-async function handleUserUpdated(data: ClerkUserData) {
+async function handleUserUpdated(data: any) {
   try {
     const {
       id,
@@ -233,7 +241,7 @@ async function handleUserUpdated(data: ClerkUserData) {
   }
 }
 
-async function handleUserDeleted(data: ClerkUserData) {
+async function handleUserDeleted(data: any) {
   try {
     const { id } = data;
 
@@ -248,7 +256,7 @@ async function handleUserDeleted(data: ClerkUserData) {
   }
 }
 
-async function handleEmailCreated(data: ClerkEmailData) {
+async function handleEmailCreated(data: any) {
   try {
     const { user_id, email_address } = data;
 
@@ -264,35 +272,7 @@ async function handleEmailCreated(data: ClerkEmailData) {
   }
 }
 
-async function handleEmailUpdated(data: ClerkEmailData) {
-  try {
-    const { user_id, email_address } = data;
-
-    // Update user's email
-    await prisma.user.update({
-      where: { id: user_id },
-      data: { email: email_address },
-    });
-
-    console.log(`Email updated for user: ${user_id}`);
-  } catch (error) {
-    console.error("Error handling email updated:", error);
-  }
-}
-
-async function handleEmailDeleted(data: ClerkEmailData) {
-  try {
-    const { user_id } = data;
-
-    // Note: We can't delete the email completely as it's required
-    // This might need special handling based on your business logic
-    console.log(`Email deleted for user: ${user_id}`);
-  } catch (error) {
-    console.error("Error handling email deleted:", error);
-  }
-}
-
-async function handlePhoneCreated(data: ClerkPhoneData) {
+async function handlePhoneCreated(data: any) {
   try {
     const { user_id, phone_number } = data;
 
@@ -305,38 +285,6 @@ async function handlePhoneCreated(data: ClerkPhoneData) {
     console.log(`Phone created for user: ${user_id}`);
   } catch (error) {
     console.error("Error handling phone created:", error);
-  }
-}
-
-async function handlePhoneUpdated(data: ClerkPhoneData) {
-  try {
-    const { user_id, phone_number } = data;
-
-    // Update user's phone
-    await prisma.user.update({
-      where: { id: user_id },
-      data: { phone: phone_number },
-    });
-
-    console.log(`Phone updated for user: ${user_id}`);
-  } catch (error) {
-    console.error("Error handling phone updated:", error);
-  }
-}
-
-async function handlePhoneDeleted(data: ClerkPhoneData) {
-  try {
-    const { user_id } = data;
-
-    // Remove phone from user
-    await prisma.user.update({
-      where: { id: user_id },
-      data: { phone: null },
-    });
-
-    console.log(`Phone deleted for user: ${user_id}`);
-  } catch (error) {
-    console.error("Error handling phone deleted:", error);
   }
 }
 
@@ -440,13 +388,11 @@ async function createStudentProfile(userId: string) {
           crossCountryHours: 0,
           nightHours: 0,
           instrumentHours: 0,
-          currentAircraft: "",
-          instructorId: null,
-          medicalClass: "none",
+          medicalCert: null,
           medicalExpiry: null,
-          licenseNumber: "",
+          licenseNumber: null,
+          licenseType: null,
           licenseExpiry: null,
-          isActive: true,
         },
       });
       console.log(`Student profile created for user: ${userId}`);
@@ -480,7 +426,7 @@ async function createInstructorProfile(userId: string) {
           medicalCert: "", // Should be filled by user
           medicalExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
           totalFlightHours: 0,
-          instructionHours: 0,
+          instructorHours: 0,
           specializations: [], // Empty array, should be filled by user
           isActive: true,
         },

@@ -24,6 +24,10 @@ import {
   Target,
   User,
   TrendingUp,
+  ClipboardList,
+  Trophy,
+  BookOpen,
+  FileText,
 } from "lucide-react";
 
 // Import component modules
@@ -151,7 +155,7 @@ export default function InstructorDashboard() {
 
           {/* Students Tab */}
           <TabsContent value="students" className="space-y-6">
-            <StudentsContent instructorData={instructorData} />
+            <StudentsContent />
           </TabsContent>
 
           {/* Schedule Tab */}
@@ -176,7 +180,7 @@ export default function InstructorDashboard() {
 
           {/* Logbook Tab */}
           <TabsContent value="logbook" className="space-y-6">
-            <LogbookContent instructorData={instructorData} />
+            <LogbookContent />
           </TabsContent>
         </Tabs>
       </div>
@@ -187,7 +191,18 @@ export default function InstructorDashboard() {
 function OverviewContent({
   instructorData,
 }: {
-  instructorData: Record<string, unknown>;
+  instructorData: {
+    name: string;
+    instructorId: string;
+    certifications: string[];
+    totalFlightHours: number;
+    instructionalHours: number;
+    activeStudents: number;
+    completedStudents: number;
+    averagePassRate: number;
+    nextRecurrency: string;
+    specializations: string[];
+  };
 }) {
   return (
     <motion.div

@@ -1,13 +1,8 @@
 import { ContactForm } from "@/components/forms/contact-form";
 // import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  // CardDescription,
-  // CardHeader,
-  // CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import {
   Phone,
   Mail,
@@ -17,7 +12,6 @@ import {
   Calendar,
   Users,
 } from "lucide-react";
-import Link from "next/link";
 
 const contactMethods = [
   {
@@ -268,8 +262,8 @@ export default function ContactPage() {
               </div>
 
               <Button
-                asChild
                 size="lg"
+                asChild
                 className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
               >
                 <Link href="#contact-form">Book Your Visit</Link>

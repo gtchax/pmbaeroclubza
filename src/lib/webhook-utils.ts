@@ -196,13 +196,11 @@ export async function createStudentProfile(userId: string) {
         crossCountryHours: 0,
         nightHours: 0,
         instrumentHours: 0,
-        currentAircraft: "",
-        instructorId: null,
-        medicalClass: "none",
+        medicalCert: null,
         medicalExpiry: null,
-        licenseNumber: "",
+        licenseNumber: null,
+        licenseType: null,
         licenseExpiry: null,
-        isActive: true,
       },
     });
     console.log(`Student profile created for user: ${userId}`);
@@ -233,7 +231,7 @@ export async function createInstructorProfile(userId: string) {
         medicalCert: "",
         medicalExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         totalFlightHours: 0,
-        instructionHours: 0,
+        instructorHours: 0,
         specializations: [],
         isActive: true,
       },
@@ -245,7 +243,11 @@ export async function createInstructorProfile(userId: string) {
 /**
  * Handle user type changes and create appropriate profiles
  */
-export async function handleUserTypeChange(userId: string, userType: string, userRole: string) {
+export async function handleUserTypeChange(
+  userId: string,
+  userType: string,
+  userRole: string
+) {
   // First, update the user's role
   await updateUserRole(userId, userRole);
 

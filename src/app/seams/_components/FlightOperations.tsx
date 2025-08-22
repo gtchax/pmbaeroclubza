@@ -39,7 +39,7 @@ import {
   FlightPurpose,
   WeatherConditions,
   // NOTAM,
-} from "../types";
+} from "@/lib/types/index";
 
 interface FlightScheduleData {
   flights: Flight[];
