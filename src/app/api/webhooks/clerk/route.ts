@@ -3,9 +3,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
 // Type definitions for Clerk webhook data

@@ -1,9 +1,7 @@
 import { useSignUp } from "@clerk/nextjs";
 import { useState, useCallback } from "react";
 
-interface UseClerkSignupProps {
-  userType: "private" | "commercial";
-}
+
 
 interface SignupData {
   email: string;
@@ -12,7 +10,7 @@ interface SignupData {
   phone?: string;
 }
 
-export function useClerkSignup({ userType }: UseClerkSignupProps) {
+export function useClerkSignup() {
   const { signUp, isLoaded, setActive } = useSignUp();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -143,7 +141,7 @@ export function useClerkSignup({ userType }: UseClerkSignupProps) {
         setIsLoading(false);
       }
     },
-    [isLoaded, signUp, setActive, userType, checkEmailAvailability]
+    [isLoaded, signUp, setActive, checkEmailAvailability]
   );
 
   const resendVerificationEmail = useCallback(async () => {

@@ -116,7 +116,7 @@ export default function PersonalDetailsForm({
     error,
     emailExists,
     clearEmailExists,
-  } = useClerkSignup({ userType: userType || "private" });
+  } = useClerkSignup();
 
   const privateForm = useForm<PrivateUserFormData>({
     resolver: zodResolver(privateUserSchema),
