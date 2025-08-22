@@ -148,6 +148,22 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
     type InstructorWithUser = Instructor & { user: User }
     type StudentWithUser = Student & { user: User }
     
+    type InstructorCertification = {
+      type: 'instructor'
+      user: User
+      expiry: Date
+      certificationType: string
+    }
+    
+    type StudentCertification = {
+      type: 'student'
+      user: User
+      expiry: Date
+      certificationType: string
+    }
+    
+    type CertificationItem = InstructorCertification | StudentCertification
+    
     const expiringCertifications = await Promise.all([
       // Instructor certifications
       prisma.instructor.findMany({
@@ -205,7 +221,7 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
               : 'Medical',
           }
         })
-        .filter((cert): cert is NonNullable<typeof cert> => cert !== null),
+        .filter((cert): cert is InstructorCertification => cert !== null),
       ...expiringCertifications[1]
         .map((student: StudentWithUser) => {
           const expiry = student.licenseExpiry || student.medicalExpiry
@@ -219,7 +235,7 @@ export async function getAdminDashboardData(userId: string): Promise<AdminDashbo
               : 'Medical',
           }
         })
-        .filter((cert): cert is NonNullable<typeof cert> => cert !== null),
+        .filter((cert): cert is StudentCertification => cert !== null),
     ]
 
     return {
