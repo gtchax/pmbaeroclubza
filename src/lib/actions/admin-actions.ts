@@ -233,7 +233,11 @@ export async function getAdminDashboardData(
                 : "Medical",
           };
         })
-        .filter((cert): cert is InstructorCertification => cert !== null),
+        .filter(
+          (
+            cert: InstructorCertification | null
+          ): cert is InstructorCertification => cert !== null
+        ),
       ...expiringCertifications[1]
         .map((student: StudentWithUser) => {
           const expiry = student.licenseExpiry || student.medicalExpiry;
@@ -250,7 +254,10 @@ export async function getAdminDashboardData(
                 : "Medical",
           };
         })
-        .filter((cert): cert is StudentCertification => cert !== null),
+        .filter(
+          (cert: StudentCertification | null): cert is StudentCertification =>
+            cert !== null
+        ),
     ];
 
     return {
