@@ -2,8 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import { StudentDashboardData, StudentWithDetails } from "@/lib/types";
-import { Prisma } from "@prisma/client";
-
 
 export async function getStudentProfile(
   userId: string
@@ -193,7 +191,9 @@ export async function updateStudentProfile(
   studentId: string,
   data: {
     address?: string;
-    emergencyContact?: Prisma.InputJsonValue;
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelationship?: string;
     medicalCert?: string;
     medicalExpiry?: Date;
     licenseNumber?: string;

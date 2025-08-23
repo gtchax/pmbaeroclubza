@@ -49,11 +49,11 @@ const privateUserSchema = z.object({
   ]),
   licenseNumber: z.string().optional(),
   medicalClass: z.enum(["class1", "class2", "class3", "none"]),
-  emergencyContact: z.object({
-    name: z.string().min(2, "Emergency contact name is required"),
-    relationship: z.string().min(2, "Relationship is required"),
-    phone: z.string().min(10, "Emergency contact phone is required"),
-  }),
+  emergencyContactName: z.string().min(2, "Emergency contact name is required"),
+  emergencyContactRelationship: z.string().min(2, "Relationship is required"),
+  emergencyContactPhone: z
+    .string()
+    .min(10, "Emergency contact phone is required"),
 });
 
 // Schema for commercial user
@@ -110,13 +110,8 @@ export default function PersonalDetailsForm({
   >("idle");
   const [lastCheckedEmail, setLastCheckedEmail] = useState("");
 
-  const {
-    signUpUser,
-    isLoading,
-    error,
-    emailExists,
-    clearEmailExists,
-  } = useClerkSignup();
+  const { signUpUser, isLoading, error, emailExists, clearEmailExists } =
+    useClerkSignup();
 
   const privateForm = useForm<PrivateUserFormData>({
     resolver: zodResolver(privateUserSchema),
@@ -573,7 +568,7 @@ export default function PersonalDetailsForm({
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
                   control={privateForm.control}
-                  name="emergencyContact.name"
+                  name="emergencyContactName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-white">
@@ -591,7 +586,7 @@ export default function PersonalDetailsForm({
                 />
                 <FormField
                   control={privateForm.control}
-                  name="emergencyContact.relationship"
+                  name="emergencyContactRelationship"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-white">
@@ -609,7 +604,7 @@ export default function PersonalDetailsForm({
                 />
                 <FormField
                   control={privateForm.control}
-                  name="emergencyContact.phone"
+                  name="emergencyContactPhone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-white">

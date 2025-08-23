@@ -188,7 +188,9 @@ export async function createStudentProfile(userId: string) {
         studentNumber: studentNumber,
         dateOfBirth: new Date("1990-01-01"), // Default date
         address: "",
-        emergencyContact: {},
+        emergencyContactName: "",
+        emergencyContactPhone: "",
+        emergencyContactRelationship: "",
         totalFlightHours: 0,
         soloHours: 0,
         crossCountryHours: 0,

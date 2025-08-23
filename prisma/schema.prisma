@@ -100,7 +100,9 @@ model Student {
   studentNumber    String    @unique
   dateOfBirth      DateTime
   address          String
-  emergencyContact Json      // Store emergency contact details
+  emergencyContactName String?     // Emergency contact person's name
+  emergencyContactPhone String?    // Emergency contact phone number
+  emergencyContactRelationship String? // Relationship to student (e.g., "Parent", "Spouse", "Friend")
   medicalCert      String?   // Medical certificate number
   medicalExpiry    DateTime?
   licenseNumber    String?

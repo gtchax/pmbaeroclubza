@@ -363,7 +363,9 @@ async function createStudentProfile(userId: string) {
           studentNumber: studentNumber,
           dateOfBirth: new Date("1990-01-01"), // Default date, should be updated
           address: "", // Should be filled by user
-          emergencyContact: {}, // Empty object, should be filled by user
+          emergencyContactName: "", // Should be filled by user
+          emergencyContactPhone: "", // Should be filled by user
+          emergencyContactRelationship: "", // Should be filled by user
           totalFlightHours: 0,
           soloHours: 0,
           crossCountryHours: 0,
