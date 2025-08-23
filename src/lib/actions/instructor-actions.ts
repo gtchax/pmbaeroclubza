@@ -228,7 +228,7 @@ export async function getInstructorStudents(instructorId: string) {
                   where: { id: instructorId },
                   select: { userId: true },
                 })
-                .then((i) => (i ? [i.userId] : [])),
+                .then((i: { userId: string } | null) => (i ? [i.userId] : [])),
             },
           },
           include: {
