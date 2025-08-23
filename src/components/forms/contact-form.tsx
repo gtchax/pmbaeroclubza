@@ -67,10 +67,10 @@ export function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <Card className="text-center">
+      <Card className="text-center border-0 bg-white shadow-lg">
         <CardContent className="pt-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+          <div className="w-16 h-16 bg-[#f6d57f] rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-[#262626]" />
           </div>
           <h3 className="text-xl font-semibold text-[#262626] mb-2">
             Message Sent Successfully!
@@ -81,7 +81,7 @@ export function ContactForm() {
           </p>
           <Button
             onClick={() => setIsSubmitted(false)}
-            className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+            className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold"
           >
             Send Another Message
           </Button>
@@ -91,13 +91,13 @@ export function ContactForm() {
   }
 
   return (
-    <Card>
+    <Card className="border-0 bg-white shadow-lg">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-[#262626]">
           <Plane className="h-5 w-5 text-[#f6d57f]" />
           <span>Contact Us</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-gray-600">
           Fill out the form below and we&apos;ll get back to you as soon as
           possible.
         </CardDescription>
@@ -118,7 +118,7 @@ export function ContactForm() {
                 {...register("firstName")}
                 type="text"
                 id="firstName"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
                 placeholder="Enter your first name"
               />
               {errors.firstName && (
@@ -139,7 +139,7 @@ export function ContactForm() {
                 {...register("lastName")}
                 type="text"
                 id="lastName"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
                 placeholder="Enter your last name"
               />
               {errors.lastName && (
@@ -163,7 +163,7 @@ export function ContactForm() {
                 {...register("email")}
                 type="email"
                 id="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
                 placeholder="Enter your email address"
               />
               {errors.email && (
@@ -184,7 +184,7 @@ export function ContactForm() {
                 {...register("phone")}
                 type="tel"
                 id="phone"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
                 placeholder="Enter your phone number"
               />
               {errors.phone && (
@@ -206,7 +206,7 @@ export function ContactForm() {
             <select
               {...register("interest")}
               id="interest"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
             >
               <option value="">Select an option</option>
               {interestOptions.map((option) => (
@@ -234,7 +234,7 @@ export function ContactForm() {
               {...register("subject")}
               type="text"
               id="subject"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors"
               placeholder="Brief description of your inquiry"
             />
             {errors.subject && (
@@ -256,7 +256,7 @@ export function ContactForm() {
               {...register("message")}
               id="message"
               rows={5}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f6d57f] focus:border-[#f6d57f] transition-colors resize-none"
               placeholder="Tell us more about your inquiry..."
             />
             {errors.message && (

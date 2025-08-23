@@ -168,13 +168,13 @@ const aircraftFleet = [
 
 export default function FlightSchoolPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-[#262626] text-white py-20">
+      <section className="bg-gradient-to-br from-[#262626] via-[#1a1a1a] to-[#262626] text-white py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
-              Flight Training Programs
+              <span className="text-[#f6d57f]">Flight Training</span> Programs
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
               From your first flight to advanced certifications, our
@@ -185,7 +185,7 @@ export default function FlightSchoolPage() {
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold"
               >
                 <Link href="#programs">View Programs</Link>
               </Button>
@@ -193,7 +193,7 @@ export default function FlightSchoolPage() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="border-white text-white hover:bg-white hover:text-[#262626]"
+                className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold"
               >
                 <Link href="/contact">Book Discovery Flight</Link>
               </Button>
@@ -308,7 +308,7 @@ export default function FlightSchoolPage() {
       </section>
 
       {/* Instructors */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-6">
           <div
             className="text-center mb-16"
@@ -329,10 +329,10 @@ export default function FlightSchoolPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {instructors.map((instructor) => (
               <div key={instructor.name}>
-                <Card className="text-center hover:shadow-lg transition-shadow">
+                <Card className="text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 bg-white">
                   <CardContent className="pt-6">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-semibold text-gray-600">
+                    <div className="w-24 h-24 bg-[#f6d57f] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl font-semibold text-[#262626]">
                         {instructor.name
                           .split(" ")
                           .map((n) => n[0])
@@ -387,7 +387,7 @@ export default function FlightSchoolPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {aircraftFleet.map((aircraft) => (
               <div key={aircraft.name}>
-                <Card className="h-full hover:shadow-lg transition-shadow">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 bg-white">
                   <CardContent className="pt-6">
                     <h3 className="text-xl font-semibold text-[#262626] mb-3">
                       {aircraft.name}
@@ -431,7 +431,7 @@ export default function FlightSchoolPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
             <h3 className="text-2xl font-bold text-[#262626] mb-4">
@@ -446,11 +446,16 @@ export default function FlightSchoolPage() {
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold"
               >
                 <Link href="/contact">Book Discovery Flight</Link>
               </Button>
-              <Button variant="outline" size="lg" asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold"
+              >
                 <Link href="/contact">Contact Us</Link>
               </Button>
             </div>

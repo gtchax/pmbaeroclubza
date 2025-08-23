@@ -181,9 +181,9 @@ export default function FlightInstructorsPage() {
       case "GII":
         return "bg-[#f6d57f] text-[#262626]";
       case "GIII":
-        return "bg-blue-100 text-blue-800";
+        return "bg-[#262626] text-white";
       case "DFE":
-        return "bg-green-100 text-green-800";
+        return "bg-[#f6d57f] text-[#262626]";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -226,18 +226,18 @@ export default function FlightInstructorsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <Card className="bg-gradient-to-br from-[#f6d57f] to-[#f4d06a] border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardContent className="p-4 text-center">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Users className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 bg-[#262626]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Users className="h-5 w-5 text-[#262626]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">5</h3>
-              <p className="text-white/90 text-sm">Active Instructors</p>
+              <h3 className="text-xl font-bold text-[#262626] mb-1">5</h3>
+              <p className="text-[#262626]/90 text-sm">Active Instructors</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-gradient-to-br from-[#262626] to-[#1a1a1a] border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardContent className="p-4 text-center">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Award className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 bg-[#f6d57f]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Award className="h-5 w-5 text-[#f6d57f]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-1">1</h3>
               <p className="text-white/90 text-sm">
@@ -246,20 +246,20 @@ export default function FlightInstructorsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-gradient-to-br from-[#f6d57f] to-[#f4d06a] border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardContent className="p-4 text-center">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Star className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 bg-[#262626]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Star className="h-5 w-5 text-[#262626]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">3</h3>
-              <p className="text-white/90 text-sm">Grade II Instructors</p>
+              <h3 className="text-xl font-bold text-[#262626] mb-1">3</h3>
+              <p className="text-[#262626]/90 text-sm">Grade II Instructors</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-gradient-to-br from-[#262626] to-[#1a1a1a] border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardContent className="p-4 text-center">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <GraduationCap className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 bg-[#f6d57f]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <GraduationCap className="h-5 w-5 text-[#f6d57f]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-1">1</h3>
               <p className="text-white/90 text-sm">Grade III Instructor</p>
@@ -284,7 +284,7 @@ export default function FlightInstructorsPage() {
                     </p>
                   </div>
                 ) : (
-                  <div className="text-center">
+                  <div className="text-center pt-4">
                     <div className="w-20 h-20 bg-gradient-to-br from-[#f6d57f] to-[#f4d06a] rounded-full flex items-center justify-center mx-auto mb-3">
                       <Users className="h-10 w-10 text-white" />
                     </div>
@@ -297,7 +297,7 @@ export default function FlightInstructorsPage() {
                 {/* Grade Badge */}
                 <div className="absolute top-3 right-3">
                   <Badge
-                    className={`${getGradeColor(instructor.grade)} text-xs px-2 py-1`}
+                    className={`${getGradeColor(instructor.grade)} text-xs `}
                   >
                     <div className="flex items-center gap-1">
                       {getGradeIcon(instructor.grade)}
@@ -410,11 +410,11 @@ export default function FlightInstructorsPage() {
 
         {/* Additional Information */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl text-[#262626] flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <Shield className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-br from-[#f6d57f] to-[#f4d06a] rounded-full flex items-center justify-center">
+                  <Shield className="h-5 w-5 text-[#262626]" />
                 </div>
                 Instructor Qualifications
               </CardTitle>
@@ -434,7 +434,7 @@ export default function FlightInstructorsPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#262626] rounded-full mt-2 flex-shrink-0"></div>
                   <div>
                     <h4 className="font-semibold text-[#262626] text-sm">
                       Grade III (GIII)
@@ -446,7 +446,7 @@ export default function FlightInstructorsPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#f6d57f] rounded-full mt-2 flex-shrink-0"></div>
                   <div>
                     <h4 className="font-semibold text-[#262626] text-sm">
                       Designated Flight Examiner (DFE)
@@ -461,10 +461,10 @@ export default function FlightInstructorsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl text-[#262626] flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#262626] to-[#1a1a1a] rounded-full flex items-center justify-center">
                   <BookOpen className="h-5 w-5 text-white" />
                 </div>
                 Training Programs
@@ -485,7 +485,7 @@ export default function FlightInstructorsPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#262626] rounded-full mt-2 flex-shrink-0"></div>
                   <div>
                     <h4 className="font-semibold text-[#262626] text-sm">
                       Advanced Training
@@ -497,7 +497,7 @@ export default function FlightInstructorsPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#f6d57f] rounded-full mt-2 flex-shrink-0"></div>
                   <div>
                     <h4 className="font-semibold text-[#262626] text-sm">
                       License Renewals

@@ -74,12 +74,14 @@ const quickActions = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-[#262626] text-white py-20">
+      <section className="bg-gradient-to-br from-[#262626] via-[#1a1a1a] to-[#262626] text-white py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold">Get in Touch</h1>
+            <h1 className="text-4xl md:text-6xl font-bold">
+              <span className="text-[#f6d57f]">Get in Touch</span>
+            </h1>
             <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
               Ready to start your aviation journey? Have questions about our
               programs? We&apos;re here to help you take flight.
@@ -88,7 +90,7 @@ export default function ContactPage() {
               <Button
                 size="lg"
                 asChild
-                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
+                className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] font-semibold"
               >
                 <Link href="#contact-form">Send Message</Link>
               </Button>
@@ -96,7 +98,7 @@ export default function ContactPage() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="border-white text-white hover:bg-white hover:text-[#262626]"
+                className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] font-semibold"
               >
                 <Link href="#quick-actions">Quick Actions</Link>
               </Button>
@@ -121,10 +123,10 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {contactMethods.map((method) => (
               <div key={method.title}>
-                <Card className="h-full text-center hover:shadow-lg transition-shadow">
+                <Card className="h-full text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 bg-white">
                   <CardContent className="pt-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-[#f6d57f]/20 rounded-full mb-4">
-                      <method.icon className="h-8 w-8 text-[#f6d57f]" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-[#f6d57f] rounded-full mb-4">
+                      <method.icon className="h-8 w-8 text-[#262626]" />
                     </div>
                     <h3 className="text-lg font-semibold text-[#262626] mb-2">
                       {method.title}
@@ -135,7 +137,12 @@ export default function ContactPage() {
                     <p className="text-sm text-gray-600 mb-4">
                       {method.description}
                     </p>
-                    <Button asChild variant="outline" size="sm">
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626]"
+                    >
                       <Link href={method.href}>{method.action}</Link>
                     </Button>
                   </CardContent>
@@ -147,7 +154,10 @@ export default function ContactPage() {
       </section>
 
       {/* Quick Actions */}
-      <section id="quick-actions" className="py-20 bg-gray-50">
+      <section
+        id="quick-actions"
+        className="py-20 bg-gradient-to-br from-gray-50 to-gray-100"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#262626] mb-6">
@@ -161,7 +171,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {quickActions.map((action) => (
               <div key={action.title}>
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 bg-white">
                   <CardContent className="pt-6 text-center">
                     <div
                       className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${action.color}`}
@@ -172,7 +182,7 @@ export default function ContactPage() {
                       {action.title}
                     </h3>
                     <p className="text-gray-600 mb-6">{action.description}</p>
-                    <Button asChild className="w-full">
+                    <Button asChild className="w-full bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]">
                       <Link href={action.href}>Get Started</Link>
                     </Button>
                   </CardContent>
@@ -204,7 +214,7 @@ export default function ContactPage() {
       </section>
 
       {/* Location & Map */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#262626] mb-6">
@@ -273,13 +283,15 @@ export default function ContactPage() {
             <div>
               <Card>
                 <CardContent className="p-0">
-                  <div className="bg-gray-200 h-80 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <MapPin className="h-16 w-16 mx-auto mb-4" />
-                      <p className="text-lg font-medium">
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 h-80 rounded-lg flex items-center justify-center border border-gray-200">
+                    <div className="text-center text-gray-600">
+                      <div className="w-16 h-16 bg-[#f6d57f] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MapPin className="h-8 w-8 text-[#262626]" />
+                      </div>
+                      <p className="text-lg font-medium text-[#262626]">
                         Interactive Map Coming Soon
                       </p>
-                      <p className="text-sm">
+                      <p className="text-sm text-gray-500">
                         Pietermaritzburg Airport, Oribi, South Africa
                       </p>
                     </div>
