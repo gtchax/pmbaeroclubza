@@ -1,0 +1,13 @@
+# pnpm specific configuration
+shamefully-hoist=false
+strict-peer-dependencies=false
+auto-install-peers=true
+
+# Vercel deployment settings
+public-hoist-pattern[]=*types*
+public-hoist-pattern[]=*eslint*
+public-hoist-pattern[]=@prettier/plugin-*
+public-hoist-pattern[]=prettier-plugin-*
+
+# Ensure consistent dependency resolution
+hoist-pattern[]=*types*

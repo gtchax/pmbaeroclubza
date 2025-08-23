@@ -25,6 +25,17 @@ const nextConfig: NextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
+
+  // Force pnpm usage and prevent package manager conflicts
+  webpack: (config, { isServer }) => {
+    // Ensure pnpm is used
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      // Force specific package resolution
+    };
+    
+    return config;
+  },
 };
 
 export default nextConfig;

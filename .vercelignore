@@ -1,0 +1,19 @@
+# Ignore other package manager files
+bun.lockb
+yarn.lock
+package-lock.json
+
+# Ignore other project directories
+../*/bun.lockb
+../*/yarn.lock
+../*/package-lock.json
+
+# Ignore development files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore build artifacts
+.next
+node_modules
