@@ -39,7 +39,7 @@ import {
   FlightPurpose,
   WeatherConditions,
   // NOTAM,
-} from "@/lib/types/index";
+} from "@/lib/types";
 
 interface FlightScheduleData {
   flights: Flight[];
@@ -149,7 +149,7 @@ export function FlightOperations() {
           departureTime: new Date("2024-01-15T10:00:00Z"),
           arrivalTime: new Date("2024-01-15T11:30:00Z"),
           status: FlightStatus.SCHEDULED,
-          flightType: FlightType.CHARTER,
+          flightType: FlightType.COMMERCIAL,
           purpose: FlightPurpose.BUSINESS,
           passengers: 4,
           cargo: 100,

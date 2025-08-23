@@ -6,7 +6,7 @@ import {
   updateFlightLog,
 } from "@/lib/actions/flight-log-actions";
 import { UpdateFlightLogData } from "@/lib/types";
-import { FlightType } from "@prisma/client";
+import { FlightType } from "@/lib/types";
 
 export function useCreateFlightLog() {
   const queryClient = useQueryClient();

@@ -7,7 +7,7 @@ import {
   getAvailableAircraft
 } from '@/lib/actions/booking-actions'
 import { CreateBookingData } from '@/lib/types'
-import { BookingStatus } from '@prisma/client'
+import { BookingStatus } from '@/lib/types'
 
 export function useCreateBooking() {
   const queryClient = useQueryClient()
