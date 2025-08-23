@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Plane,
   Shield,
-  TrendingUp,
+  // TrendingUp,
   Users,
   Wrench,
   Fuel,
@@ -19,112 +19,112 @@ import {
   Cloud,
   Lock,
   ArrowRight,
-  Star,
-  Award,
+  // Star,
+  // Award,
   Globe,
   Target,
-  Lightbulb,
+  // Lightbulb,
   ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
 
 export default function SEAMSLandingPage() {
-  const features = [
-    {
-      icon: Plane,
-      title: "Flight Operations",
-      description:
-        "Real-time flight tracking, scheduling, and operational management",
-      bgColor: "bg-blue-50",
-      iconColor: "text-blue-600",
-    },
-    {
-      icon: Users,
-      title: "Crew Management",
-      description:
-        "Pilot and crew scheduling, qualifications, and performance tracking",
-      bgColor: "bg-green-50",
-      iconColor: "text-green-600",
-    },
-    {
-      icon: Wrench,
-      title: "Maintenance Tracking",
-      description:
-        "Aircraft maintenance schedules, alerts, and compliance monitoring",
-      bgColor: "bg-orange-50",
-      iconColor: "text-orange-600",
-    },
-    {
-      icon: Fuel,
-      title: "Fuel Management",
-      description:
-        "Fuel consumption tracking, cost analysis, and efficiency optimization",
-      bgColor: "bg-purple-50",
-      iconColor: "text-purple-600",
-    },
-    {
-      icon: BarChart3,
-      title: "Analytics & Reporting",
-      description:
-        "Comprehensive data insights and regulatory compliance reporting",
-      bgColor: "bg-indigo-50",
-      iconColor: "text-indigo-600",
-    },
-    {
-      icon: Shield,
-      title: "Safety & Compliance",
-      description:
-        "FAA, EASA, and ICAO compliance tracking and safety management",
-      bgColor: "bg-red-50",
-      iconColor: "text-red-600",
-    },
-  ];
+  // const features = [
+  //   {
+  //     icon: Plane,
+  //     title: "Flight Operations",
+  //     description:
+  //       "Real-time flight tracking, scheduling, and operational management",
+  //     bgColor: "bg-blue-50",
+  //     iconColor: "text-blue-600",
+  //   },
+  //   {
+  //     icon: Users,
+  //     title: "Crew Management",
+  //     description:
+  //       "Pilot and crew scheduling, qualifications, and performance tracking",
+  //     bgColor: "bg-green-50",
+  //     iconColor: "text-green-600",
+  //   },
+  //   {
+  //     icon: Wrench,
+  //     title: "Maintenance Tracking",
+  //     description:
+  //       "Aircraft maintenance schedules, alerts, and compliance monitoring",
+  //     bgColor: "bg-orange-50",
+  //     iconColor: "text-orange-600",
+  //   },
+  //   {
+  //     icon: Fuel,
+  //     title: "Fuel Management",
+  //     description:
+  //       "Fuel consumption tracking, cost analysis, and efficiency optimization",
+  //     bgColor: "bg-purple-50",
+  //     iconColor: "text-purple-600",
+  //   },
+  //   {
+  //     icon: BarChart3,
+  //     title: "Analytics & Reporting",
+  //     description:
+  //       "Comprehensive data insights and regulatory compliance reporting",
+  //     bgColor: "bg-indigo-50",
+  //     iconColor: "text-indigo-600",
+  //   },
+  //   {
+  //     icon: Shield,
+  //     title: "Safety & Compliance",
+  //     description:
+  //       "FAA, EASA, and ICAO compliance tracking and safety management",
+  //     bgColor: "bg-red-50",
+  //     iconColor: "text-red-600",
+  //   },
+  // ];
 
-  const benefits = [
-    {
-      icon: Zap,
-      title: "Real-time Operations",
-      description:
-        "Instant access to flight status, crew availability, and maintenance alerts",
-    },
-    {
-      icon: Database,
-      title: "Centralized Data",
-      description:
-        "Single source of truth for all aviation operations and compliance data",
-    },
-    {
-      icon: Smartphone,
-      title: "Mobile Access",
-      description:
-        "Access SEAMS from anywhere with our responsive mobile application",
-    },
-    {
-      icon: Cloud,
-      title: "Cloud-based",
-      description:
-        "Secure, scalable cloud infrastructure with automatic backups",
-    },
-    {
-      icon: Lock,
-      title: "Enterprise Security",
-      description:
-        "Bank-level security with role-based access control and audit trails",
-    },
-    {
-      icon: Target,
-      title: "Regulatory Compliance",
-      description:
-        "Built-in compliance tracking for all major aviation authorities",
-    },
-  ];
+  // const benefits = [
+  //   {
+  //     icon: Zap,
+  //     title: "Real-time Operations",
+  //     description:
+  //       "Instant access to flight status, crew availability, and maintenance alerts",
+  //   },
+  //   {
+  //     icon: Database,
+  //     title: "Centralized Data",
+  //     description:
+  //       "Single source of truth for all aviation operations and compliance data",
+  //   },
+  //   {
+  //     icon: Smartphone,
+  //     title: "Mobile Access",
+  //     description:
+  //       "Access SEAMS from anywhere with our responsive mobile application",
+  //   },
+  //   {
+  //     icon: Cloud,
+  //     title: "Cloud-based",
+  //     description:
+  //       "Secure, scalable cloud infrastructure with automatic backups",
+  //   },
+  //   {
+  //     icon: Lock,
+  //     title: "Enterprise Security",
+  //     description:
+  //       "Bank-level security with role-based access control and audit trails",
+  //   },
+  //   {
+  //     icon: Target,
+  //     title: "Regulatory Compliance",
+  //     description:
+  //       "Built-in compliance tracking for all major aviation authorities",
+  //   },
+  // ];
 
-  const stats = [
-    { number: "99.9%", label: "Uptime", icon: CheckCircle },
-    { number: "24/7", label: "Support", icon: Clock },
-    { number: "500+", label: "Aircraft", icon: Plane },
-    { number: "50+", label: "Airports", icon: Globe },
-  ];
+  // const stats = [
+  //   { number: "99.9%", label: "Uptime", icon: CheckCircle },
+  //   { number: "24/7", label: "Support", icon: Clock },
+  //   { number: "500+", label: "Aircraft", icon: Plane },
+  //   { number: "50+", label: "Airports", icon: Globe },
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#262626] via-[#1a1a1a] to-[#262626] text-white pt-20">

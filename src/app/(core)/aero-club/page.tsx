@@ -36,8 +36,8 @@ export default function AeroClubPage() {
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-8">
               Experience the thrill of aviation, connect with fellow pilots, and
-              access exclusive resources in one of South Africa's premier flying
-              communities.
+              access exclusive resources in one of South Africa&apos;s premier
+              flying communities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -369,9 +369,9 @@ export default function AeroClubPage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-4">
-                  "Joining PMB Aero Club was the best decision I made for my
-                  aviation career. The community is incredible and the
-                  facilities are top-notch."
+                  &ldquo;Joining PMB Aero Club was the best decision I made for
+                  my aviation career. The community is incredible and the
+                  facilities are top-notch.&rdquo;
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-[#f6d57f] rounded-full mr-3 flex items-center justify-center">
@@ -400,8 +400,8 @@ export default function AeroClubPage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-4">
-                  "The training programs and workshops have helped me advance my
-                  skills significantly. Great value for money!"
+                  &ldquo;The training programs and workshops have helped me
+                  advance my skills significantly. Great value for money!&rdquo;
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-[#f6d57f] rounded-full mr-3 flex items-center justify-center">
@@ -430,8 +430,9 @@ export default function AeroClubPage() {
                   ))}
                 </div>
                 <p className="text-gray-700 mb-4">
-                  "As a student pilot, the support and resources available here
-                  are unmatched. I've made friends for life in this club."
+                  &ldquo;As a student pilot, the support and resources available
+                  here are unmatched. I&apos;ve made friends for life in this
+                  club.&rdquo;
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-[#f6d57f] rounded-full mr-3 flex items-center justify-center">
