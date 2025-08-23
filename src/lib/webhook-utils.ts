@@ -12,6 +12,8 @@ export interface ClerkPhoneNumber {
   verification: { status: string };
 }
 
+// TODO: Define proper permissions type
+
 export interface ClerkUserData {
   id: string;
   email_addresses: Array<ClerkEmailAddress>;
