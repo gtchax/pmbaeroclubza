@@ -1,10 +1,12 @@
-'use server'
+"use server";
 
-import { prisma } from '@/lib/prisma'
-import { BookingStatus, CreateBookingData } from '@/lib/types'
+import { prisma } from "@/lib/prisma";
+import { BookingStatus, CreateBookingData } from "@/lib/types";
 // import { BookingStatus } from '@prisma/client'
 
-export async function createBooking(data: CreateBookingData & { studentId: string }) {
+export async function createBooking(
+  data: CreateBookingData & { studentId: string }
+) {
   try {
     const booking = await prisma.booking.create({
       data: {
@@ -17,23 +19,26 @@ export async function createBooking(data: CreateBookingData & { studentId: strin
         type: data.type,
         purpose: data.purpose,
         notes: data.notes,
-        status: 'PENDING',
+        status: "PENDING",
       },
       include: {
         student: true,
         aircraft: true,
         scheduleSlot: true,
       },
-    })
+    });
 
-    return booking
+    return booking;
   } catch (error) {
-    console.error('Error creating booking:', error)
-    throw new Error('Failed to create booking')
+    console.error("Error creating booking:", error);
+    throw new Error("Failed to create booking");
   }
 }
 
-export async function updateBookingStatus(bookingId: string, status: BookingStatus) {
+export async function updateBookingStatus(
+  bookingId: string,
+  status: BookingStatus
+) {
   try {
     const booking = await prisma.booking.update({
       where: { id: bookingId },
@@ -43,12 +48,12 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
         aircraft: true,
         scheduleSlot: true,
       },
-    })
+    });
 
-    return booking
+    return booking;
   } catch (error) {
-    console.error('Error updating booking status:', error)
-    throw new Error('Failed to update booking status')
+    console.error("Error updating booking status:", error);
+    throw new Error("Failed to update booking status");
   }
 }
 
@@ -70,14 +75,14 @@ export async function getBookingsByStudent(studentId: string) {
         },
       },
       orderBy: {
-        date: 'desc',
+        date: "desc",
       },
-    })
+    });
 
-    return bookings
+    return bookings;
   } catch (error) {
-    console.error('Error fetching student bookings:', error)
-    throw new Error('Failed to fetch student bookings')
+    console.error("Error fetching student bookings:", error);
+    throw new Error("Failed to fetch student bookings");
   }
 }
 
@@ -95,14 +100,14 @@ export async function getBookingsByInstructor(instructorId: string) {
         scheduleSlot: true,
       },
       orderBy: {
-        date: 'desc',
+        date: "desc",
       },
-    })
+    });
 
-    return bookings
+    return bookings;
   } catch (error) {
-    console.error('Error fetching instructor bookings:', error)
-    throw new Error('Failed to fetch instructor bookings')
+    console.error("Error fetching instructor bookings:", error);
+    throw new Error("Failed to fetch instructor bookings");
   }
 }
 
@@ -121,30 +126,32 @@ export async function getAvailableAircraft(startTime: Date, endTime: Date) {
           },
         ],
         status: {
-          in: ['CONFIRMED', 'IN_PROGRESS'],
+          in: ["CONFIRMED", "IN_PROGRESS"],
         },
       },
       select: {
         aircraftId: true,
       },
-    })
+    });
 
     const aircraft = await prisma.aircraft.findMany({
       where: {
         isActive: true,
         isAvailable: true,
         id: {
-          notIn: bookedAircraftIds.map(b => b.aircraftId),
+          notIn: bookedAircraftIds.map(
+            (b: { aircraftId: string }) => b.aircraftId
+          ),
         },
       },
       orderBy: {
-        registration: 'asc',
+        registration: "asc",
       },
-    })
+    });
 
-    return aircraft
+    return aircraft;
   } catch (error) {
-    console.error('Error fetching available aircraft:', error)
-    throw new Error('Failed to fetch available aircraft')
+    console.error("Error fetching available aircraft:", error);
+    throw new Error("Failed to fetch available aircraft");
   }
 }

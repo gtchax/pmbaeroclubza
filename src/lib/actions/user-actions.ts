@@ -1,9 +1,11 @@
-'use server'
+"use server";
 
-import { prisma } from '@/lib/prisma'
-import { UserWithProfile } from '@/lib/types'
+import { prisma } from "@/lib/prisma";
+import { UserWithProfile } from "@/lib/types";
 
-export async function getCurrentUser(userId: string): Promise<UserWithProfile | null> {
+export async function getCurrentUser(
+  userId: string
+): Promise<UserWithProfile | null> {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -22,12 +24,12 @@ export async function getCurrentUser(userId: string): Promise<UserWithProfile | 
           },
         },
       },
-    })
+    });
 
-    return user
+    return user;
   } catch (error) {
-    console.error('Error fetching user:', error)
-    throw new Error('Failed to fetch user data')
+    console.error("Error fetching user:", error);
+    throw new Error("Failed to fetch user data");
   }
 }
 
@@ -42,22 +44,22 @@ export async function getUserRole(userId: string): Promise<string[]> {
           },
         },
       },
-    })
+    });
 
-    return userRoles.map(ur => ur.role.name)
+    return userRoles.map((ur: { role: { name: string } }) => ur.role.name);
   } catch (error) {
-    console.error('Error fetching user roles:', error)
-    throw new Error('Failed to fetch user roles')
+    console.error("Error fetching user roles:", error);
+    throw new Error("Failed to fetch user roles");
   }
 }
 
 export async function updateUserProfile(
   userId: string,
   data: {
-    firstName?: string
-    lastName?: string
-    phone?: string
-    avatar?: string
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    avatar?: string;
   }
 ) {
   try {
@@ -79,11 +81,11 @@ export async function updateUserProfile(
           },
         },
       },
-    })
+    });
 
-    return user
+    return user;
   } catch (error) {
-    console.error('Error updating user profile:', error)
-    throw new Error('Failed to update user profile')
+    console.error("Error updating user profile:", error);
+    throw new Error("Failed to update user profile");
   }
 }
