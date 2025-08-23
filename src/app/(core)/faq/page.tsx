@@ -45,7 +45,7 @@ export default function FAQPage() {
     {
       id: "trial-lesson",
       category: "Getting Started",
-      question: "What&apos;s a Trial Lesson?",
+      question: "What's a Trial Lesson?",
       answer: (
         <div className="space-y-4">
           <p>
@@ -92,7 +92,7 @@ export default function FAQPage() {
     {
       id: "ppl-requirements",
       category: "Licenses",
-      question: "What&apos;s in the Private Pilot&apos;s License (PPL)?",
+      question: "What's in the Private Pilot's License (PPL)?",
       answer: (
         <div className="space-y-4">
           <p>
@@ -260,7 +260,7 @@ export default function FAQPage() {
     {
       id: "contact-info",
       category: "Contact",
-      question: "What&apos;s Next? How do I get started?",
+      question: "What's Next? How do I get started?",
       answer: (
         <div className="space-y-4">
           <p>
