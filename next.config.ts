@@ -1,21 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Production optimizations
-  output: "standalone",
+  // Production optimizations - remove standalone to fix the error
+  // output: "standalone", // This was causing the client-reference-manifest error
+
+  // Server external packages for Prisma
+  serverExternalPackages: ["@prisma/client"],
 
   // Experimental features for better stability
   experimental: {
-    // Enable server components
-    serverComponentsExternalPackages: ["@prisma/client"],
     // Better error handling
     serverActions: {
       bodySizeLimit: "2mb",
     },
   },
-
-  // Build optimizations
-  swcMinify: true,
 
   // Handle build artifacts properly
   generateBuildId: async () => {
