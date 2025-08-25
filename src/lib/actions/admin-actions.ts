@@ -171,7 +171,7 @@ export async function getAdminDashboardData(
       certificationType: string;
     };
 
-    type CertificationItem = InstructorCertification | StudentCertification;
+    // type CertificationItem = InstructorCertification | StudentCertification;
 
     const expiringCertifications = await Promise.all([
       // Instructor certifications

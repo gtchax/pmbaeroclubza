@@ -1,29 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Plane,
-  Shield,
-  // TrendingUp,
-  Users,
-  Wrench,
-  Fuel,
   BarChart3,
-  Clock,
-  CheckCircle,
-  Zap,
-  Database,
-  Smartphone,
-  Cloud,
-  Lock,
   ArrowRight,
-  // Star,
-  // Award,
-  Globe,
-  Target,
-  // Lightbulb,
   ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
