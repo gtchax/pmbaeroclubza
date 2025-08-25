@@ -886,6 +886,146 @@ export interface CreateEvaluationData {
 }
 
 // ================================
+// SAGE BUSINESS CLOUD ACCOUNTING TYPES
+// ================================
+
+export interface SageAccount {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  type: "asset" | "liability" | "equity" | "income" | "expense";
+  balance: number;
+  currency: string;
+  status: "active" | "inactive";
+  description?: string;
+  parentAccountId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SageTransaction {
+  id: string;
+  reference: string;
+  date: Date;
+  description: string;
+  amount: number;
+  type: "debit" | "credit";
+  accountId: string;
+  accountCode: string;
+  accountName: string;
+  category: string;
+  status: "posted" | "draft" | "void";
+  journalId?: string;
+  journalReference?: string;
+  customerId?: string;
+  customerName?: string;
+  supplierId?: string;
+  supplierName?: string;
+  taxAmount?: number;
+  taxCode?: string;
+  notes?: string;
+  attachments?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SageJournal {
+  id: string;
+  reference: string;
+  date: Date;
+  description: string;
+  totalDebit: number;
+  totalCredit: number;
+  status: "draft" | "posted" | "void";
+  type: "general" | "sales" | "purchase" | "payment" | "receipt" | "adjustment";
+  transactions: SageTransaction[];
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SageCustomer {
+  id: string;
+  code: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    line1: string;
+    line2?: string;
+    city: string;
+    state?: string;
+    postalCode?: string;
+    country: string;
+  };
+  taxNumber?: string;
+  creditLimit?: number;
+  balance: number;
+  status: "active" | "inactive";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SageSupplier {
+  id: string;
+  code: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    line1: string;
+    line2?: string;
+    city: string;
+    state?: string;
+    postalCode?: string;
+    country: string;
+  };
+  taxNumber?: string;
+  balance: number;
+  status: "active" | "inactive";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SageFinancialSummary {
+  totalAssets: number;
+  totalLiabilities: number;
+  totalEquity: number;
+  totalIncome: number;
+  totalExpenses: number;
+  netIncome: number;
+  cashBalance: number;
+  accountsReceivable: number;
+  accountsPayable: number;
+  asOfDate: Date;
+}
+
+export interface SageDashboardData {
+  financialSummary: SageFinancialSummary;
+  recentTransactions: SageTransaction[];
+  topAccounts: SageAccount[];
+  cashFlow: {
+    period: string;
+    income: number;
+    expenses: number;
+    netCashFlow: number;
+  }[];
+  outstandingInvoices: {
+    customerName: string;
+    amount: number;
+    dueDate: Date;
+    daysOverdue: number;
+  }[];
+  upcomingPayments: {
+    supplierName: string;
+    amount: number;
+    dueDate: Date;
+    daysUntilDue: number;
+  }[];
+}
+
+// ================================
 // RE-EXPORT PRISMA TYPES
 // ================================
 
@@ -918,6 +1058,4 @@ export type {
 };
 
 // Export enums as values, not types
-export {
-  FlightType,
-} from "@prisma/client";
+export { FlightType } from "@prisma/client";

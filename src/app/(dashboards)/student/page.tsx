@@ -47,6 +47,8 @@ import { ResourcesContent } from "./components/ResourcesContent";
 // Import hooks
 import { useStudentDashboard } from "@/lib/hooks/use-student-data";
 import { useCurrentUser } from "@/lib/hooks/use-user-data";
+import { SageConnectionStatus } from "@/components/sage/SageConnectionStatus";
+import { SageFinancialData } from "@/components/sage/SageFinancialData";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -205,6 +207,12 @@ export default function StudentDashboard() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             <OverviewContent />
+
+            {/* SAGE Financial Integration */}
+            <div className="space-y-6">
+              <SageConnectionStatus />
+              <SageFinancialData />
+            </div>
           </TabsContent>
 
           {/* Training Progress Tab */}
