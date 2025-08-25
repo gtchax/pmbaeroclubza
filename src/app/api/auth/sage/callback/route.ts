@@ -28,11 +28,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Handle OAuth callback
-    try {
-      const authState = await sageOAuthManager.handleCallback(code, state);
-
-      // Redirect to success page or dashboard
-      return NextResponse.redirect(new URL("/auth/sage/success", request.url));
+          try {
+        await sageOAuthManager.handleCallback(code, state);
+        
+        // Redirect to success page or dashboard
+        return NextResponse.redirect(new URL("/auth/sage/success", request.url));
     } catch (callbackError) {
       console.error("Error handling OAuth callback:", callbackError);
       return NextResponse.redirect(

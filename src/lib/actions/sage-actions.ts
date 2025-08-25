@@ -341,13 +341,11 @@ export async function getAdminFinancialOverview(): Promise<{
   try {
     const [
       financialSummary,
-      accounts,
       recentTransactions,
       customers,
       suppliers,
     ] = await Promise.all([
       sageApi.getFinancialSummary(),
-      sageApi.getAccounts(),
       sageApi.getTransactions(undefined, undefined, undefined, 20),
       sageApi.getCustomers(),
       sageApi.getSuppliers(),

@@ -296,157 +296,230 @@ export class SageApiClient {
   // DATA TRANSFORMATION
   // ================================
 
-  private transformAccount(data: any): SageAccount {
+  private transformAccount(data: Record<string, unknown>): SageAccount {
     return {
-      id: data.id || data.guid,
-      code: data.code || data.account_code,
-      name: data.name || data.account_name,
-      category: data.category || data.account_category,
-      type: data.type || data.account_type,
-      balance: parseFloat(data.balance || data.current_balance || "0"),
-      currency: data.currency || "ZAR",
-      status: data.status || "active",
-      description: data.description,
-      parentAccountId: data.parent_account_id,
-      createdAt: new Date(data.created_at || data.date_created),
-      updatedAt: new Date(data.updated_at || data.date_modified),
+      id: String(data.id || data.guid || ""),
+      code: String(data.code || data.account_code || ""),
+      name: String(data.name || data.account_name || ""),
+      category: String(data.category || data.account_category || ""),
+      type: (data.type || data.account_type || "asset") as
+        | "asset"
+        | "liability"
+        | "equity"
+        | "income"
+        | "expense",
+      balance: parseFloat(String(data.balance || data.current_balance || "0")),
+      currency: String(data.currency || "ZAR"),
+      status: (data.status || "active") as "active" | "inactive",
+      description: data.description ? String(data.description) : undefined,
+      parentAccountId: data.parent_account_id
+        ? String(data.parent_account_id)
+        : undefined,
+      createdAt: new Date(
+        String(data.created_at || data.date_created || new Date())
+      ),
+      updatedAt: new Date(
+        String(data.updated_at || data.date_modified || new Date())
+      ),
     };
   }
 
-  private transformAccounts(accounts: any[]): SageAccount[] {
+  private transformAccounts(
+    accounts: Record<string, unknown>[]
+  ): SageAccount[] {
     return accounts.map((account) => this.transformAccount(account));
   }
 
-  private transformTransaction(data: any): SageTransaction {
+  private transformTransaction(data: Record<string, unknown>): SageTransaction {
     return {
-      id: data.id || data.guid,
-      reference: data.reference || data.transaction_reference,
-      date: new Date(data.date || data.transaction_date),
-      description: data.description || data.memo,
-      amount: parseFloat(data.amount || "0"),
-      type: data.type || "debit",
-      accountId: data.account_id || data.account_guid,
-      accountCode: data.account_code,
-      accountName: data.account_name,
-      category: data.account_category,
-      status: data.status || "posted",
-      journalId: data.journal_id,
-      journalReference: data.journal_reference,
-      customerId: data.customer_id,
-      customerName: data.customer_name,
-      supplierId: data.supplier_id,
-      supplierName: data.supplier_name,
-      taxAmount: data.tax_amount ? parseFloat(data.tax_amount) : undefined,
-      taxCode: data.tax_code,
-      notes: data.notes,
-      attachments: data.attachments,
-      createdAt: new Date(data.created_at || data.date_created),
-      updatedAt: new Date(data.updated_at || data.date_modified),
+      id: String(data.id || data.guid || ""),
+      reference: String(data.reference || data.transaction_reference || ""),
+      date: new Date(String(data.date || data.transaction_date || new Date())),
+      description: String(data.description || data.memo || ""),
+      amount: parseFloat(String(data.amount || "0")),
+      type: (data.type || "debit") as "debit" | "credit",
+      accountId: String(data.account_id || data.account_guid || ""),
+      accountCode: String(data.account_code || ""),
+      accountName: String(data.account_name || ""),
+      category: String(data.account_category || ""),
+      status: (data.status || "posted") as "posted" | "draft" | "void",
+      journalId: data.journal_id ? String(data.journal_id) : undefined,
+      journalReference: data.journal_reference
+        ? String(data.journal_reference)
+        : undefined,
+      customerId: data.customer_id ? String(data.customer_id) : undefined,
+      customerName: data.customer_name ? String(data.customer_name) : undefined,
+      supplierId: data.supplier_id ? String(data.supplier_id) : undefined,
+      supplierName: data.supplier_name ? String(data.supplier_name) : undefined,
+      taxAmount: data.tax_amount
+        ? parseFloat(String(data.tax_amount))
+        : undefined,
+      taxCode: data.tax_code ? String(data.tax_code) : undefined,
+      notes: data.notes ? String(data.notes) : undefined,
+      attachments: Array.isArray(data.attachments)
+        ? data.attachments.map(String)
+        : undefined,
+      createdAt: new Date(
+        String(data.created_at || data.date_created || new Date())
+      ),
+      updatedAt: new Date(
+        String(data.updated_at || data.date_modified || new Date())
+      ),
     };
   }
 
-  private transformTransactions(transactions: any[]): SageTransaction[] {
+  private transformTransactions(
+    transactions: Record<string, unknown>[]
+  ): SageTransaction[] {
     return transactions.map((transaction) =>
       this.transformTransaction(transaction)
     );
   }
 
-  private transformJournal(data: any): SageJournal {
+  private transformJournal(data: Record<string, unknown>): SageJournal {
     return {
-      id: data.id || data.guid,
-      reference: data.reference || data.journal_reference,
-      date: new Date(data.date || data.journal_date),
-      description: data.description || data.memo,
-      totalDebit: parseFloat(data.total_debit || "0"),
-      totalCredit: parseFloat(data.total_credit || "0"),
-      status: data.status || "posted",
-      type: data.type || "general",
-      transactions: data.transactions
-        ? this.transformTransactions(data.transactions)
+      id: String(data.id || data.guid || ""),
+      reference: String(data.reference || data.journal_reference || ""),
+      date: new Date(String(data.date || data.journal_date || new Date())),
+      description: String(data.description || data.memo || ""),
+      totalDebit: parseFloat(String(data.total_debit || "0")),
+      totalCredit: parseFloat(String(data.total_credit || "0")),
+      status: (data.status || "posted") as "posted" | "draft" | "void",
+      type: (data.type || "general") as
+        | "general"
+        | "sales"
+        | "purchase"
+        | "payment"
+        | "receipt"
+        | "adjustment",
+      transactions: Array.isArray(data.transactions)
+        ? this.transformTransactions(
+            data.transactions as Record<string, unknown>[]
+          )
         : [],
-      notes: data.notes,
-      createdAt: new Date(data.created_at || data.date_created),
-      updatedAt: new Date(data.updated_at || data.date_modified),
+      notes: data.notes ? String(data.notes) : undefined,
+      createdAt: new Date(
+        String(data.created_at || data.date_created || new Date())
+      ),
+      updatedAt: new Date(
+        String(data.updated_at || data.date_modified || new Date())
+      ),
     };
   }
 
-  private transformJournals(journals: any[]): SageJournal[] {
+  private transformJournals(
+    journals: Record<string, unknown>[]
+  ): SageJournal[] {
     return journals.map((journal) => this.transformJournal(journal));
   }
 
-  private transformCustomer(data: any): SageCustomer {
+  private transformCustomer(data: Record<string, unknown>): SageCustomer {
+    const address = data.address as Record<string, unknown> | undefined;
+
     return {
-      id: data.id || data.guid,
-      code: data.code || data.customer_code,
-      name: data.name || data.customer_name,
-      email: data.email,
-      phone: data.phone,
-      address: data.address
+      id: String(data.id || data.guid || ""),
+      code: String(data.code || data.customer_code || ""),
+      name: String(data.name || data.customer_name || ""),
+      email: data.email ? String(data.email) : undefined,
+      phone: data.phone ? String(data.phone) : undefined,
+      address: address
         ? {
-            line1: data.address.line1 || data.address.address_line1,
-            line2: data.address.line2 || data.address.address_line2,
-            city: data.address.city,
-            state: data.address.state,
-            postalCode: data.address.postal_code,
-            country: data.address.country,
+            line1: String(address.line1 || address.address_line1 || ""),
+            line2:
+              address.line2 || address.address_line2
+                ? String(address.line2 || address.address_line2)
+                : undefined,
+            city: String(address.city || ""),
+            state: address.state ? String(address.state) : undefined,
+            postalCode: address.postal_code
+              ? String(address.postal_code)
+              : undefined,
+            country: String(address.country || ""),
           }
         : undefined,
-      taxNumber: data.tax_number || data.vat_number,
+      taxNumber:
+        data.tax_number || data.vat_number
+          ? String(data.tax_number || data.vat_number)
+          : undefined,
       creditLimit: data.credit_limit
-        ? parseFloat(data.credit_limit)
+        ? parseFloat(String(data.credit_limit))
         : undefined,
-      balance: parseFloat(data.balance || data.current_balance || "0"),
-      status: data.status || "active",
-      createdAt: new Date(data.created_at || data.date_created),
-      updatedAt: new Date(data.updated_at || data.date_modified),
+      balance: parseFloat(String(data.balance || data.current_balance || "0")),
+      status: (data.status || "active") as "active" | "inactive",
+      createdAt: new Date(
+        String(data.created_at || data.date_created || new Date())
+      ),
+      updatedAt: new Date(
+        String(data.updated_at || data.date_modified || new Date())
+      ),
     };
   }
 
-  private transformCustomers(customers: any[]): SageCustomer[] {
+  private transformCustomers(
+    customers: Record<string, unknown>[]
+  ): SageCustomer[] {
     return customers.map((customer) => this.transformCustomer(customer));
   }
 
-  private transformSupplier(data: any): SageSupplier {
+  private transformSupplier(data: Record<string, unknown>): SageSupplier {
+    const address = data.address as Record<string, unknown> | undefined;
+
     return {
-      id: data.id || data.guid,
-      code: data.code || data.supplier_code,
-      name: data.name || data.supplier_name,
-      email: data.email,
-      phone: data.phone,
-      address: data.address
+      id: String(data.id || data.guid || ""),
+      code: String(data.code || data.supplier_code || ""),
+      name: String(data.name || data.supplier_name || ""),
+      email: data.email ? String(data.email) : undefined,
+      phone: data.phone ? String(data.phone) : undefined,
+      address: address
         ? {
-            line1: data.address.line1 || data.address.address_line1,
-            line2: data.address.line2 || data.address.address_line2,
-            city: data.address.city,
-            state: data.address.state,
-            postalCode: data.address.postal_code,
-            country: data.address.country,
+            line1: String(address.line1 || address.address_line1 || ""),
+            line2:
+              address.line2 || address.address_line2
+                ? String(address.line2 || address.address_line2)
+                : undefined,
+            city: String(address.city || ""),
+            state: address.state ? String(address.state) : undefined,
+            postalCode: address.postal_code
+              ? String(address.postal_code)
+              : undefined,
+            country: String(address.country || ""),
           }
         : undefined,
-      taxNumber: data.tax_number || data.vat_number,
-      balance: parseFloat(data.balance || data.current_balance || "0"),
-      status: data.status || "active",
-      createdAt: new Date(data.created_at || data.date_created),
-      updatedAt: new Date(data.updated_at || data.date_modified),
+      taxNumber:
+        data.tax_number || data.vat_number
+          ? String(data.tax_number || data.vat_number)
+          : undefined,
+      balance: parseFloat(String(data.balance || data.current_balance || "0")),
+      status: (data.status || "active") as "active" | "inactive",
+      createdAt: new Date(
+        String(data.created_at || data.date_created || new Date())
+      ),
+      updatedAt: new Date(
+        String(data.updated_at || data.date_modified || new Date())
+      ),
     };
   }
 
-  private transformSuppliers(suppliers: any[]): SageSupplier[] {
+  private transformSuppliers(
+    suppliers: Record<string, unknown>[]
+  ): SageSupplier[] {
     return suppliers.map((supplier) => this.transformSupplier(supplier));
   }
 
-  private transformFinancialSummary(data: any): SageFinancialSummary {
+  private transformFinancialSummary(
+    data: Record<string, unknown>
+  ): SageFinancialSummary {
     return {
-      totalAssets: parseFloat(data.total_assets || "0"),
-      totalLiabilities: parseFloat(data.total_liabilities || "0"),
-      totalEquity: parseFloat(data.total_equity || "0"),
-      totalIncome: parseFloat(data.total_income || "0"),
-      totalExpenses: parseFloat(data.total_expenses || "0"),
-      netIncome: parseFloat(data.net_income || "0"),
-      cashBalance: parseFloat(data.cash_balance || "0"),
-      accountsReceivable: parseFloat(data.accounts_receivable || "0"),
-      accountsPayable: parseFloat(data.accounts_payable || "0"),
-      asOfDate: new Date(data.as_of_date || new Date()),
+      totalAssets: parseFloat(String(data.total_assets || "0")),
+      totalLiabilities: parseFloat(String(data.total_liabilities || "0")),
+      totalEquity: parseFloat(String(data.total_equity || "0")),
+      totalIncome: parseFloat(String(data.total_income || "0")),
+      totalExpenses: parseFloat(String(data.total_expenses || "0")),
+      netIncome: parseFloat(String(data.net_income || "0")),
+      cashBalance: parseFloat(String(data.cash_balance || "0")),
+      accountsReceivable: parseFloat(String(data.accounts_receivable || "0")),
+      accountsPayable: parseFloat(String(data.accounts_payable || "0")),
+      asOfDate: new Date(String(data.as_of_date || new Date())),
     };
   }
 

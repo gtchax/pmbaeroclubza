@@ -11,12 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle, Building2, ArrowRight } from "lucide-react";
-import { useSageAuth } from "@/lib/sage-auth";
+// import { useSageAuth } from "@/lib/sage-auth";
 import { useRouter } from "next/navigation";
 
 export default function SageSuccessPage() {
   const [countdown, setCountdown] = useState(5);
-  const { authState } = useSageAuth();
   const router = useRouter();
 
   useEffect(() => {
