@@ -593,8 +593,6 @@ export interface AircraftDocument {
   updatedAt: Date;
 }
 
-
-
 // Certification
 export interface Certification {
   id: string;
@@ -1110,15 +1108,15 @@ export interface UserDocument {
   fileSize: number;
   mimeType: string;
   status: DocumentStatus;
-  notes?: string;
+  notes: string | null;
   uploadedAt: Date;
   updatedAt: Date;
-  reviewedAt?: Date;
-  reviewedBy?: string;
-  reviewNotes?: string;
+  reviewedAt: Date | null;
+  reviewedBy: string | null;
+  reviewNotes: string | null;
 }
 
-export type DocumentType = 
+export type DocumentType =
   | "MEDICAL_CERTIFICATE"
   | "LICENSE_COPY"
   | "INSURANCE_DOCUMENT"
@@ -1128,7 +1126,7 @@ export type DocumentType =
   | "AIRCRAFT_CERTIFICATION"
   | "OTHER";
 
-export type DocumentCategory = 
+export type DocumentCategory =
   | "REGISTRATION"
   | "MEDICAL"
   | "LICENSING"
@@ -1138,7 +1136,7 @@ export type DocumentCategory =
   | "ADMINISTRATIVE"
   | "OTHER";
 
-export type DocumentStatus = 
+export type DocumentStatus =
   | "PENDING"
   | "APPROVED"
   | "REJECTED"
@@ -1153,7 +1151,12 @@ export interface RegistrationDocument {
   id: string;
   userId: string;
   name: string;
-  type: "medical_certificate" | "license_copy" | "insurance_document" | "identification" | "other";
+  type:
+    | "medical_certificate"
+    | "license_copy"
+    | "insurance_document"
+    | "identification"
+    | "other";
   fileName: string;
   fileSize: number;
   mimeType: string;

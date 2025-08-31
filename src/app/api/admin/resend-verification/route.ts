@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user in Clerk
-    const users = await clerkClient.users.getUserList({
+    const client = await clerkClient();
+
+    const users = await client.users.getUserList({
       emailAddress: [email],
     });
 
@@ -41,9 +43,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Resend verification email
-    await clerkClient.users.createEmailVerification({
-      userId: user.id,
-    });
+    // await client.users.createEmailVerification({
+    //   userId: user.id,
+    // });
 
     return NextResponse.json({
       success: true,

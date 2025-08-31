@@ -57,14 +57,14 @@ export function Hero2() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <Button size="xl" asChild className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]">
+            <Button size="lg" asChild className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]">
               <Link href="/flight-school" className="flex items-center space-x-2">
                 <Plane className="h-5 w-5" />
                 <span>Start Flying Today</span>
               </Link>
             </Button>
             
-            <Button variant="outline" size="xl" asChild className="border-white text-white hover:bg-white hover:text-[#262626]">
+            <Button variant="outline" size="lg" asChild className="border-white text-white hover:bg-white hover:text-[#262626]">
               <Link href="/aero-club">Join Our Club</Link>
             </Button>
           </motion.div>

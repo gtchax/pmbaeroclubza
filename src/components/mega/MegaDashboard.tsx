@@ -135,7 +135,7 @@ export function MegaDashboard({ userId, className = "" }: MegaDashboardProps) {
                 <CardTitle className="text-sm font-medium">
                   Total Users
                 </CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <Users className="h-4 w-4 text-muted-foreground" aria-label="Users icon" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{mockStats.totalUsers}</div>
@@ -150,7 +150,7 @@ export function MegaDashboard({ userId, className = "" }: MegaDashboardProps) {
                 <CardTitle className="text-sm font-medium">
                   Total Documents
                 </CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
+                <FileText className="h-4 w-4 text-muted-foreground" aria-label="Documents icon" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -312,7 +312,7 @@ export function MegaDashboard({ userId, className = "" }: MegaDashboardProps) {
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-gray-500">
-                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" aria-label="Document management icon" />
                 <p>Document listing functionality coming soon...</p>
                 <p className="text-sm mt-2">
                   This will include search, filtering, and bulk operations

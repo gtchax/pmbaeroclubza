@@ -63,6 +63,7 @@ export function getPrimaryEmail(data: ClerkUserData): string | null {
  * Note: Phone numbers are now handled separately via profile completion API
  */
 export function getPrimaryPhone(_data: ClerkUserData): string | null {
+  console.log(_data);
   // Phone numbers are handled separately, not through Clerk webhooks
   return null;
 }

@@ -34,8 +34,79 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserApprovalStatus } from "@/lib/actions/user-status-actions";
 
+// Define proper types for the user data
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  avatar?: string;
+  isActive: boolean;
+  isApproved: boolean;
+  approvalStatus: "PENDING" | "APPROVED" | "REJECTED" | "UNDER_REVIEW";
+  paymentStatus: "UNPAID" | "PARTIAL" | "PAID" | "REFUNDED";
+  approvedAt?: Date;
+  approvedBy?: string;
+  rejectedAt?: Date;
+  rejectionReason?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  studentProfile?: {
+    id: string;
+    studentNumber: string;
+    dateOfBirth: Date;
+    address: string;
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelationship?: string;
+    medicalCert?: string;
+    medicalExpiry?: Date;
+    licenseNumber?: string;
+    licenseType?: string;
+    licenseExpiry?: Date;
+    totalFlightHours: number;
+    soloHours: number;
+    crossCountryHours: number;
+    instrumentHours: number;
+    nightHours: number;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  instructorProfile?: {
+    id: string;
+    instructorNumber: string;
+    licenseNumber: string;
+    licenseType: string;
+    licenseExpiry: Date;
+    medicalCert: string;
+    medicalExpiry: Date;
+    totalFlightHours: number;
+    instructorRating: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  adminProfile?: {
+    id: string;
+    adminLevel: "SUPER_ADMIN" | "ADMIN" | "MODERATOR";
+    permissions: string[];
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  roles: Array<{
+    id: string;
+    role: {
+      id: string;
+      name: string;
+      description: string;
+      permissions: string[];
+    };
+  }>;
+}
+
 interface UserManagementProps {
-  users: unknown[] | undefined;
+  users: User[] | undefined;
   isLoading: boolean;
   onRefresh: () => void;
 }
@@ -58,7 +129,7 @@ export function UserManagement({
       reason,
     }: {
       userId: string;
-      status: string;
+      status: "PENDING" | "APPROVED" | "REJECTED" | "UNDER_REVIEW";
       reason?: string;
     }) => updateUserApprovalStatus(userId, status, undefined, reason),
     onSuccess: () => {
@@ -87,19 +158,14 @@ export function UserManagement({
     });
   }, [users, searchTerm, statusFilter, typeFilter]);
 
-  const getUserType = (user: unknown) => {
-    const userObj = user as {
-      adminProfile?: unknown;
-      instructorProfile?: unknown;
-      studentProfile?: unknown;
-    };
-    if (userObj.adminProfile) return "admin";
-    if (userObj.instructorProfile) return "instructor";
-    if (userObj.studentProfile) return "student";
+  const getUserType = (user: User) => {
+    if (user.adminProfile) return "admin";
+    if (user.instructorProfile) return "instructor";
+    if (user.studentProfile) return "student";
     return "user";
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: User["approvalStatus"]) => {
     const variants = {
       PENDING: "secondary",
       APPROVED: "default",
@@ -115,17 +181,14 @@ export function UserManagement({
     };
 
     return (
-      <Badge
-        variant={variants[status as keyof typeof variants]}
-        className={colors[status as keyof typeof colors]}
-      >
+      <Badge variant={variants[status]} className={colors[status]}>
         {status.replace("_", " ").charAt(0).toUpperCase() +
           status.replace("_", " ").slice(1)}
       </Badge>
     );
   };
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type: ReturnType<typeof getUserType>) => {
     const colors = {
       student: "bg-blue-100 text-blue-800",
       instructor: "bg-purple-100 text-purple-800",
@@ -134,10 +197,7 @@ export function UserManagement({
     };
 
     return (
-      <Badge
-        variant="secondary"
-        className={colors[type as keyof typeof colors]}
-      >
+      <Badge variant="secondary" className={colors[type]}>
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </Badge>
     );

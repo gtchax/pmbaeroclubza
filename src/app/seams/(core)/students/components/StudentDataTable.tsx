@@ -46,6 +46,29 @@ import {
   Clock,
 } from "lucide-react";
 
+export interface StudentProfile {
+  id: string;
+  userId: string;
+  studentNumber: string;
+  dateOfBirth: Date;
+  address: string;
+  emergencyContactName: string | null;
+  emergencyContactPhone: string | null;
+  emergencyContactRelationship: string | null;
+  medicalCert: string | null;
+  medicalExpiry: Date | null;
+  licenseNumber: string | null;
+  licenseType: string | null;
+  licenseExpiry: Date | null;
+  totalFlightHours: number;
+  soloHours: number;
+  crossCountryHours: number;
+  instrumentHours: number;
+  nightHours: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Student {
   id: string;
   firstName: string;
@@ -54,7 +77,7 @@ export interface Student {
   phone?: string;
   approvalStatus: string;
   createdAt: Date;
-  studentProfile?: any; // Simplified for now
+  studentProfile?: StudentProfile;
 }
 
 interface StudentDataTableProps {
@@ -202,7 +225,14 @@ export function StudentDataTable({
         cell: ({ row }) => {
           const status = row.original.approvalStatus;
 
-          const statusConfig = {
+          const statusConfig: Record<
+            string,
+            {
+              label: string;
+              variant: "default" | "secondary" | "destructive" | "outline";
+              icon: React.ComponentType<{ className?: string }>;
+            }
+          > = {
             PENDING: { label: "Pending", variant: "secondary", icon: Clock },
             APPROVED: {
               label: "Approved",
@@ -228,7 +258,7 @@ export function StudentDataTable({
 
           return (
             <Badge
-              variant={config.variant as "default" | "secondary" | "destructive" | "outline"}
+              variant={config.variant}
               className="flex items-center space-x-1"
             >
               <Icon className="h-3 w-3" />
@@ -378,10 +408,15 @@ export function StudentDataTable({
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {{
-                          asc: <ChevronUp className="h-4 w-4" />,
-                          desc: <ChevronDown className="h-4 w-4" />,
-                        }[header.column.getIsSorted() as string] ?? null}
+                        {(() => {
+                          const sortDirection = header.column.getIsSorted();
+                          if (sortDirection === "asc") {
+                            return <ChevronUp className="h-4 w-4" />;
+                          } else if (sortDirection === "desc") {
+                            return <ChevronDown className="h-4 w-4" />;
+                          }
+                          return null;
+                        })()}
                       </div>
                     )}
                   </TableHead>
@@ -448,4 +483,3 @@ export function StudentDataTable({
     </div>
   );
 }
-

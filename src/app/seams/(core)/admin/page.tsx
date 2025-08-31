@@ -36,6 +36,77 @@ import {
 } from "@/lib/actions/admin-actions";
 import { useAuth } from "@clerk/nextjs";
 
+// Define the type for users returned by getAllUsers
+type AdminUser = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  avatar?: string;
+  isActive: boolean;
+  isApproved: boolean;
+  approvalStatus: "PENDING" | "APPROVED" | "REJECTED" | "UNDER_REVIEW";
+  paymentStatus: "UNPAID" | "PARTIAL" | "PAID" | "REFUNDED";
+  approvedAt?: Date;
+  approvedBy?: string;
+  rejectedAt?: Date;
+  rejectionReason?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  studentProfile?: {
+    id: string;
+    studentNumber: string;
+    dateOfBirth: Date;
+    address: string;
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    emergencyContactRelationship?: string;
+    medicalCert?: string;
+    medicalExpiry?: Date;
+    licenseNumber?: string;
+    licenseType?: string;
+    licenseExpiry?: Date;
+    totalFlightHours: number;
+    soloHours: number;
+    crossCountryHours: number;
+    instrumentHours: number;
+    nightHours: number;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  instructorProfile?: {
+    id: string;
+    instructorNumber: string;
+    licenseNumber: string;
+    licenseType: string;
+    licenseExpiry: Date;
+    medicalCert: string;
+    medicalExpiry: Date;
+    totalFlightHours: number;
+    instructorRating: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  adminProfile?: {
+    id: string;
+    adminLevel: "SUPER_ADMIN" | "ADMIN" | "MODERATOR";
+    permissions: string[];
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  roles: Array<{
+    id: string;
+    role: {
+      id: string;
+      name: string;
+      description: string;
+      permissions: string[];
+    };
+  }>;
+};
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
@@ -100,7 +171,7 @@ export default function AdminDashboard() {
   // Get recent bookings
   const recentBookings = bookings?.slice(0, 5) || [];
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: AdminUser["approvalStatus"]) => {
     const variants = {
       PENDING: "secondary",
       APPROVED: "default",
@@ -116,46 +187,72 @@ export default function AdminDashboard() {
     };
 
     return (
-      <Badge
-        variant={variants[status as keyof typeof variants]}
-        className={colors[status as keyof typeof colors]}
-      >
+      <Badge variant={variants[status]} className={colors[status]}>
         {status.replace("_", " ").charAt(0).toUpperCase() +
           status.replace("_", " ").slice(1)}
       </Badge>
     );
   };
 
-  const getTypeBadge = (type: string) => {
+  const getBookingStatusBadge = (
+    status:
+      | "PENDING"
+      | "CONFIRMED"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "CANCELLED"
+      | "NO_SHOW"
+  ) => {
+    const variants = {
+      PENDING: "secondary",
+      CONFIRMED: "default",
+      IN_PROGRESS: "outline",
+      COMPLETED: "default",
+      CANCELLED: "destructive",
+      NO_SHOW: "destructive",
+    } as const;
+
+    const colors = {
+      PENDING: "bg-yellow-100 text-yellow-800",
+      CONFIRMED: "bg-green-100 text-green-800",
+      IN_PROGRESS: "bg-blue-100 text-blue-800",
+      COMPLETED: "bg-green-100 text-green-800",
+      CANCELLED: "bg-gray-100 text-gray-800",
+      NO_SHOW: "bg-red-100 text-red-800",
+    };
+
+    return (
+      <Badge variant={variants[status]} className={colors[status]}>
+        {status.replace("_", " ").charAt(0).toUpperCase() +
+          status.replace("_", " ").slice(1)}
+      </Badge>
+    );
+  };
+
+  const getTypeBadge = (type: ReturnType<typeof getUserType>) => {
     const colors = {
       student: "bg-blue-100 text-blue-800",
       instructor: "bg-purple-100 text-purple-800",
       admin: "bg-red-100 text-red-800",
+      user: "bg-gray-100 text-gray-800",
     };
 
     return (
-      <Badge
-        variant="secondary"
-        className={colors[type as keyof typeof colors]}
-      >
+      <Badge variant="secondary" className={colors[type]}>
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </Badge>
     );
   };
 
-  const getUserType = (user: unknown) => {
-    const userObj = user as {
-      adminProfile?: unknown;
-      instructorProfile?: unknown;
-      studentProfile?: unknown;
-    };
-    if (userObj.adminProfile) return "admin";
-    if (userObj.instructorProfile) return "instructor";
-    if (userObj.studentProfile) return "student";
+  const getUserType = (user: Record<string, unknown>) => {
+    if (user.adminProfile) return "admin";
+    if (user.instructorProfile) return "instructor";
+    if (user.studentProfile) return "student";
     return "user";
   };
 
-  const getDocumentCount = (user: unknown) => {
+  const getDocumentCount = (user: Record<string, unknown>) => {
+    console.log("user", user);
     // This would need to be implemented based on your document system
     return 0;
   };
@@ -409,7 +506,7 @@ export default function AdminDashboard() {
                             {new Date(booking.startTime).toLocaleTimeString()}
                           </p>
                         </div>
-                        {getStatusBadge(booking.status)}
+                        {getBookingStatusBadge(booking.status)}
                       </div>
                     ))}
                   </div>
@@ -515,7 +612,7 @@ export default function AdminDashboard() {
           {/* User Management Tab */}
           <TabsContent value="users" className="space-y-4">
             <UserManagement
-              users={users}
+              users={users as unknown as AdminUser[]}
               isLoading={usersLoading}
               onRefresh={refetchUsers}
             />
@@ -524,7 +621,7 @@ export default function AdminDashboard() {
           {/* Bookings Tab */}
           <TabsContent value="bookings" className="space-y-4">
             <BookingManagement
-              bookings={bookings}
+              bookings={bookings as never}
               isLoading={bookingsLoading}
               onRefresh={refetchBookings}
             />

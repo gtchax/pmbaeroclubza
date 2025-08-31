@@ -5,8 +5,6 @@ import {
   Plane,
   Users,
   Settings,
-  // Bell,
-  User,
   Zap,
   ChevronLeft,
   ChevronRight,

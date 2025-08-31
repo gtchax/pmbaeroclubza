@@ -82,17 +82,6 @@ export class MegaStorageManager {
   // FOLDER MANAGEMENT
   // ================================
 
-  private async ensureBaseFolder(): Promise<void> {
-    try {
-      // Mock implementation for now
-      this.baseFolderId = "mock_base_folder_id";
-      console.log(`Using mock base folder: ${this.config.baseFolder}`);
-    } catch (error) {
-      console.error("Error ensuring base folder:", error);
-      throw error;
-    }
-  }
-
   async createFolder(
     parentFolderId: string,
     folderName: string
@@ -210,7 +199,7 @@ export class MegaStorageManager {
       if (!this.isConnected) {
         throw new Error("Not connected to MEGA");
       }
-
+      console.log(_fileId);
       // Mock file download
       const mockData = Buffer.from("Mock file content");
 
@@ -230,7 +219,7 @@ export class MegaStorageManager {
       if (!this.isConnected) {
         throw new Error("Not connected to MEGA");
       }
-
+      console.log(_fileId);
       // Mock file info
       return {
         id: "mock_file_id",

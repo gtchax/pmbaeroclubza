@@ -277,7 +277,7 @@ export async function getRegistrationDocuments(
     if (!megaStorage.getConnectionStatus()) {
       await megaStorage.connect();
     }
-
+    console.log(_userId);
     // This would require implementing folder listing functionality
     // For now, we'll return a placeholder
     // TODO: Implement actual document listing using _userId
@@ -393,7 +393,7 @@ export async function deleteUserDocuments(
     if (!megaStorage.getConnectionStatus()) {
       await megaStorage.connect();
     }
-
+    console.log(_userId);
     // This would require implementing folder deletion functionality
     // For now, we'll return a placeholder
     // TODO: Implement actual user document deletion using _userId

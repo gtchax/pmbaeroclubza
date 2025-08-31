@@ -1,12 +1,12 @@
 "use server";
 
 import { prisma } from "../prisma";
-import { 
-  UserDocument, 
-  DocumentType, 
-  DocumentCategory, 
+import {
+  UserDocument,
+  DocumentType,
+  DocumentCategory,
   DocumentStatus,
-  UserWithDocuments 
+  UserWithDocuments,
 } from "../types";
 
 // ================================
@@ -38,7 +38,7 @@ export async function createUserDocument(
 
     return {
       success: true,
-      document,
+      document: document as UserDocument,
       message: "Document record created successfully",
     };
   } catch (error) {
@@ -66,7 +66,7 @@ export async function createMultipleUserDocuments(
 ): Promise<{ success: boolean; documents?: UserDocument[]; message: string }> {
   try {
     const createdDocuments = await Promise.all(
-      documents.map(doc => 
+      documents.map((doc) =>
         prisma.userDocument.create({
           data: {
             userId,
@@ -79,7 +79,7 @@ export async function createMultipleUserDocuments(
 
     return {
       success: true,
-      documents: createdDocuments,
+      documents: createdDocuments as UserDocument[],
       message: `Created ${createdDocuments.length} document records successfully`,
     };
   } catch (error) {
@@ -106,7 +106,7 @@ export async function getUserDocuments(
 
     return {
       success: true,
-      documents,
+      documents: documents as UserDocument[],
       message: `Found ${documents.length} documents`,
     };
   } catch (error) {
@@ -135,7 +135,7 @@ export async function getUserDocument(
 
     return {
       success: true,
-      document,
+      document: document as UserDocument,
       message: "Document retrieved successfully",
     };
   } catch (error) {
@@ -202,9 +202,11 @@ export async function updateUserDocument(
       data: {
         ...updates,
         updatedAt: new Date(),
-        ...(updates.status === "APPROVED" || updates.status === "REJECTED" ? {
-          reviewedAt: new Date(),
-        } : {}),
+        ...(updates.status === "APPROVED" || updates.status === "REJECTED"
+          ? {
+              reviewedAt: new Date(),
+            }
+          : {}),
       },
     });
 
@@ -340,11 +342,23 @@ export async function searchUserDocuments(
 // DOCUMENT STATISTICS
 // ================================
 
-export async function getUserDocumentStats(
-  userId: string
-): Promise<{ success: boolean; stats?: { total: number; pending: number; approved: number; rejected: number }; message: string }> {
+export async function getUserDocumentStats(userId: string): Promise<{
+  success: boolean;
+  stats?: {
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+  };
+  message: string;
+}> {
   try {
-    const [totalDocuments, pendingDocuments, approvedDocuments, rejectedDocuments] = await Promise.all([
+    const [
+      totalDocuments,
+      pendingDocuments,
+      approvedDocuments,
+      rejectedDocuments,
+    ] = await Promise.all([
       prisma.userDocument.count({ where: { userId } }),
       prisma.userDocument.count({ where: { userId, status: "PENDING" } }),
       prisma.userDocument.count({ where: { userId, status: "APPROVED" } }),

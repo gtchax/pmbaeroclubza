@@ -42,7 +42,9 @@ export async function POST(request: NextRequest) {
     console.error("Backend Clerk signup error:", error);
 
     // Handle specific Clerk errors
-    const clerkError = error as { errors?: Array<{ code: string; meta?: { param_name?: string } }> };
+    const clerkError = error as {
+      errors?: Array<{ code: string; meta?: { param_name?: string } }>;
+    };
     if (clerkError.errors && Array.isArray(clerkError.errors)) {
       const firstError = clerkError.errors[0];
 

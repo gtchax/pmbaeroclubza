@@ -6,12 +6,7 @@ import { updateUserApprovalStatus } from "@/lib/actions/user-status-actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -57,7 +52,17 @@ export function ApprovalDialog({
   const queryClient = useQueryClient();
 
   const updateStatusMutation = useMutation({
-    mutationFn: updateUserApprovalStatus,
+    mutationFn: ({
+      userId,
+      status,
+      approvedBy,
+      rejectionReason,
+    }: {
+      userId: string;
+      status: "PENDING" | "APPROVED" | "REJECTED" | "UNDER_REVIEW";
+      approvedBy?: string;
+      rejectionReason?: string;
+    }) => updateUserApprovalStatus(userId, status, approvedBy, rejectionReason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       onSuccess();
@@ -76,12 +81,13 @@ export function ApprovalDialog({
     try {
       const newStatus = decision === "approve" ? "APPROVED" : "REJECTED";
 
-      await updateStatusMutation.mutateAsync(
-        student.id,
-        newStatus,
-        undefined, // approvedBy - could be passed from context
-        decision === "reject" ? notes.trim() || undefined : undefined
-      );
+      await updateStatusMutation.mutateAsync({
+        userId: student.id,
+        status: newStatus,
+        approvedBy: undefined, // approvedBy - could be passed from context
+        rejectionReason:
+          decision === "reject" ? notes.trim() || undefined : undefined,
+      });
 
       // Reset form
       setDecision(null);
@@ -164,7 +170,15 @@ export function ApprovalDialog({
                   </div>
                   <div className="text-sm text-gray-500">{student.email}</div>
                   <div className="flex items-center space-x-2 mt-1">
-                    <Badge variant={statusConfig.variant as "default" | "secondary" | "destructive" | "outline"}>
+                    <Badge
+                      variant={
+                        statusConfig.variant as
+                          | "default"
+                          | "secondary"
+                          | "destructive"
+                          | "outline"
+                      }
+                    >
                       {statusConfig.label}
                     </Badge>
                     <span className="text-xs text-gray-500">
@@ -327,4 +341,3 @@ export function ApprovalDialog({
     </Dialog>
   );
 }
-

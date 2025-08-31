@@ -11,7 +11,7 @@ import {
   deleteUserDocument,
   getUserDocumentStats,
 } from "../actions/user-document-actions";
-import { DocumentType, DocumentCategory } from "../types";
+import { DocumentType, DocumentCategory, DocumentStatus } from "../types";
 
 // ================================
 // DOCUMENT RETRIEVAL HOOKS
@@ -270,7 +270,7 @@ export function useUserDocumentManagement(userId: string) {
     stats: stats.data?.stats,
     isLoading: documents.isLoading || stats.isLoading,
     error: documents.error || stats.error,
-    
+
     // Actions
     createDocument: createDocument.mutate,
     createMultipleDocuments: createMultipleDocuments.mutate,
@@ -278,7 +278,7 @@ export function useUserDocumentManagement(userId: string) {
     approveDocument: approveDoc.mutate,
     rejectDocument: rejectDoc.mutate,
     deleteDocument: deleteDocument.mutate,
-    
+
     // Loading states
     isCreating: createDocument.isPending,
     isCreatingMultiple: createMultipleDocuments.isPending,
@@ -286,7 +286,7 @@ export function useUserDocumentManagement(userId: string) {
     isApproving: approveDoc.isPending,
     isRejecting: rejectDoc.isPending,
     isDeleting: deleteDocument.isPending,
-    
+
     // Error states
     createError: createDocument.error,
     createMultipleError: createMultipleDocuments.error,
@@ -294,7 +294,7 @@ export function useUserDocumentManagement(userId: string) {
     approveError: approveDoc.error,
     rejectError: rejectDoc.error,
     deleteError: deleteDocument.error,
-    
+
     // Refresh
     refetch: () => {
       documents.refetch();

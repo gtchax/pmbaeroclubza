@@ -1,6 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { getClerkDashboardUrl } from "@/lib/utils/clerk-role-utils";
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -58,18 +57,7 @@ export default clerkMiddleware(async (auth, req) => {
       "/sign-up",
     ];
     if (authPages.includes(req.nextUrl.pathname)) {
-      // Get role-based dashboard URL from Clerk metadata
-      try {
-        const dashboardUrl = await getClerkDashboardUrl();
-        return NextResponse.redirect(new URL(dashboardUrl, req.url));
-      } catch (error) {
-        console.error(
-          "Error getting dashboard URL, falling back to /dashboard:",
-          error
-        );
-        // Fallback to main dashboard if role lookup fails
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
   }
 

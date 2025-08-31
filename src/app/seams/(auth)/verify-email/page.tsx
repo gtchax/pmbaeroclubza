@@ -17,7 +17,6 @@ import {
   Loader2,
   Mail,
   CheckCircle,
-  AlertTriangle,
   ArrowLeft,
 } from "lucide-react";
 

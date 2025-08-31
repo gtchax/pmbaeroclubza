@@ -43,8 +43,45 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// Define proper types for the booking data
+interface Booking {
+  id: string;
+  student: {
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+    studentProfile?: {
+      studentNumber: string;
+    };
+  };
+  scheduleSlot?: {
+    instructor?: {
+      user?: {
+        firstName?: string;
+        lastName?: string;
+        avatar?: string;
+      };
+      instructorNumber?: string;
+    };
+  };
+  aircraft: {
+    registration: string;
+    make: string;
+    model: string;
+  };
+  purpose: string;
+  status: "PENDING" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+  type: "LESSON" | "SOLO" | "CHECKRIDE" | "PROFICIENCY" | "RECREATIONAL";
+  date: string;
+  startTime: string;
+  endTime: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface BookingManagementProps {
-  bookings: unknown[] | undefined;
+  bookings: Booking[] | undefined;
   isLoading: boolean;
   onRefresh: () => void;
 }
@@ -64,51 +101,39 @@ export function BookingManagement({
     if (!bookings) return [];
 
     return bookings.filter((booking) => {
-      const bookingObj = booking as {
-        student: { firstName: string; lastName: string };
-        scheduleSlot?: {
-          instructor?: { user?: { firstName?: string; lastName?: string } };
-        };
-        aircraft: { registration: string };
-        purpose: string;
-        status: string;
-        type: string;
-        date: string;
-      };
-
       const matchesSearch =
-        bookingObj.student.firstName
+        booking.student.firstName
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        bookingObj.student.lastName
+        booking.student.lastName
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        (bookingObj.scheduleSlot?.instructor?.user?.firstName || "")
+        (booking.scheduleSlot?.instructor?.user?.firstName || "")
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        (bookingObj.scheduleSlot?.instructor?.user?.lastName || "")
+        (booking.scheduleSlot?.instructor?.user?.lastName || "")
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        bookingObj.aircraft.registration
+        booking.aircraft.registration
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        bookingObj.purpose.toLowerCase().includes(searchTerm.toLowerCase());
+        booking.purpose.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || bookingObj.status === statusFilter;
+        statusFilter === "all" || booking.status === statusFilter;
       const matchesType =
-        typeFilter === "all" || bookingObj.type === typeFilter;
+        typeFilter === "all" || booking.type === typeFilter;
       const matchesDate =
         dateFilter === "all" ||
         (dateFilter === "today" &&
-          new Date(bookingObj.date).toDateString() ===
+          new Date(booking.date).toDateString() ===
             new Date().toDateString()) ||
         (dateFilter === "tomorrow" &&
-          new Date(bookingObj.date).toDateString() ===
+          new Date(booking.date).toDateString() ===
             new Date(Date.now() + 86400000).toDateString()) ||
         (dateFilter === "week" &&
           (() => {
-            const bookingDate = new Date(bookingObj.date);
+            const bookingDate = new Date(booking.date);
             const today = new Date();
             const weekFromNow = new Date(
               today.getTime() + 7 * 24 * 60 * 60 * 1000
@@ -120,7 +145,7 @@ export function BookingManagement({
     });
   }, [bookings, searchTerm, statusFilter, typeFilter, dateFilter]);
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: Booking["status"]) => {
     const variants = {
       PENDING: "secondary",
       CONFIRMED: "default",
@@ -141,8 +166,8 @@ export function BookingManagement({
 
     return (
       <Badge
-        variant={variants[status as keyof typeof variants]}
-        className={colors[status as keyof typeof colors]}
+        variant={variants[status]}
+        className={colors[status]}
       >
         {status.replace("_", " ").charAt(0).toUpperCase() +
           status.replace("_", " ").slice(1)}
@@ -150,7 +175,7 @@ export function BookingManagement({
     );
   };
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type: Booking["type"]) => {
     const colors = {
       LESSON: "bg-blue-100 text-blue-800",
       SOLO: "bg-green-100 text-green-800",
@@ -162,7 +187,7 @@ export function BookingManagement({
     return (
       <Badge
         variant="secondary"
-        className={colors[type as keyof typeof colors]}
+        className={colors[type]}
       >
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </Badge>
@@ -202,12 +227,8 @@ export function BookingManagement({
     if (!bookings) return 0;
     const today = new Date();
     return bookings.filter((booking) => {
-      const bookingObj = booking as {
-        date: string;
-        status: string;
-      };
-      const bookingDate = new Date(bookingObj.date);
-      return bookingDate >= today && bookingObj.status === "CONFIRMED";
+      const bookingDate = new Date(booking.date);
+      return bookingDate >= today && booking.status === "CONFIRMED";
     }).length;
   };
 
@@ -431,24 +452,22 @@ export function BookingManagement({
                             <Avatar className="h-8 w-8">
                               <AvatarImage
                                 src={
-                                  booking.scheduleSlot.instructor.user.avatar ||
+                                  booking.scheduleSlot.instructor.user?.avatar ||
                                   ""
                                 }
                               />
                               <AvatarFallback className="text-xs">
                                 {getInitials(
-                                  booking.scheduleSlot.instructor.user
-                                    .firstName +
+                                  booking.scheduleSlot.instructor.user?.firstName +
                                     " " +
-                                    booking.scheduleSlot.instructor.user
-                                      .lastName
+                                    booking.scheduleSlot.instructor.user?.lastName
                                 )}
                               </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium text-sm">
-                                {booking.scheduleSlot.instructor.user.firstName}{" "}
-                                {booking.scheduleSlot.instructor.user.lastName}
+                                {booking.scheduleSlot.instructor.user?.firstName}{" "}
+                                {booking.scheduleSlot.instructor.user?.lastName}
                               </p>
                               <p className="text-xs text-muted-foreground">
                                 {

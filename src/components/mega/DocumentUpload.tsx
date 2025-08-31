@@ -376,12 +376,12 @@ export function DocumentUpload({
                     {file.type.startsWith("image/") ? (
                       <Image
                         className="h-5 w-5 text-blue-500"
-                        aria-hidden="true"
+                        aria-label="Image file icon"
                       />
                     ) : (
                       <FileText
                         className="h-5 w-5 text-gray-500"
-                        aria-hidden="true"
+                        aria-label="Document file icon"
                       />
                     )}
                     <div>

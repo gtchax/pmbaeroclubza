@@ -6,12 +6,7 @@ import { updateUserApprovalStatus } from "@/lib/actions/user-status-actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -51,7 +46,17 @@ export function PauseAccountDialog({
   const queryClient = useQueryClient();
 
   const updateStatusMutation = useMutation({
-    mutationFn: updateUserApprovalStatus,
+    mutationFn: ({
+      userId,
+      status,
+      approvedBy,
+      rejectionReason,
+    }: {
+      userId: string;
+      status: "PENDING" | "APPROVED" | "REJECTED" | "UNDER_REVIEW";
+      approvedBy?: string;
+      rejectionReason?: string;
+    }) => updateUserApprovalStatus(userId, status, approvedBy, rejectionReason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       onSuccess();
@@ -68,12 +73,12 @@ export function PauseAccountDialog({
     setIsLoading(true);
 
     try {
-      await updateStatusMutation.mutateAsync(
-        student.id,
-        "UNDER_REVIEW", // Using UNDER_REVIEW as a pause status
-        undefined, // approvedBy
-        `Account paused: ${pauseReason}. Duration: ${pauseDuration} days.`
-      );
+      await updateStatusMutation.mutateAsync({
+        userId: student.id,
+        status: "UNDER_REVIEW", // Using UNDER_REVIEW as a pause status
+        approvedBy: undefined, // approvedBy
+        rejectionReason: `Account paused: ${pauseReason}. Duration: ${pauseDuration} days.`,
+      });
 
       // Reset form
       setPauseReason("");
@@ -111,8 +116,8 @@ export function PauseAccountDialog({
             <span>Pause Student Account</span>
           </DialogTitle>
           <DialogDescription>
-            Temporarily suspend {student.firstName} {student.lastName}&apos;s account
-            access
+            Temporarily suspend {student.firstName} {student.lastName}&apos;s
+            account access
           </DialogDescription>
         </DialogHeader>
 
@@ -253,4 +258,3 @@ export function PauseAccountDialog({
     </Dialog>
   );
 }
-

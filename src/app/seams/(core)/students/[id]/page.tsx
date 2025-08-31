@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllUsers, getCurrentAdminUser } from "@/lib/actions/admin-actions";
@@ -52,7 +52,6 @@ import {
   BookOpen,
   BarChart3,
   Eye,
-  Trash2,
 } from "lucide-react";
 
 interface StudentData {
@@ -63,7 +62,23 @@ interface StudentData {
   phone?: string;
   approvalStatus: string;
   createdAt: Date;
-  studentProfile?: any;
+  studentProfile?: {
+    studentNumber: string;
+    dateOfBirth: Date;
+    licenseNumber: string;
+    licenseType: string;
+    address: string;
+    totalFlightHours: number;
+    medicalCert: string;
+    emergencyContactName: string;
+    emergencyContactPhone: string;
+    emergencyContactRelationship: string;
+    soloHours: number;
+    dualHours: number;
+    instrumentHours: number;
+    nightHours: number;
+    crossCountryHours: number;
+  };
 }
 
 export default function StudentDetailsPage() {
@@ -631,7 +646,8 @@ export default function StudentDetailsPage() {
                   No Profile Data
                 </h3>
                 <p className="text-gray-500">
-                  This student hasn't completed their profile information yet.
+                  This student hasn&apos;t completed their profile information
+                  yet.
                 </p>
               </CardContent>
             </Card>

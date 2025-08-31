@@ -5,18 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { 
-  Upload, 
-  FileText, 
-  Image, 
-  Download, 
-  Trash2, 
-  CheckCircle, 
-  AlertCircle, 
+// import { Progress } from "@/components/ui/progress";
+import {
+  Upload,
+  FileText,
+  Image,
+  Download,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
   Clock,
   Database,
-  Cloud
+  Cloud,
 } from "lucide-react";
 import { DocumentUpload } from "./DocumentUpload";
 import { MegaConnectionStatus } from "./MegaConnectionStatus";
@@ -29,12 +29,12 @@ interface IntegratedDocumentManagerProps {
   title?: string;
 }
 
-export function IntegratedDocumentManager({ 
-  userId, 
-  title = "Document Management" 
+export function IntegratedDocumentManager({
+  userId,
+  title = "Document Management",
 }: IntegratedDocumentManagerProps) {
   const [activeTab, setActiveTab] = useState("overview");
-  
+
   // Hooks for integrated functionality
   const documentManagement = useUserDocumentManagement(userId);
   const megaStorage = useMegaStorage();
@@ -45,9 +45,16 @@ export function IntegratedDocumentManager({
 
   const getDocumentIcon = (type: string) => {
     if (type.startsWith("image/")) {
-      return <Image className="h-4 w-4 text-blue-500" aria-hidden="true" />;
+      return (
+        <Image className="h-4 w-4 text-blue-500" aria-label="Image file icon" />
+      );
     }
-    return <FileText className="h-4 w-4 text-gray-500" />;
+    return (
+      <FileText
+        className="h-4 w-4 text-gray-500"
+        aria-label="Document file icon"
+      />
+    );
   };
 
   const getStatusBadge = (status: DocumentStatus) => {
@@ -68,11 +75,8 @@ export function IntegratedDocumentManager({
     };
 
     return (
-      <Badge 
-        variant={variants[status]} 
-        className={colors[status]}
-      >
-        {status.toLowerCase().replace('_', ' ')}
+      <Badge variant={variants[status]} className={colors[status]}>
+        {status.toLowerCase().replace("_", " ")}
       </Badge>
     );
   };
@@ -144,11 +148,16 @@ export function IntegratedDocumentManager({
         <MegaConnectionStatus showDetails={true} />
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Database Status</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Database Status
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CheckCircle
+                className="h-4 w-4 text-green-500"
+                aria-label="Approved status icon"
+              />
               <span className="text-sm">Connected to PostgreSQL</span>
             </div>
             <div className="mt-2 text-xs text-muted-foreground">
@@ -159,7 +168,11 @@ export function IntegratedDocumentManager({
       </div>
 
       {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-4"
+      >
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="upload">Upload</TabsTrigger>
@@ -173,8 +186,13 @@ export function IntegratedDocumentManager({
             {/* Document Statistics */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Documents</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">
+                  Total Documents
+                </CardTitle>
+                <FileText
+                  className="h-4 w-4 text-muted-foreground"
+                  aria-label="Documents icon"
+                />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -188,8 +206,13 @@ export function IntegratedDocumentManager({
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">
+                  Pending Review
+                </CardTitle>
+                <Clock
+                  className="h-4 w-4 text-muted-foreground"
+                  aria-label="Pending review icon"
+                />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -204,7 +227,10 @@ export function IntegratedDocumentManager({
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Approved</CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                <CheckCircle
+                  className="h-4 w-4 text-muted-foreground"
+                  aria-label="Approved status icon"
+                />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -225,7 +251,10 @@ export function IntegratedDocumentManager({
             <CardContent>
               {documentManagement.documents.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <FileText
+                    className="h-12 w-12 mx-auto mb-4 opacity-50"
+                    aria-label="No documents icon"
+                  />
                   <p>No documents uploaded yet</p>
                   <p className="text-sm">Start by uploading some documents</p>
                 </div>
@@ -239,7 +268,9 @@ export function IntegratedDocumentManager({
                       <div className="flex items-center gap-3">
                         {getDocumentIcon(doc.mimeType)}
                         <div>
-                          <p className="font-medium text-sm">{doc.displayName}</p>
+                          <p className="font-medium text-sm">
+                            {doc.displayName}
+                          </p>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span>{getDocumentTypeLabel(doc.type)}</span>
                             <span>•</span>
@@ -317,7 +348,10 @@ export function IntegratedDocumentManager({
                 </div>
               ) : documentManagement.documents.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <FileText
+                    className="h-12 w-12 mx-auto mb-4 opacity-50"
+                    aria-label="No documents icon"
+                  />
                   <p>No documents found</p>
                 </div>
               ) : (
@@ -340,7 +374,9 @@ export function IntegratedDocumentManager({
                             {doc.notes && (
                               <>
                                 <span>•</span>
-                                <span className="italic">&quot;{doc.notes}&quot;</span>
+                                <span className="italic">
+                                  &quot;{doc.notes}&quot;
+                                </span>
                               </>
                             )}
                           </div>
@@ -400,7 +436,9 @@ export function IntegratedDocumentManager({
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span>Used Space</span>
-                      <span>{formatFileSize(megaStorage.storageUsage.used)}</span>
+                      <span>
+                        {formatFileSize(megaStorage.storageUsage.used)}
+                      </span>
                     </div>
                     {/* <Progress 
                       value={megaStorage.storageUsage.percentage} 
@@ -436,7 +474,10 @@ export function IntegratedDocumentManager({
                     <span>Total File Size</span>
                     <span>
                       {formatFileSize(
-                        documentManagement.documents.reduce((sum, doc) => sum + doc.fileSize, 0)
+                        documentManagement.documents.reduce(
+                          (sum, doc) => sum + doc.fileSize,
+                          0
+                        )
                       )}
                     </span>
                   </div>

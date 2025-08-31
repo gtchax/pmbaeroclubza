@@ -31,19 +31,7 @@ import {
   User,
   Clock,
 } from "lucide-react";
-import { StudentDataTable } from "./components/StudentDataTable";
-
-// Define a simple interface for the student data we need
-interface StudentData {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  approvalStatus: string;
-  createdAt: Date;
-  studentProfile?: any; // We'll handle this with type assertions
-}
+import { StudentDataTable, Student } from "./components/StudentDataTable";
 
 export default function StudentsPage() {
   const router = useRouter();
@@ -129,21 +117,21 @@ export default function StudentsPage() {
     (s) => s.approvalStatus === "REJECTED"
   );
 
-  const handleViewDetails = (student: StudentData) => {
+  const handleViewDetails = (student: Student) => {
     router.push(`/seams/students/${student.id}`);
   };
 
-  const handleRequestInfo = (student: StudentData) => {
+  const handleRequestInfo = (student: Student) => {
     // Navigate to student detail page with request info tab
     router.push(`/seams/students/${student.id}?tab=request-info`);
   };
 
-  const handleApproval = (student: StudentData) => {
+  const handleApproval = (student: Student) => {
     // Navigate to student detail page with approval dialog
     router.push(`/seams/students/${student.id}?tab=approval`);
   };
 
-  const handlePauseAccount = (student: StudentData) => {
+  const handlePauseAccount = (student: Student) => {
     // Navigate to student detail page with pause dialog
     router.push(`/seams/students/${student.id}?tab=pause`);
   };
@@ -282,7 +270,7 @@ export default function StudentsPage() {
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="PENDING">Pending</SelectItem>
                 <SelectItem value="APPROVED">Approved</SelectItem>
-                <SelectItem value="PAUSED">Paused</SelectItem>
+                <SelectItem value="UNDER_REVIEW">Paused</SelectItem>
                 <SelectItem value="REJECTED">Rejected</SelectItem>
               </SelectContent>
             </Select>

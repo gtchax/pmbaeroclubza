@@ -19,8 +19,8 @@ export function useClerkRole() {
   const metadata = useMemo(() => {
     if (!user || !isLoaded) return null;
 
-    const publicMetadata = user.publicMetadata as ClerkUserMetadata;
-    
+    const publicMetadata = user.publicMetadata as unknown as ClerkUserMetadata;
+
     return {
       userRole: publicMetadata.userRole || "STUDENT",
       userType: publicMetadata.userType || "private",
@@ -66,7 +66,7 @@ export function useClerkRole() {
  */
 export function useHasRole(requiredRole: string) {
   const { metadata, isLoaded } = useClerkRole();
-  
+
   return {
     hasRole: metadata?.userRole === requiredRole,
     isLoaded,
@@ -79,7 +79,7 @@ export function useHasRole(requiredRole: string) {
  */
 export function useIsApproved() {
   const { metadata, isLoaded } = useClerkRole();
-  
+
   return {
     isApproved: metadata?.isApproved || false,
     approvalStatus: metadata?.approvalStatus || "PENDING",

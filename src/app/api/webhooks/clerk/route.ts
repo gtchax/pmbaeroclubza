@@ -244,7 +244,7 @@ async function handleEmailCreated(data: any) {
 // No need to handle phone creation through Clerk webhooks
 async function handlePhoneCreated(_data: unknown) {
   // Phone numbers are handled separately, not through Clerk webhooks
-  console.log("Phone created event ignored - handled separately");
+  console.log("Phone created event ignored - handled separately", _data);
 }
 
 async function createDefaultRole(userId: string, roleName: string) {

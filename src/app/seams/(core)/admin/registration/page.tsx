@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircle, CheckCircle, Shield, User, Mail, Lock, Building, Phone } from "lucide-react";
+import { AlertCircle, CheckCircle, Shield, User, Lock, Building} from "lucide-react";
 
 interface AdminRegistrationData {
   firstName: string;
@@ -31,7 +31,7 @@ async function checkAdminExists(): Promise<boolean> {
   return data.exists;
 }
 
-async function registerAdmin(data: AdminRegistrationData): Promise<any> {
+async function registerAdmin(data: AdminRegistrationData): Promise<AdminRegistrationData> {
   const response = await fetch("/api/admin/register", {
     method: "POST",
     headers: {

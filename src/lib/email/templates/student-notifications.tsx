@@ -14,16 +14,12 @@ import {
 
 interface StudentNotificationProps {
   studentName: string;
-  studentEmail: string;
-  action: "approved" | "rejected" | "paused" | "reactivated";
   reason?: string;
   adminName?: string;
-  nextSteps?: string[];
 }
 
 export function StudentApprovalEmail({
   studentName,
-  studentEmail,
   adminName = "Admin",
 }: StudentNotificationProps) {
   return (
@@ -86,9 +82,7 @@ export function StudentApprovalEmail({
 
 export function StudentRejectionEmail({
   studentName,
-  studentEmail,
   reason,
-  adminName = "Admin",
 }: StudentNotificationProps) {
   return (
     <Html>
@@ -156,7 +150,6 @@ export function StudentRejectionEmail({
 
 export function StudentPauseEmail({
   studentName,
-  studentEmail,
   reason,
   adminName = "Admin",
 }: StudentNotificationProps) {
@@ -234,7 +227,6 @@ export function StudentPauseEmail({
 
 export function StudentReactivationEmail({
   studentName,
-  studentEmail,
   adminName = "Admin",
 }: StudentNotificationProps) {
   return (
