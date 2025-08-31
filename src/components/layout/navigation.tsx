@@ -125,11 +125,11 @@ const standaloneLinks: NavigationItem[] = [
   //   href: "/about",
   //   description: "Our history since 1938",
   // },
-  {
-    name: "Contact",
-    href: "/contact",
-    description: "Get in touch with us",
-  },
+  // {
+  //   name: "Contact",
+  //   href: "/contact",
+  //   description: "Get in touch with us",
+  // },
 ];
 
 export function Navigation() {
@@ -238,8 +238,15 @@ export function Navigation() {
           ))}
         </div>
 
-        {/* CTA Button */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        {/* CTA Buttons */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:space-x-4">
+          <Button
+            variant="outline"
+            asChild
+            className="border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626] transition-colors"
+          >
+            <Link href="/login">Login</Link>
+          </Button>
           <Button
             asChild
             className="bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a] transition-colors"
@@ -316,12 +323,19 @@ export function Navigation() {
               </div>
 
               {/* Mobile CTA */}
-              <div className="pt-4">
+              <div className="pt-4 space-y-3">
+                <Button
+                  variant="outline"
+                  asChild
+                  className="w-full border-[#f6d57f] text-[#f6d57f] hover:bg-[#f6d57f] hover:text-[#262626]"
+                >
+                  <Link href="/login">Login</Link>
+                </Button>
                 <Button
                   asChild
                   className="w-full bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
                 >
-                  <Link href="/contact">Start Flying Today</Link>
+                  <Link href="/register">Start Flying Today</Link>
                 </Button>
               </div>
             </div>

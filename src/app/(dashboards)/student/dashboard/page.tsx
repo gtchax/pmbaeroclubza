@@ -49,6 +49,7 @@ import { useStudentDashboard } from "@/lib/hooks/use-student-data";
 import { useCurrentUser } from "@/lib/hooks/use-user-data";
 import { SageConnectionStatus } from "@/components/sage/SageConnectionStatus";
 import { SageFinancialData } from "@/components/sage/SageFinancialData";
+import { IntegratedDocumentManager } from "@/components/mega/IntegratedDocumentManager";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -212,6 +213,14 @@ export default function StudentDashboard() {
             <div className="space-y-6">
               <SageConnectionStatus />
               <SageFinancialData />
+            </div>
+
+            {/* MEGA Cloud Storage Integration */}
+            <div className="space-y-6">
+              <IntegratedDocumentManager
+                userId={dashboardData?.profile?.user?.id || "demo_user"}
+                title="My Documents"
+              />
             </div>
           </TabsContent>
 

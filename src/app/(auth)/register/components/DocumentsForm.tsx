@@ -51,13 +51,14 @@ const documentsSchema = z.object({
   acceptDocumentTerms: z.boolean().refine(val => val === true, "You must accept the document terms"),
 })
 
-type DocumentsFormData = z.infer<typeof documentsSchema>
+export type DocumentsFormData = z.infer<typeof documentsSchema>
 
 interface DocumentsFormProps {
   onNext: () => void
+  onComplete: (data: DocumentsFormData) => void
 }
 
-export default function DocumentsForm({ onNext }: DocumentsFormProps) {
+export default function DocumentsForm({ onNext, onComplete }: DocumentsFormProps) {
   const [additionalDocs, setAdditionalDocs] = useState<Array<{ id: string; name: string; type: string; file: File | null; uploaded: boolean }>>([])
 
   const form = useForm<DocumentsFormData>({
@@ -73,7 +74,9 @@ export default function DocumentsForm({ onNext }: DocumentsFormProps) {
   })
 
   const onSubmit = (data: DocumentsFormData) => {
-    console.log("Documents data:", data)
+    
+    // Call onComplete to pass data to parent, then proceed to next step
+    onComplete(data)
     onNext()
   }
 

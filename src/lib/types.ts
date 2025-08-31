@@ -593,21 +593,7 @@ export interface AircraftDocument {
   updatedAt: Date;
 }
 
-export enum DocumentType {
-  AIRWORTHINESS = "airworthiness",
-  REGISTRATION = "registration",
-  INSURANCE = "insurance",
-  MAINTENANCE_MANUAL = "maintenance_manual",
-  FLIGHT_MANUAL = "flight_manual",
-  WEIGHT_BALANCE = "weight_balance",
-}
 
-export enum DocumentStatus {
-  ACTIVE = "active",
-  EXPIRED = "expired",
-  PENDING = "pending",
-  ARCHIVED = "archived",
-}
 
 // Certification
 export interface Certification {
@@ -1059,3 +1045,149 @@ export type {
 
 // Export enums as values, not types
 export { FlightType } from "@prisma/client";
+
+// ================================
+// MEGA CLOUD STORAGE TYPES
+// ================================
+
+export interface MegaConfig {
+  email: string;
+  password: string;
+  baseFolder: string;
+}
+
+export interface MegaFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  createdAt: Date;
+  downloadUrl?: string;
+  mimeType?: string;
+  userId?: string;
+  documentType?: string;
+}
+
+export interface MegaFolder {
+  id: string;
+  name: string;
+  children: (MegaFile | MegaFolder)[];
+  createdAt: Date;
+}
+
+export interface MegaUploadResult {
+  success: boolean;
+  files?: MegaFile[];
+  message: string;
+  error?: string;
+}
+
+export interface MegaConnectionStatus {
+  connected: boolean;
+  baseFolderId: string | null;
+  error?: string;
+}
+
+export interface MegaStorageUsage {
+  used: number;
+  total: number;
+  percentage: number;
+}
+
+// ================================
+// DATABASE DOCUMENT TYPES
+// ================================
+
+export interface UserDocument {
+  id: string;
+  userId: string;
+  name: string;
+  displayName: string;
+  type: DocumentType;
+  category: DocumentCategory;
+  megaFileId: string;
+  megaFolderId: string;
+  fileSize: number;
+  mimeType: string;
+  status: DocumentStatus;
+  notes?: string;
+  uploadedAt: Date;
+  updatedAt: Date;
+  reviewedAt?: Date;
+  reviewedBy?: string;
+  reviewNotes?: string;
+}
+
+export type DocumentType = 
+  | "MEDICAL_CERTIFICATE"
+  | "LICENSE_COPY"
+  | "INSURANCE_DOCUMENT"
+  | "IDENTIFICATION"
+  | "MEDICAL_RECORD"
+  | "TRAINING_CERTIFICATE"
+  | "AIRCRAFT_CERTIFICATION"
+  | "OTHER";
+
+export type DocumentCategory = 
+  | "REGISTRATION"
+  | "MEDICAL"
+  | "LICENSING"
+  | "INSURANCE"
+  | "TRAINING"
+  | "AIRCRAFT"
+  | "ADMINISTRATIVE"
+  | "OTHER";
+
+export type DocumentStatus = 
+  | "PENDING"
+  | "APPROVED"
+  | "REJECTED"
+  | "EXPIRED"
+  | "ARCHIVED";
+
+// ================================
+// REGISTRATION DOCUMENT TYPES
+// ================================
+
+export interface RegistrationDocument {
+  id: string;
+  userId: string;
+  name: string;
+  type: "medical_certificate" | "license_copy" | "insurance_document" | "identification" | "other";
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  megaFileId: string;
+  uploadedAt: Date;
+  status: "pending" | "approved" | "rejected";
+  notes?: string;
+}
+
+export interface DocumentUploadRequest {
+  userId: string;
+  documents: {
+    name: string;
+    data: Buffer;
+    type: string;
+    mimeType?: string;
+  }[];
+}
+
+export interface DocumentUploadResponse {
+  success: boolean;
+  files?: MegaFile[];
+  message: string;
+  error?: string;
+}
+
+// ================================
+// ENHANCED USER TYPES
+// ================================
+
+export interface UserWithDocuments extends User {
+  documents: UserDocument[];
+}
+
+export interface StudentWithDocuments extends Student {
+  user: UserWithDocuments;
+}

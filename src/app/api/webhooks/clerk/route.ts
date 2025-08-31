@@ -74,6 +74,7 @@ export async function POST(req: Request) {
         await handleEmailCreated(evt.data);
         break;
       case "sms.created":
+        // Phone numbers are handled separately, not through Clerk webhooks
         await handlePhoneCreated(evt.data);
         break;
       default:
@@ -104,7 +105,6 @@ async function handleUserCreated(data: any) {
       email_addresses,
       first_name,
       last_name,
-      phone_numbers,
       image_url,
       public_metadata,
     } = data;
@@ -119,20 +119,14 @@ async function handleUserCreated(data: any) {
       throw new Error("No primary email found");
     }
 
-    // Get primary phone
-    const primaryPhone = phone_numbers?.find(
-      (phone: any) => phone.id === data.primary_phone_number_id
-    );
-    const phone = primaryPhone?.phone_number;
-
-    // Create user in database
+    // Create user in database (phone will be added later via profile completion)
     const user = await prisma.user.create({
       data: {
         id: id, // Use Clerk's user ID
         email: email,
         firstName: first_name || "",
         lastName: last_name || "",
-        phone: phone || null,
+        phone: null, // Phone will be added via profile completion API
         avatar: image_url || null,
         isActive: true,
       },
@@ -176,7 +170,6 @@ async function handleUserUpdated(data: any) {
       email_addresses,
       first_name,
       last_name,
-      phone_numbers,
       image_url,
       public_metadata,
     } = data;
@@ -191,20 +184,14 @@ async function handleUserUpdated(data: any) {
       throw new Error("No primary email found");
     }
 
-    // Get primary phone
-    const primaryPhone = phone_numbers?.find(
-      (phone: any) => phone.id === data.primary_phone_number_id
-    );
-    const phone = primaryPhone?.phone_number;
-
-    // Update user in database
+    // Update user in database (phone numbers are handled separately)
     await prisma.user.update({
       where: { id },
       data: {
         email: email,
         firstName: first_name || "",
         lastName: last_name || "",
-        phone: phone || null,
+        phone: null, // Phone numbers are handled separately via profile completion API
         avatar: image_url || null,
         updatedAt: new Date(),
       },
@@ -253,20 +240,11 @@ async function handleEmailCreated(data: any) {
   }
 }
 
-async function handlePhoneCreated(data: any) {
-  try {
-    const { user_id, phone_number } = data;
-
-    // Update user's phone
-    await prisma.user.update({
-      where: { id: user_id },
-      data: { phone: phone_number },
-    });
-
-    console.log(`Phone created for user: ${user_id}`);
-  } catch (error) {
-    console.error("Error handling phone created:", error);
-  }
+// Phone numbers are now handled separately via profile completion API
+// No need to handle phone creation through Clerk webhooks
+async function handlePhoneCreated(_data: unknown) {
+  // Phone numbers are handled separately, not through Clerk webhooks
+  console.log("Phone created event ignored - handled separately");
 }
 
 async function createDefaultRole(userId: string, roleName: string) {

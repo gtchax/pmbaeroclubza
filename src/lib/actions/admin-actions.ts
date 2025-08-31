@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import {
   AdminDashboardData,
   DashboardStats,
@@ -9,6 +10,28 @@ import {
   User,
 } from "@/lib/types";
 // import { Instructor, Student, User } from '@prisma/client'
+
+export async function getCurrentAdminUser() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return null;
+    }
+
+    const admin = await prisma.admin.findUnique({
+      where: { userId },
+      include: {
+        user: true,
+      },
+    });
+
+    return admin;
+  } catch (error) {
+    console.error("Error fetching current admin user:", error);
+    return null;
+  }
+}
 
 export async function getAdminProfile(userId: string) {
   try {

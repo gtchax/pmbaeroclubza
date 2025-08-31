@@ -33,13 +33,14 @@ const verificationSchema = z.object({
   marketingConsent: z.boolean().optional(),
 })
 
-type VerificationFormData = z.infer<typeof verificationSchema>
+export type VerificationFormData = z.infer<typeof verificationSchema>
 
 interface VerificationFormProps {
   onNext: () => void
+  onComplete: (data: VerificationFormData) => void
 }
 
-export default function VerificationForm({ onNext }: VerificationFormProps) {
+export default function VerificationForm({ onNext, onComplete }: VerificationFormProps) {
   const form = useForm<VerificationFormData>({
     resolver: zodResolver(verificationSchema),
     defaultValues: {
@@ -52,7 +53,9 @@ export default function VerificationForm({ onNext }: VerificationFormProps) {
   })
 
   const onSubmit = (data: VerificationFormData) => {
-    console.log("Verification data:", data)
+   
+    // Call onComplete to pass data to parent, then proceed to next step
+    onComplete(data)
     onNext()
   }
 
