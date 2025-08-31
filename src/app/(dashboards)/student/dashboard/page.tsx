@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { motion } from "framer-motion";
 import {
   Card,
@@ -13,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
@@ -37,13 +34,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
-// Import component modules
-import { TrainingContent } from "./components/TrainingContent";
-import { ScheduleContent } from "./components/ScheduleContent";
-import { LogbookContent } from "./components/LogbookContent";
-import { AircraftContent } from "./components/AircraftContent";
-import { ResourcesContent } from "./components/ResourcesContent";
-
 // Import hooks
 import { useStudentDashboard } from "@/lib/hooks/use-student-data";
 import { useCurrentUser } from "@/lib/hooks/use-user-data";
@@ -52,8 +42,6 @@ import { SageFinancialData } from "@/components/sage/SageFinancialData";
 import { IntegratedDocumentManager } from "@/components/mega/IntegratedDocumentManager";
 
 export default function StudentDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
-
   // For now, using a mock user ID - in real app this would come from auth
   const mockUserId = "user_123";
 
@@ -65,192 +53,118 @@ export default function StudentDashboard() {
   const isLoading = userLoading || dashboardLoading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#262626] to-[#1a1a1a] p-3 md:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center justify-between mb-8"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="w-12 md:w-16 h-12 md:h-16 bg-[#f6d57f] rounded-full flex items-center justify-center">
-              <GraduationCap className="w-6 md:w-8 h-6 md:h-8 text-[#262626]" />
-            </div>
-            <div>
-              <h1 className="text-lg md:text-3xl font-bold text-white">
-                Student Dashboard
-              </h1>
-              {isLoading ? (
-                <Skeleton className="h-5 w-48 mt-1" />
-              ) : (
-                <p className="text-gray-300">
-                  Welcome back, {dashboardData?.profile?.user?.firstName}{" "}
-                  {dashboardData?.profile?.user?.lastName}
-                </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-6"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 md:w-16 h-12 md:h-16 bg-[#f6d57f] rounded-full flex items-center justify-center">
+            <GraduationCap className="w-6 md:w-8 h-6 md:h-8 text-[#262626]" />
+          </div>
+          <div>
+            <h1 className="text-lg md:text-3xl font-bold text-white">
+              Student Dashboard
+            </h1>
+            {isLoading ? (
+              <Skeleton className="h-5 w-48 mt-1" />
+            ) : (
+              <p className="text-gray-300">
+                Welcome back, {dashboardData?.profile?.user?.firstName}{" "}
+                {dashboardData?.profile?.user?.lastName}
+              </p>
+            )}
+          </div>
+        </div>
+        {/* Desktop Actions */}
+        <div className="hidden md:flex items-center space-x-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <Bell className="w-4 h-4 mr-2" />
+            Notifications
+            {dashboardData?.notifications &&
+              dashboardData.notifications.length > 0 && (
+                <Badge className="ml-2 bg-red-500 text-white text-xs">
+                  {dashboardData.notifications.length}
+                </Badge>
               )}
-            </div>
-          </div>
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-gray-600 text-gray-300 hover:bg-gray-800"
-            >
-              <Bell className="w-4 h-4 mr-2" />
-              Notifications
-              {dashboardData?.notifications &&
-                dashboardData.notifications.length > 0 && (
-                  <Badge className="ml-2 bg-red-500 text-white text-xs">
-                    {dashboardData.notifications.length}
-                  </Badge>
-                )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-gray-600 text-gray-300 hover:bg-gray-800"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-          </div>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </div>
 
-          {/* Mobile Actions Dropdown */}
-          <div className="md:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-[#f6d57f] transition-colors"
-                  aria-label="Open menu"
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="bg-[#262626] border-gray-600 text-gray-300 w-48 shadow-xl"
-                align="end"
-                sideOffset={8}
+        {/* Mobile Actions Dropdown */}
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-[#f6d57f] transition-colors"
+                aria-label="Open menu"
               >
-                <DropdownMenuItem
-                  className="focus:bg-gray-700 focus:text-white cursor-pointer hover:bg-gray-700 transition-colors"
-                  onClick={() => console.log("Notifications clicked")}
-                >
-                  <Bell className="w-4 h-4 mr-2 text-[#f6d57f]" />
-                  <span className="flex-1">Notifications</span>
-                  {dashboardData?.notifications &&
-                    dashboardData.notifications.length > 0 && (
-                      <Badge className="ml-2 bg-red-500 text-white text-xs">
-                        {dashboardData.notifications.length}
-                      </Badge>
-                    )}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="focus:bg-gray-700 focus:text-white cursor-pointer hover:bg-gray-700 transition-colors"
-                  onClick={() => console.log("Settings clicked")}
-                >
-                  <Settings className="w-4 h-4 mr-2 text-[#f6d57f]" />
-                  <span className="flex-1">Settings</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </motion.div>
-
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="space-y-6"
-        >
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 bg-[#262626] border-[#f6d57f] gap-1 md:gap-0">
-            <TabsTrigger
-              value="overview"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
+                <MoreHorizontal className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="bg-[#262626] border-gray-600 text-gray-300 w-48 shadow-xl"
+              align="end"
+              sideOffset={8}
             >
-              Overview
-            </TabsTrigger>
-            <TabsTrigger
-              value="training"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
-            >
-              Training
-            </TabsTrigger>
-            <TabsTrigger
-              value="schedule"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
-            >
-              Schedule
-            </TabsTrigger>
-            <TabsTrigger
-              value="logbook"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
-            >
-              Logbook
-            </TabsTrigger>
-            <TabsTrigger
-              value="aircraft"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
-            >
-              Aircraft
-            </TabsTrigger>
-            <TabsTrigger
-              value="resources"
-              className="data-[state=active]:bg-[#f6d57f] data-[state=active]:text-[#262626] text-xs md:text-sm px-2 md:px-3"
-            >
-              Resources
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <OverviewContent />
-
-            {/* SAGE Financial Integration */}
-            <div className="space-y-6">
-              <SageConnectionStatus />
-              <SageFinancialData />
-            </div>
-
-            {/* MEGA Cloud Storage Integration */}
-            <div className="space-y-6">
-              <IntegratedDocumentManager
-                userId={dashboardData?.profile?.user?.id || "demo_user"}
-                title="My Documents"
-              />
-            </div>
-          </TabsContent>
-
-          {/* Training Progress Tab */}
-          <TabsContent value="training" className="space-y-6">
-            <TrainingContent />
-          </TabsContent>
-
-          {/* Schedule Tab */}
-          <TabsContent value="schedule" className="space-y-6">
-            <ScheduleContent />
-          </TabsContent>
-
-          {/* Logbook Tab */}
-          <TabsContent value="logbook" className="space-y-6">
-            <LogbookContent />
-          </TabsContent>
-
-          {/* Aircraft Tab */}
-          <TabsContent value="aircraft" className="space-y-6">
-            <AircraftContent />
-          </TabsContent>
-
-          {/* Resources Tab */}
-          <TabsContent value="resources" className="space-y-6">
-            <ResourcesContent />
-          </TabsContent>
-        </Tabs>
+              <DropdownMenuItem
+                className="focus:bg-gray-700 focus:text-white cursor-pointer hover:bg-gray-700 transition-colors"
+                onClick={() => console.log("Notifications clicked")}
+              >
+                <Bell className="w-4 h-4 mr-2 text-[#f6d57f]" />
+                <span className="flex-1">Notifications</span>
+                {dashboardData?.notifications &&
+                  dashboardData.notifications.length > 0 && (
+                    <Badge className="ml-2 bg-red-500 text-white text-xs">
+                      {dashboardData.notifications.length}
+                    </Badge>
+                  )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="focus:bg-gray-700 focus:text-white cursor-pointer hover:bg-gray-700 transition-colors"
+                onClick={() => console.log("Settings clicked")}
+              >
+                <Settings className="w-4 h-4 mr-2 text-[#f6d57f]" />
+                <span className="flex-1">Settings</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-    </div>
+
+      {/* Overview Content */}
+      <OverviewContent />
+
+      {/* SAGE Financial Integration */}
+      <div className="space-y-6">
+        <SageConnectionStatus />
+        <SageFinancialData />
+      </div>
+
+      {/* MEGA Cloud Storage Integration */}
+      <div className="space-y-6">
+        <IntegratedDocumentManager
+          userId={dashboardData?.profile?.user?.id || "demo_user"}
+          title="My Documents"
+        />
+      </div>
+    </motion.div>
   );
 }
 
