@@ -1,77 +1,114 @@
 "use client";
 
-import { ReactNode } from "react";
-import { useApprovalStatus } from "@/lib/hooks/use-approval-status";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Shield } from "lucide-react";
+import { useClerkRole } from "@/lib/hooks/use-clerk-role";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 interface RoleGuardProps {
-  children: ReactNode;
+  children: React.ReactNode;
   requiredRoles: string[];
-  fallback?: ReactNode;
-  showAccessDenied?: boolean;
+  fallback?: React.ReactNode;
+  redirectTo?: string;
 }
 
-export default function RoleGuard({
+/**
+ * Component to protect routes based on user roles from Clerk metadata
+ */
+export function RoleGuard({
   children,
   requiredRoles,
   fallback,
-  showAccessDenied = true,
+  redirectTo,
 }: RoleGuardProps) {
-  const { userRole, isApproved, isLoading } = useApprovalStatus();
+  const { metadata, hasRequiredRole, isLoaded, isLoading } = useClerkRole();
+  const router = useRouter();
 
-  // Show loading state while checking role
+  useEffect(() => {
+    if (isLoaded && metadata && !hasRequiredRole(requiredRoles)) {
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        // Redirect to appropriate dashboard based on user's actual role
+        switch (metadata.userRole) {
+          case "STUDENT":
+            router.push("/student/dashboard");
+            break;
+          case "INSTRUCTOR":
+            router.push("/instructor/dashboard");
+            break;
+          case "ADMIN":
+          case "SUPER_ADMIN":
+            router.push("/seams/dashboard");
+            break;
+          default:
+            router.push("/dashboard");
+        }
+      }
+    }
+  }, [isLoaded, metadata, hasRequiredRole, requiredRoles, redirectTo, router]);
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
-          <p className="text-sm text-gray-600">Checking permissions...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading...</span>
         </div>
       </div>
     );
   }
 
-  // Check if user is approved
-  if (!isApproved) {
+  if (!isLoaded || !metadata) {
     return (
       fallback || (
-        <div className="p-4">
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Your account needs to be approved before you can access this
-              content.
-            </AlertDescription>
-          </Alert>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
+            <p>You must be logged in to access this page.</p>
+          </div>
         </div>
       )
     );
   }
 
-  // Check if user has required role
-  const hasRequiredRole = userRole && requiredRoles.includes(userRole);
-
-  if (!hasRequiredRole) {
-    if (!showAccessDenied) {
-      return null;
-    }
-
+  if (!hasRequiredRole(requiredRoles)) {
     return (
       fallback || (
-        <div className="p-4">
-          <Alert>
-            <Shield className="h-4 w-4" />
-            <AlertDescription>
-              You don&apos;t have permission to access this content. Required roles:{" "}
-              {requiredRoles.join(", ")}
-            </AlertDescription>
-          </Alert>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
+            <p>You don&apos;t have permission to access this page.</p>
+            <p className="text-sm text-gray-600 mt-2">
+              Required roles: {requiredRoles.join(", ")}
+            </p>
+          </div>
         </div>
       )
     );
   }
 
-  // User has required role, render children
   return <>{children}</>;
+}
+
+/**
+ * Higher-order component for role-based protection
+ */
+export function withRoleGuard<P extends object>(
+  Component: React.ComponentType<P>,
+  requiredRoles: string[],
+  fallback?: React.ReactNode,
+  redirectTo?: string
+) {
+  return function ProtectedComponent(props: P) {
+    return (
+      <RoleGuard
+        requiredRoles={requiredRoles}
+        fallback={fallback}
+        redirectTo={redirectTo}
+      >
+        <Component {...props} />
+      </RoleGuard>
+    );
+  };
 }

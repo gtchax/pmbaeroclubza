@@ -25,13 +25,192 @@ import {
 } from "@/components/ui/select";
 import { useClerkSignup } from "@/lib/hooks/use-clerk-signup";
 import { useState, useEffect } from "react";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { Eye, EyeOff } from "lucide-react";
+
+// Custom styles for PhoneInput to match PMB Aero Club theme exactly
+const phoneInputStyles = `
+
+  .PhoneInput {
+    @apply w-full flex items-center gap-2;
+  }
+  
+  .PhoneInputCountry {
+    @apply flex-shrink-0;
+  }
+  
+  .PhoneInputCountrySelect {
+    @apply bg-[#262626] border-gray-600 text-white rounded-md px-3 py-2 text-sm min-w-[120px] h-10;
+    background-color: #262626 !important;
+    border-color: #6b7280 !important;
+    color: white !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    height: 2.5rem !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    min-width: 120px !important;
+  }
+  
+  .PhoneInputCountrySelect:focus {
+    @apply outline-none;
+    outline: none !important;
+    border-color: #f6d57f !important;
+    box-shadow: 0 0 0 2px #f6d57f !important;
+  }
+  
+  .PhoneInputCountrySelect option {
+    @apply bg-[#262626] text-white;
+    background-color: #262626 !important;
+    color: white !important;
+  }
+  
+  .PhoneInputInput {
+    @apply bg-[#262626] border-gray-600 text-white rounded-md px-3 py-2 text-sm w-full flex-1 h-10;
+  }
+  
+  .PhoneInputInput:focus {
+    @apply outline-none ring-2 ring-[#f6d57f] border-[#f6d57f];
+  }
+  
+  .PhoneInputInput::placeholder {
+    @apply text-gray-400;
+  }
+  
+  .PhoneInputCountryIcon {
+    @apply w-5 h-5;
+  }
+  
+  .PhoneInputCountryIcon--border {
+    @apply border border-gray-400;
+  }
+  
+  /* Override default react-phone-number-input styles to match our theme */
+  .PhoneInputInput {
+    background-color: #262626 !important;
+    border-color: #6b7280 !important;
+    color: white !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    width: 100% !important;
+    height: 2.5rem !important;
+    border-width: 1px !important;
+  }
+  
+  .PhoneInputInput:focus {
+    outline: none !important;
+    border-color: #f6d57f !important;
+    box-shadow: 0 0 0 2px #f6d57f !important;
+  }
+  
+  .PhoneInputInput::placeholder {
+    color: #9ca3af !important;
+  }
+  
+  .PhoneInputCountrySelect {
+    background-color: #262626 !important;
+    border-color: #6b7280 !important;
+    color: white !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    height: 2.5rem !important;
+    border-width: 1px !important;
+    min-width: 120px !important;
+  }
+  
+  .PhoneInputCountrySelect:focus {
+    outline: none !important;
+    border-color: #f6d57f !important;
+    box-shadow: 0 0 0 2px #f6d57f !important;
+  }
+  
+  .PhoneInputCountrySelect option {
+    background-color: #262626 !important;
+    color: white !important;
+  }
+  
+  /* Custom class for additional styling control */
+  .phone-input-field {
+    @apply w-full;
+  }
+  
+  /* Ensure exact match with regular Input components */
+  .PhoneInput {
+    @apply w-full;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+  
+  .PhoneInputCountry {
+    flex-shrink: 0 !important;
+  }
+  
+  .PhoneInputInput {
+    @apply bg-[#262626] border-gray-600 text-white;
+    background-color: #262626 !important;
+    border-color: #6b7280 !important;
+    color: white !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    width: 100% !important;
+    height: 2.5rem !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+  }
+  
+  .PhoneInputInput:focus {
+    @apply outline-none;
+    outline: none !important;
+    border-color: #f6d57f !important;
+    box-shadow: 0 0 0 2px #f6d57f !important;
+  }
+  
+  .PhoneInputInput::placeholder {
+    @apply text-gray-400;
+    color: #9ca3af !important;
+  }
+`;
+
+// Add styles to document head
+if (typeof document !== "undefined") {
+  const styleElement = document.createElement("style");
+  styleElement.textContent = phoneInputStyles;
+  document.head.appendChild(styleElement);
+}
 
 // Schema for private user
 const privateUserSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character"
+    )
+    .refine(
+      (password) => password.length >= 8,
+      "Password must be at least 8 characters long"
+    ),
+  phone: z
+    .string()
+    .min(10, "Please enter a valid phone number")
+    .refine((phone) => {
+      // Basic validation for international phone numbers
+      return phone && phone.length >= 10;
+    }, "Please enter a valid phone number with country code"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   nationality: z.string().min(1, "Nationality is required"),
   address: z.object({
@@ -53,7 +232,11 @@ const privateUserSchema = z.object({
   emergencyContactRelationship: z.string().min(2, "Relationship is required"),
   emergencyContactPhone: z
     .string()
-    .min(10, "Emergency contact phone is required"),
+    .min(10, "Emergency contact phone is required")
+    .refine((phone) => {
+      // Basic validation for international phone numbers
+      return phone && phone.length >= 10;
+    }, "Please enter a valid emergency contact phone number with country code"),
 });
 
 // Schema for commercial user
@@ -71,7 +254,27 @@ const commercialUserSchema = z.object({
   registrationNumber: z.string().min(1, "Registration number is required"),
   taxId: z.string().min(1, "Tax ID is required"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character"
+    )
+    .refine(
+      (password) => password.length >= 8,
+      "Password must be at least 8 characters long"
+    ),
+  phone: z
+    .string()
+    .min(10, "Please enter a valid phone number")
+    .refine((phone) => {
+      // Basic validation for international phone numbers
+      return phone && phone.length >= 10;
+    }, "Please enter a valid phone number with country code"),
   website: z.string().url().optional().or(z.literal("")),
   address: z.object({
     street: z.string().min(5, "Street address is required"),
@@ -85,7 +288,13 @@ const commercialUserSchema = z.object({
     lastName: z.string().min(2, "Last name must be at least 2 characters"),
     position: z.string().min(2, "Position is required"),
     email: z.string().email("Please enter a valid email address"),
-    phone: z.string().min(10, "Please enter a valid phone number"),
+    phone: z
+      .string()
+      .min(10, "Please enter a valid phone number")
+      .refine((phone) => {
+        // Basic validation for international phone numbers
+        return phone && phone.length >= 10;
+      }, "Please enter a valid phone number with country code"),
   }),
   fleetSize: z.enum(["1-5", "6-10", "11-25", "26-50", "50+"]),
   operations: z
@@ -93,25 +302,34 @@ const commercialUserSchema = z.object({
     .min(1, "Select at least one operation type"),
 });
 
-type PrivateUserFormData = z.infer<typeof privateUserSchema>;
-type CommercialUserFormData = z.infer<typeof commercialUserSchema>;
+export type PrivateUserFormData = z.infer<typeof privateUserSchema>;
+export type CommercialUserFormData = z.infer<typeof commercialUserSchema>;
 
 interface PersonalDetailsFormProps {
   onNext: () => void;
   userType: "private" | "commercial" | null;
+  onComplete: (data: PrivateUserFormData | CommercialUserFormData) => void;
 }
 
 export default function PersonalDetailsForm({
   onNext,
   userType,
+  onComplete,
 }: PersonalDetailsFormProps) {
   const [emailCheckStatus, setEmailCheckStatus] = useState<
     "idle" | "checking" | "available" | "exists"
   >("idle");
   const [lastCheckedEmail, setLastCheckedEmail] = useState("");
+  const [showPrivatePassword, setShowPrivatePassword] = useState(false);
+  const [showCommercialPassword, setShowCommercialPassword] = useState(false);
 
-  const { signUpUser, isLoading, error, emailExists, clearEmailExists } =
-    useClerkSignup();
+  const {
+    isLoading,
+    error,
+    emailExists,
+    clearEmailExists,
+    checkEmailOnly,
+  } = useClerkSignup();
 
   const privateForm = useForm<PrivateUserFormData>({
     resolver: zodResolver(privateUserSchema),
@@ -157,17 +375,15 @@ export default function PersonalDetailsForm({
         return;
       }
 
-      // Check if email exists in Clerk
-      const emailAvailable = await signUpUser({
-        email,
-        firstName: "temp",
-        lastName: "temp",
-      });
+      // Use the new email-only check function for better user experience
+      const result = await checkEmailOnly(email);
 
-      if (emailAvailable) {
+      if (result.available) {
         setEmailCheckStatus("available");
-      } else {
+      } else if (result.exists) {
         setEmailCheckStatus("exists");
+      } else {
+        setEmailCheckStatus("idle");
       }
     } catch {
       setEmailCheckStatus("idle");
@@ -177,38 +393,36 @@ export default function PersonalDetailsForm({
   const onSubmitPrivate = async (data: PrivateUserFormData) => {
     try {
       // Check email availability before proceeding
-      const emailAvailable = await signUpUser({
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phone: data.phone,
-      });
-
-      if (emailAvailable) {
-        console.log("Private user data:", data);
-        onNext();
+      const emailCheck = await checkEmailOnly(data.email);
+      if (!emailCheck.available) {
+        setEmailCheckStatus("exists");
+        return;
       }
+
+      // Save data to state and move to next step
+
+      onComplete(data);
+      onNext();
     } catch (error: unknown) {
-      console.error("Error during signup:", error);
+      console.error("Error during form submission:", error);
     }
   };
 
   const onSubmitCommercial = async (data: CommercialUserFormData) => {
     try {
       // Check email availability before proceeding
-      const emailAvailable = await signUpUser({
-        email: data.email,
-        firstName: data.contactPerson.firstName,
-        lastName: data.contactPerson.lastName,
-        phone: data.phone,
-      });
-
-      if (emailAvailable) {
-        console.log("Commercial user data:", data);
-        onNext();
+      const emailCheck = await checkEmailOnly(data.email);
+      if (!emailCheck.available) {
+        setEmailCheckStatus("exists");
+        return;
       }
+
+      // Save data to state and move to next step
+      console.log("Commercial user details saved:", data);
+      onComplete(data);
+      onNext();
     } catch (error: unknown) {
-      console.error("Error during signup:", error);
+      console.error("Error during form submission:", error);
     }
   };
 
@@ -314,11 +528,11 @@ export default function PersonalDetailsForm({
                 />
                 <FormField
                   control={privateForm.control}
-                  name="phone"
+                  name="nationality"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-white">
-                        Phone Number *
+                        Nationality *
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -351,16 +565,20 @@ export default function PersonalDetailsForm({
                 />
                 <FormField
                   control={privateForm.control}
-                  name="nationality"
+                  name="phone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-white">
-                        Nationality *
+                        Phone Number *
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        <PhoneInput
                           {...field}
-                          className="bg-[#262626] border-gray-600 text-white"
+                          placeholder="Enter phone number"
+                          defaultCountry="US"
+                          international
+                          countryCallingCodeEditable={false}
+                          className="phone-input-field"
                         />
                       </FormControl>
                       <FormMessage />
@@ -368,6 +586,45 @@ export default function PersonalDetailsForm({
                   )}
                 />
               </div>
+              <FormField
+                control={privateForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white mt-4">
+                      Password *
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type={showPrivatePassword ? "text" : "password"}
+                          className="bg-[#262626] border-gray-600 text-white pr-10"
+                          placeholder="Enter your password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowPrivatePassword(!showPrivatePassword)
+                          }
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                        >
+                          {showPrivatePassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                    <div className="text-xs text-gray-400 mt-1">
+                      Password must contain at least 8 characters with
+                      uppercase, lowercase, number, and special character
+                    </div>
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 
@@ -611,9 +868,13 @@ export default function PersonalDetailsForm({
                         Emergency Contact Phone *
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        <PhoneInput
                           {...field}
-                          className="bg-[#262626] border-gray-600 text-white"
+                          placeholder="Enter emergency contact phone"
+                          defaultCountry="US"
+                          international
+                          countryCallingCodeEditable={false}
+                          className="phone-input-field"
                         />
                       </FormControl>
                       <FormMessage />
@@ -812,6 +1073,43 @@ export default function PersonalDetailsForm({
                 />
                 <FormField
                   control={commercialForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">Password *</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showCommercialPassword ? "text" : "password"}
+                            className="bg-[#262626] border-gray-600 text-white pr-10"
+                            placeholder="Enter your password"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowCommercialPassword(!showCommercialPassword)
+                            }
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                          >
+                            {showCommercialPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                      <div className="text-xs text-gray-400 mt-1">
+                        Password must contain at least 8 characters with
+                        uppercase, lowercase, number, and special character
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={commercialForm.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
@@ -819,9 +1117,13 @@ export default function PersonalDetailsForm({
                         Organization Phone *
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        <PhoneInput
                           {...field}
-                          className="bg-[#262626] border-gray-600 text-white"
+                          placeholder="Enter organization phone"
+                          defaultCountry="US"
+                          international
+                          countryCallingCodeEditable={false}
+                          className="phone-input-field"
                         />
                       </FormControl>
                       <FormMessage />
@@ -932,9 +1234,13 @@ export default function PersonalDetailsForm({
                         Contact Phone *
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        <PhoneInput
                           {...field}
-                          className="bg-[#262626] border-gray-600 text-white"
+                          placeholder="Enter contact person phone"
+                          defaultCountry="US"
+                          international
+                          countryCallingCodeEditable={false}
+                          className="phone-input-field"
                         />
                       </FormControl>
                       <FormMessage />

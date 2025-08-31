@@ -53,6 +53,8 @@ model User {
   // Bookings made
   bookings Booking[]
 
+  // User documents stored in MEGA
+  documents UserDocument[]
 
   // Notifications
   notifications Notification[]
@@ -659,4 +661,63 @@ enum UserPaymentStatus {
   PARTIAL
   PAID
   REFUNDED
+}
+
+// ================================
+// MEGA STORAGE DOCUMENT MODELS
+// ================================
+
+model UserDocument {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String   // Original filename
+  displayName String   // User-friendly display name
+  type        DocumentType
+  category    DocumentCategory
+  megaFileId  String   // MEGA storage file ID
+  megaFolderId String  // MEGA storage folder ID
+  fileSize    Int      // File size in bytes
+  mimeType    String   // MIME type
+  status      DocumentStatus @default(PENDING)
+  notes       String?  // Admin notes or user notes
+  uploadedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reviewedAt  DateTime?
+  reviewedBy  String?  // Admin who reviewed the document
+  reviewNotes String?  // Review feedback
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_documents")
+}
+
+enum DocumentType {
+  MEDICAL_CERTIFICATE
+  LICENSE_COPY
+  INSURANCE_DOCUMENT
+  IDENTIFICATION
+  MEDICAL_RECORD
+  TRAINING_CERTIFICATE
+  AIRCRAFT_CERTIFICATION
+  OTHER
+}
+
+enum DocumentCategory {
+  REGISTRATION
+  MEDICAL
+  LICENSING
+  INSURANCE
+  TRAINING
+  AIRCRAFT
+  ADMINISTRATIVE
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  ARCHIVED
 }

@@ -1,26 +1,41 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Eye, EyeOff, Plane, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSignIn } from "@clerk/nextjs";
+import { Eye, EyeOff, Plane, User, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function LoginPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [userType, setUserType] = useState<'private' | 'commercial' | null>(null);
+  const [userType, setUserType] = useState<"private" | "commercial" | null>(
+    null
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleUserTypeSelection = (type: 'private' | 'commercial') => {
+  const { signIn, setActive } = useSignIn();
+  const router = useRouter();
+
+  const handleUserTypeSelection = (type: "private" | "commercial") => {
     setUserType(type);
     setCurrentStep(2);
   };
@@ -28,20 +43,97 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
+    setError("");
+
+    try {
+      // Validate email format before sending to Clerk
+      const email = formData.email.trim().toLowerCase();
+
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        setError("Please enter a valid email address");
+        setIsLoading(false);
+        return;
+      }
+
+      // Basic email regex validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError("Please enter a valid email address");
+        setIsLoading(false);
+        return;
+      }
+
+      // First, check if the user exists
+      try {
+        const result = await signIn?.create({
+          identifier: email,
+          password: formData.password,
+        });
+
+        if (result?.status === "complete") {
+          // Set the user session active
+          await setActive?.({ session: result.createdSessionId });
+
+          // Redirect to dashboard
+          router.push("/dashboard");
+        } else if (result?.status === "needs_first_factor") {
+          // User needs to verify email
+          router.push(`/login/verify?email=${encodeURIComponent(email)}`);
+        } else {
+          setError(
+            "Login failed. Please check your credentials and try again."
+          );
+        }
+      } catch (signInError: unknown) {
+        // If sign in fails, check if it's because user doesn't exist
+        const error = signInError as { errors?: Array<{ code: string }> };
+        if (error.errors?.[0]?.code === "form_identifier_not_found") {
+          setError(
+            "No account found with this email address. Please check your email or sign up."
+          );
+        } else {
+          throw signInError; // Re-throw other errors to be handled by outer catch
+        }
+      }
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+
+      // Handle specific Clerk error codes
+      const clerkError = err as { errors?: Array<{ code: string; message?: string }> };
+      if (clerkError.errors && Array.isArray(clerkError.errors)) {
+        const firstError = clerkError.errors[0];
+
+        switch (firstError.code) {
+          case "form_identifier_not_found":
+            setError(
+              "No account found with this email address. Please check your email or sign up."
+            );
+            break;
+          case "form_password_incorrect":
+            setError("Incorrect password. Please try again.");
+            break;
+          case "form_identifier_invalid":
+            setError("Please enter a valid email address.");
+            break;
+          case "form_param_unknown":
+            setError("Invalid login attempt. Please try again.");
+            break;
+          default:
+            setError(firstError.message || "Login failed. Please try again.");
+        }
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } finally {
       setIsLoading(false);
-      // Handle login logic here
-      console.log('Login attempt:', { ...formData, userType });
-    }, 2000);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -59,7 +151,9 @@ export default function LoginPage() {
             <Plane className="h-12 w-12 text-[#f6d57f] mr-3" />
             <h1 className="text-4xl font-bold text-white">PMB Aero Club</h1>
           </div>
-          <p className="text-gray-300 text-lg">Welcome back to our aviation community</p>
+          <p className="text-gray-300 text-lg">
+            Welcome back to our aviation community
+          </p>
         </div>
 
         {/* Step Content */}
@@ -68,11 +162,12 @@ export default function LoginPage() {
             <UserTypeSelection onSelect={handleUserTypeSelection} />
           )}
           {currentStep === 2 && (
-            <LoginForm 
+            <LoginForm
               userType={userType}
               formData={formData}
               showPassword={showPassword}
               isLoading={isLoading}
+              error={error}
               onSubmit={handleSubmit}
               onInputChange={handleInputChange}
               onTogglePassword={() => setShowPassword(!showPassword)}
@@ -92,37 +187,47 @@ export default function LoginPage() {
   );
 }
 
-function UserTypeSelection({ onSelect }: { onSelect: (type: 'private' | 'commercial') => void }) {
+function UserTypeSelection({
+  onSelect,
+}: {
+  onSelect: (type: "private" | "commercial") => void;
+}) {
   return (
     <Card className="bg-[#262626] border-[#f6d57f] shadow-2xl">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl text-white">Choose Your Account Type</CardTitle>
+        <CardTitle className="text-2xl text-white">
+          Choose Your Account Type
+        </CardTitle>
         <CardDescription className="text-gray-300">
           Select how you want to sign in to your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4">
-          <Card 
+          <Card
             className="bg-[#1a1a1a] border-2 border-gray-600 hover:border-[#f6d57f] cursor-pointer transition-all duration-200 hover:scale-105"
-            onClick={() => onSelect('private')}
+            onClick={() => onSelect("private")}
           >
             <CardContent className="p-6 text-center">
               <User className="h-16 w-16 text-[#f6d57f] mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Private User</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Private User
+              </h3>
               <p className="text-gray-400">
                 For individual pilots, students, and aviation enthusiasts
               </p>
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="bg-[#1a1a1a] border-2 border-gray-600 hover:border-[#f6d57f] cursor-pointer transition-all duration-200 hover:scale-105"
-            onClick={() => onSelect('commercial')}
+            onClick={() => onSelect("commercial")}
           >
             <CardContent className="p-6 text-center">
               <Plane className="h-16 w-16 text-[#f6d57f] mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Commercial User</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Commercial User
+              </h3>
               <p className="text-gray-400">
                 For flight schools, airlines, and aviation businesses
               </p>
@@ -139,12 +244,13 @@ function LoginForm({
   formData,
   showPassword,
   isLoading,
+  error,
   onSubmit,
   onInputChange,
   onTogglePassword,
-  onBack
+  onBack,
 }: {
-  userType: 'private' | 'commercial' | null;
+  userType: "private" | "commercial" | null;
   formData: {
     email: string;
     password: string;
@@ -152,6 +258,7 @@ function LoginForm({
   };
   showPassword: boolean;
   isLoading: boolean;
+  error: string;
   onSubmit: (e: React.FormEvent) => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTogglePassword: () => void;
@@ -161,7 +268,7 @@ function LoginForm({
     <Card className="bg-[#262626] border-[#f6d57f] shadow-2xl">
       <CardHeader className="text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-[#f6d57f] rounded-full mb-4 mx-auto">
-          {userType === 'private' ? (
+          {userType === "private" ? (
             <User className="w-8 h-8 text-[#262626]" />
           ) : (
             <Plane className="w-8 h-8 text-[#262626]" />
@@ -176,7 +283,9 @@ function LoginForm({
         <form onSubmit={onSubmit} className="space-y-6">
           {/* Email Field */}
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email Address</Label>
+            <Label htmlFor="email" className="text-white">
+              Email Address
+            </Label>
             <Input
               type="email"
               id="email"
@@ -191,10 +300,12 @@ function LoginForm({
 
           {/* Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-white">
+              Password
+            </Label>
             <div className="relative">
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={formData.password}
@@ -208,7 +319,11 @@ function LoginForm({
                 onClick={onTogglePassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -219,9 +334,13 @@ function LoginForm({
               <Checkbox
                 id="rememberMe"
                 checked={formData.rememberMe}
-                onCheckedChange={(checked) => 
-                  onInputChange({ 
-                    target: { name: 'rememberMe', type: 'checkbox', checked: checked as boolean } 
+                onCheckedChange={(checked) =>
+                  onInputChange({
+                    target: {
+                      name: "rememberMe",
+                      type: "checkbox",
+                      checked: checked as boolean,
+                    },
                   } as React.ChangeEvent<HTMLInputElement>)
                 }
                 className="border-gray-600 data-[state=checked]:bg-[#f6d57f] data-[state=checked]:border-[#f6d57f]"
@@ -230,13 +349,20 @@ function LoginForm({
                 Remember me
               </Label>
             </div>
-            <Link 
-              href="/forgot-password" 
+            <Link
+              href="/forgot-password"
               className="text-sm text-[#f6d57f] hover:text-yellow-400 transition-colors"
             >
               Forgot password?
             </Link>
           </div>
+
+          {/* Error Display */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           {/* Login Button */}
           <Button
@@ -247,11 +373,11 @@ function LoginForm({
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-[#262626] border-t-transparent rounded-full animate-spin mr-2"></div>
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
                 Signing in...
               </div>
             ) : (
-              'Sign In'
+              "Sign In"
             )}
           </Button>
         </form>
@@ -289,14 +415,18 @@ function LoginForm({
 
         {/* Navigation */}
         <div className="flex justify-between items-center mt-6">
-          <Button variant="outline" onClick={onBack} className="border-gray-600 text-gray-300 hover:bg-gray-800">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
             Back
           </Button>
           <div className="text-center">
             <p className="text-sm text-gray-400">
-              Don&apos;t have an account?{' '}
-              <Link 
-                href="/register" 
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/register"
                 className="text-[#f6d57f] hover:text-yellow-400 transition-colors font-medium"
               >
                 Sign up here

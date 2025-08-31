@@ -42,7 +42,7 @@ export default function AeroClubPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 asChild
-                size="xl"
+                size="lg"
                 className="text-lg bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
               >
                 <Link href="/register">Join Now</Link>
@@ -464,14 +464,14 @@ export default function AeroClubPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                size="xl"
+                size="lg"
                 className="text-lg bg-[#f6d57f] text-[#262626] hover:bg-[#f4d06a]"
               >
                 Start Your Application
               </Button>
               <Button
                 variant="outline"
-                size="xl"
+                size="lg"
                 className="text-lg border-[#262626] text-[#262626] hover:bg-[#262626] hover:text-white"
               >
                 Contact Us

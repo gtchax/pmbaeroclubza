@@ -15,9 +15,23 @@ import {
   MapPin,
   FileText,
   Wrench,
+  User,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useClerkRole } from "@/lib/hooks/use-clerk-role";
+import { useUser, useClerk } from "@clerk/nextjs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavigationGroup {
   name: string;
@@ -116,11 +130,11 @@ const navigationGroups: NavigationGroup[] = [
 ];
 
 const standaloneLinks: NavigationItem[] = [
-  {
-    name: "Contact",
-    href: "/contact",
-    description: "Get in touch with us",
-  },
+  // {
+  //   name: "Contact",
+  //   href: "/contact",
+  //   description: "Get in touch with us",
+  // },
 ];
 
 export function TransparentNavigation({
@@ -128,6 +142,37 @@ export function TransparentNavigation({
 }: TransparentNavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
+  const [mounted, setMounted] = React.useState(false);
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
+  const { metadata, dashboardUrl } = useClerkRole();
+
+  // Prevent hydration mismatch
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render authentication-dependent content until mounted
+  if (!mounted) {
+    return (
+      <header className="fixed top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
+          <div className="flex lg:flex-1">
+            <div className="p-2 rounded-lg bg-[#f6d57f]">
+              <Plane className="h-6 w-6 text-[#262626]" />
+            </div>
+            <span className="text-xl font-bold text-[#262626] ml-2">
+              PMB Aero Club
+            </span>
+          </div>
+          <div className="flex lg:flex-1 lg:justify-end lg:items-center lg:space-x-4">
+            <Skeleton className="h-10 w-20" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </nav>
+      </header>
+    );
+  }
 
   const handleDropdownToggle = (groupName: string) => {
     setOpenDropdown(openDropdown === groupName ? null : groupName);
@@ -331,11 +376,78 @@ export function TransparentNavigation({
           ))}
         </div>
 
-        {/* CTA Button */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button asChild className={buttonClasses}>
-            <Link href="/register">Start Flying Today</Link>
-          </Button>
+        {/* CTA Buttons or User Dropdown */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:space-x-4">
+          {mounted && isLoaded && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "border-white/20 text-white hover:bg-white/10",
+                    buttonClasses
+                  )}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  {user.firstName ||
+                    user.emailAddresses[0]?.emailAddress ||
+                    "User"}
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-56 bg-white border-gray-200 shadow-lg"
+              >
+                <DropdownMenuLabel className="text-gray-900 font-medium">
+                  Welcome back!
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href={dashboardUrl} className="cursor-pointer">
+                    <User className="h-4 w-4 mr-2" />
+                    {metadata?.userRole === "STUDENT" && "Student Dashboard"}
+                    {metadata?.userRole === "INSTRUCTOR" &&
+                      "Instructor Dashboard"}
+                    {metadata?.userRole === "ADMIN" && "Admin Dashboard"}
+                    {metadata?.userRole === "SUPER_ADMIN" &&
+                      "Super Admin Dashboard"}
+                    {!metadata?.userRole && "Dashboard"}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard" className="cursor-pointer">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Account Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => signOut()}
+                  className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                asChild
+                className={cn(
+                  "border-white/20 text-white hover:bg-white/10",
+                  buttonClasses
+                )}
+              >
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild className={buttonClasses}>
+                <Link href="/register">Start Flying Today</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -429,11 +541,62 @@ export function TransparentNavigation({
                 ))}
               </div>
 
-              {/* Mobile CTA */}
-              <div className="pt-4">
-                <Button asChild className={cn("w-full", buttonClasses)}>
-                  <Link href="/contact">Start Flying Today</Link>
-                </Button>
+              {/* Mobile CTA or User Info */}
+              <div className="pt-4 space-y-3">
+                {mounted && isLoaded && user ? (
+                  <>
+                    <div className="px-2 py-3 bg-white/10 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-[#f6d57f] rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-[#262626]" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-white">
+                            {user.firstName ||
+                              user.emailAddresses[0]?.emailAddress ||
+                              "User"}
+                          </p>
+                          <p className="text-xs text-gray-300">
+                            {metadata?.userRole === "STUDENT" && "Student"}
+                            {metadata?.userRole === "INSTRUCTOR" &&
+                              "Instructor"}
+                            {metadata?.userRole === "ADMIN" && "Admin"}
+                            {metadata?.userRole === "SUPER_ADMIN" &&
+                              "Super Admin"}
+                            {!metadata?.userRole && "User"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <Button asChild className={cn("w-full", buttonClasses)}>
+                      <Link href={dashboardUrl}>Go to Dashboard</Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => signOut()}
+                      className="w-full border-white/20 text-white hover:bg-white/10"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      asChild
+                      className={cn(
+                        "w-full border-white/20 text-white hover:bg-white/10",
+                        buttonClasses
+                      )}
+                    >
+                      <Link href="/login">Login</Link>
+                    </Button>
+                    <Button asChild className={cn("w-full", buttonClasses)}>
+                      <Link href="/register">Start Flying Today</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

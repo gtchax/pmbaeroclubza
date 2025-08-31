@@ -1,21 +1,37 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { canAccessDashboard } from "@/lib/actions/user-status-actions";
 
 const isPublicRoute = createRouteMatcher([
   "/",
   "/search",
   "/property/(.*)",
   "/api/webhooks/(.*)",
+  "/api/auth/(.*)",
+  "/api/clerk/(.*)",
+  "/api/user/(.*)",
+  "/api/admin/check-super-admin",
+  "/api/admin/register",
+  "/api/admin/login",
   "/api/messaging/webhook",
-]);
-
-const isAuthRoute = createRouteMatcher([
-  "/login",
-  "/signup",
   "/register",
+  "/registration-success",
+  "/login",
+  "/login/verify",
+  "/pending-approval",
+  "/signup",
   "/sign-in",
   "/sign-up",
+  "/dashboard",
+  "/seams/(.*)",
+  // Core folder pages - all public
+  "/aero-club",
+  "/training-fleet",
+  "/faq",
+  "/visiting-aircraft",
+  "/pilot-resources",
+  "/flight-instructors",
+  "/flight-school",
+  "/contact",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -29,10 +45,20 @@ export default clerkMiddleware(async (auth, req) => {
 
   const { userId } = await auth();
 
-  // Redirect authenticated users away from auth routes
-  if (userId && isAuthRoute(req)) {
-    const home = new URL(`/`, req.url);
-    return NextResponse.redirect(home);
+  // Redirect authenticated users away from auth pages to their dashboard
+  if (userId) {
+    const authPages = [
+      "/register",
+      "/login",
+      "/login/verify",
+      "/registration-success",
+      "/signup",
+      "/sign-in",
+      "/sign-up",
+    ];
+    if (authPages.includes(req.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
 
   // Protect private routes

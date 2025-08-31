@@ -60,14 +60,12 @@ export function getPrimaryEmail(data: ClerkUserData): string | null {
 
 /**
  * Extract primary phone from Clerk user data
+ * Note: Phone numbers are now handled separately via profile completion API
  */
-export function getPrimaryPhone(data: ClerkUserData): string | null {
-  if (!data.primary_phone_number_id) return null;
-
-  const primaryPhone = data.phone_numbers?.find(
-    (phone) => phone.id === data.primary_phone_number_id
-  );
-  return primaryPhone?.phone_number || null;
+export function getPrimaryPhone(_data: ClerkUserData): string | null {
+  console.log(_data);
+  // Phone numbers are handled separately, not through Clerk webhooks
+  return null;
 }
 
 /**
@@ -78,7 +76,6 @@ export async function syncUserToDatabase(
   isUpdate: boolean = false
 ) {
   const email = getPrimaryEmail(data);
-  const phone = getPrimaryPhone(data);
 
   if (!email) {
     throw new Error("No primary email found");
@@ -88,7 +85,7 @@ export async function syncUserToDatabase(
     email,
     firstName: data.first_name || "",
     lastName: data.last_name || "",
-    phone,
+    phone: null, // Phone numbers are handled separately via profile completion API
     avatar: data.image_url || null,
     isActive: data.public_metadata?.isActive ?? true,
   };
